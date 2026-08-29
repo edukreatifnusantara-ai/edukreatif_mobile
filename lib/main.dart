@@ -2803,15 +2803,16 @@ class HomePage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                const liveClassWidth = 220.0;
-                const teacherWidth = 120.0;
+                final teacherWidth = (constraints.maxWidth * .22).clamp(
+                  120.0,
+                  180.0,
+                ).toDouble();
                 const gap = 10.0;
                 return IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(
-                      width: liveClassWidth,
+                    Expanded(
                       child: _UtbkFeatureCard(
                         category: 'KELAS ONLINE RUTIN',
                         title: 'LiveClass',
