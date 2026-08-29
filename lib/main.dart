@@ -9707,8 +9707,9 @@ class _CreativeRoomCard extends StatelessWidget {
       context: context,
       showDragHandle: true,
       builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
           children: [
             const ListTile(
               title: Text(
@@ -9758,6 +9759,7 @@ class _CreativeRoomCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
           ],
+          ),
         ),
       ),
     );

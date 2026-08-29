@@ -102,8 +102,9 @@ void main() {
   testWidgets('materi premium menampilkan paywall sebelum login', (
     tester,
   ) async {
-    await tester.pumpWidget(const EduKreativApp());
-    await tester.pump(const Duration(milliseconds: 1400));
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: CatalogPage())),
+    );
     await tester.pump();
     await tester.scrollUntilVisible(
       find.text('Sains di Sekitar Kita'),
