@@ -435,8 +435,8 @@ void main() {
       lessThan(tester.getSize(find.byType(Scaffold).first).width),
     );
 
-    await tester.ensureVisible(find.text('GURU KREATIV JOIN US'));
-    await tester.tap(find.text('GURU KREATIV JOIN US'));
+    await tester.ensureVisible(find.text('GURU KREATIV'));
+    await tester.tap(find.text('GURU KREATIV'));
     await tester.pumpAndSettle();
     expect(find.byType(CreativeTeacherJoinPage), findsOneWidget);
     expect(find.text('Mengapa bergabung?'), findsOneWidget);
