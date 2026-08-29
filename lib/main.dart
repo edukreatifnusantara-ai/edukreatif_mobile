@@ -2803,16 +2803,16 @@ class HomePage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final cardWidth =
-                    ((constraints.maxWidth - 36) / 4)
-                        .clamp(82.0, 150.0)
-                        .toDouble();
                 final gap = 10.0;
-                final liveClassWidth =
-                    (constraints.maxWidth - cardWidth - gap).clamp(
-                      0.0,
-                      constraints.maxWidth,
-                    );
+                final availableWidth = constraints.maxWidth - gap;
+                final teacherWidth = (availableWidth * .4).clamp(
+                  120.0,
+                  180.0,
+                ).toDouble();
+                final liveClassWidth = (availableWidth - teacherWidth).clamp(
+                  0.0,
+                  constraints.maxWidth,
+                ).toDouble();
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -2837,7 +2837,7 @@ class HomePage extends StatelessWidget {
                     ),
                     SizedBox(width: gap),
                     SizedBox(
-                      width: cardWidth,
+                      width: teacherWidth,
                       child: _TeacherJoinCard(
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
@@ -9521,11 +9521,13 @@ class _CreativeMenuCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 170,
+      height: 140,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final cardWidth = (constraints.maxWidth - 36) / 4;
-          final width = cardWidth.clamp(82.0, 150.0);
+          final width = ((constraints.maxWidth - 24) / 3).clamp(
+            108.0,
+            150.0,
+          ).toDouble();
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -9537,10 +9539,10 @@ class _CreativeMenuCards extends StatelessWidget {
                       onTap: () => onTap(items[index].title),
                       borderRadius: BorderRadius.circular(18),
                       child: Container(
-                        height: 170,
+                        height: 140,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
-                          vertical: 14,
+                          vertical: 12,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -9560,8 +9562,8 @@ class _CreativeMenuCards extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              width: 48,
-                              height: 48,
+                              width: 44,
+                              height: 44,
                               decoration: BoxDecoration(
                                 color: items[index].color.withValues(
                                   alpha: .15,
@@ -9571,10 +9573,10 @@ class _CreativeMenuCards extends StatelessWidget {
                               child: Icon(
                                 items[index].icon,
                                 color: items[index].color,
-                                size: 27,
+                                size: 24,
                               ),
                             ),
-                            const SizedBox(height: 14),
+                            const SizedBox(height: 10),
                             Text(
                               items[index].title,
                               textAlign: TextAlign.center,
