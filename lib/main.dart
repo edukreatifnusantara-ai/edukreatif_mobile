@@ -2811,51 +2811,25 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 14),
           const _DailyTargetCard(),
           const SizedBox(height: 25),
-          const Text(
-            'Pilihan belajar',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: navy,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              _Feature(
-                icon: Icons.play_circle_fill,
-                label: 'Belajar Kreativ',
-                color: blue,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const Scaffold(body: OfficialBooksPage()),
-                  ),
-                ),
-              ),
-              SizedBox(width: 12),
-              _Feature(
-                icon: Icons.quiz,
-                label: 'Ujian Kreativ',
-                color: orange,
-                onTap: () => Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => const ExamPage())),
-              ),
-              SizedBox(width: 12),
-              _Feature(
-                icon: Icons.question_answer,
-                label: 'Tanya Kreativ',
-                color: Color(0xFF45B88A),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const AskKreativPage()),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
           _RecommendationCard(
             onTap: () =>
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (_) => const UtbkPage())),
+          ),
+          const SizedBox(height: 14),
+          _UtbkFeatureCard(
+            category: 'SMART PLAYBOOK',
+            title: 'Strategi UTBK Terarah (PREMIUM MEMBER)',
+            description:
+                'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
+            tags: 'Taktik · Roadmap · Target',
+            actionLabel: 'Pilih strategi',
+            icon: Icons.track_changes_outlined,
+            color: const Color(0xFFE38A2D),
+            backgroundColor: const Color(0xFFFFF2DF),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const UtbkStrategyPage()),
+            ),
           ),
           const SizedBox(height: 25),
           Row(
