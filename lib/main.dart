@@ -1706,6 +1706,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 .push(MaterialPageRoute(builder: (_) => const ProgressPage())),
           ),
           const SizedBox(height: 16),
+          const _DailyTargetCard(),
+          const SizedBox(height: 24),
           Row(
             children: const [
               Expanded(
@@ -2809,7 +2811,7 @@ class HomePage extends StatelessWidget {
                 .push(MaterialPageRoute(builder: (_) => const KedinasanPage())),
           ),
           const SizedBox(height: 14),
-          const _DailyTargetCard(),
+          const _PreparationMenuRow(),
           const SizedBox(height: 25),
           _RecommendationCard(
             onTap: () =>
@@ -10148,6 +10150,159 @@ class _RecommendationCard extends StatelessWidget {
           ),
           const Icon(Icons.chevron_right, color: Colors.white),
         ],
+      ),
+    ),
+  );
+}
+
+class _PreparationMenuRow extends StatelessWidget {
+  const _PreparationMenuRow();
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    height: 190,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: _PreparationMenuButton(
+            title: 'Psikotest',
+            icon: Icons.psychology_outlined,
+            color: blue,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const PreparationPlaceholderPage(
+                  title: 'Psikotest',
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _PreparationMenuButton(
+            title: 'SMA Taruna Nusantara',
+            icon: Icons.school_outlined,
+            color: const Color(0xFF238B62),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const PreparationPlaceholderPage(
+                  title: 'SMA Taruna Nusantara',
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _PreparationMenuButton(
+            title: 'Universitas Pertahanan',
+            icon: Icons.account_balance_outlined,
+            color: const Color(0xFFE38A2D),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const PreparationPlaceholderPage(
+                  title: 'Universitas Pertahanan',
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _PreparationMenuButton extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _PreparationMenuButton({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) => Card(
+    elevation: 0,
+    margin: EdgeInsets.zero,
+    color: color.withValues(alpha: .1),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(18),
+      side: BorderSide(color: color.withValues(alpha: .2)),
+    ),
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: color.withValues(alpha: .16),
+              foregroundColor: color,
+              child: Icon(icon, size: 27),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: navy,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                height: 1.2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class PreparationPlaceholderPage extends StatelessWidget {
+  final String title;
+
+  const PreparationPlaceholderPage({required this.title, super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text(title), foregroundColor: navy),
+    backgroundColor: const Color(0xFFF7F9FC),
+    body: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.construction_outlined, color: orange, size: 56),
+            const SizedBox(height: 18),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: navy,
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Materi dan latihan untuk menu ini sedang disiapkan.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black54, height: 1.4),
+            ),
+          ],
+        ),
       ),
     ),
   );

@@ -389,27 +389,32 @@ void main() {
     expect(find.text('Jadwal kelas'), findsOneWidget);
   });
 
-  testWidgets('rekomendasi dan target beranda dapat dibuka', (tester) async {
+  testWidgets('beranda menampilkan tiga jalur persiapan baru', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: Scaffold(body: HomePage())),
     );
 
     await tester.scrollUntilVisible(
-      find.text('Rekomendasi untukmu'),
+      find.text('Psikotest'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Rekomendasi untukmu'));
-    await tester.pumpAndSettle();
-    expect(find.text('Lolos UTBK 800'), findsOneWidget);
+    expect(find.text('Psikotest'), findsOneWidget);
+    expect(find.text('SMA Taruna Nusantara'), findsOneWidget);
+    expect(find.text('Universitas Pertahanan'), findsOneWidget);
+    expect(find.text('Target UTBK hari ini'), findsNothing);
 
-    Navigator.of(tester.element(find.text('Lolos UTBK 800'))).pop();
+    await tester.tap(find.text('Psikotest'));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('Target UTBK hari ini'),
-      300,
-      scrollable: find.byType(Scrollable).first,
+    expect(find.text('Materi dan latihan untuk menu ini sedang disiapkan.'), findsOneWidget);
+  });
+
+  testWidgets('target UTBK berpindah ke progress profil', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: ProfilePage())),
     );
+
+    expect(find.text('Target UTBK hari ini'), findsOneWidget);
     await tester.tap(find.text('Target UTBK hari ini'));
     await tester.pumpAndSettle();
     expect(
