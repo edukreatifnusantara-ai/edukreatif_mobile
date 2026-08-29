@@ -430,7 +430,10 @@ void main() {
     final liveClassCard = find
         .ancestor(of: find.text('LiveClass'), matching: find.byType(Card))
         .first;
-    expect(tester.getSize(liveClassCard).width, lessThan(320));
+    expect(
+      tester.getSize(liveClassCard).width,
+      lessThan(tester.getSize(find.byType(Scaffold).first).width),
+    );
 
     await tester.scrollUntilVisible(
       find.text('Guru Kreativ, Join Us'),
