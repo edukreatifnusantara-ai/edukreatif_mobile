@@ -2875,12 +2875,132 @@ class HomePage extends StatelessWidget {
   }
 }
 
+class _SiapUtbkCountdownCard extends StatefulWidget {
+  const _SiapUtbkCountdownCard();
+
+  @override
+  State<_SiapUtbkCountdownCard> createState() => _SiapUtbkCountdownCardState();
+}
+
+class _SiapUtbkCountdownCardState extends State<_SiapUtbkCountdownCard> {
+  static final examDate = DateTime(2027, 3, 1);
+  late Timer timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  int get daysLeft =>
+      (examDate.difference(DateTime.now()).inSeconds / 86400)
+          .ceil()
+          .clamp(0, 99999)
+          .toInt();
+
+  int get weeksLeft => (daysLeft / 7).ceil();
+
+  int get monthsLeft {
+    final now = DateTime.now();
+    final value =
+        (examDate.year - now.year) * 12 + examDate.month - now.month;
+    final dayFraction = (examDate.day - now.day) / 31;
+    return (value + dayFraction).ceil().clamp(0, 999).toInt();
+  }
+
+  @override
+  Widget build(BuildContext context) => Card(
+    elevation: 0,
+    color: const Color(0xFFE9F1FF),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+      side: BorderSide(color: blue.withValues(alpha: .16)),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'HITUNG MUNDUR UTBK 2027',
+            style: TextStyle(
+              color: blue,
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              letterSpacing: .8,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            'Senin, 1 Maret 2027',
+            style: TextStyle(
+              color: navy,
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              _CountdownValue(value: daysLeft, label: 'hari'),
+              const SizedBox(width: 8),
+              _CountdownValue(value: weeksLeft, label: 'minggu'),
+              const SizedBox(width: 8),
+              _CountdownValue(value: monthsLeft, label: 'bulan'),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _CountdownValue extends StatelessWidget {
+  final int value;
+  final String label;
+
+  const _CountdownValue({required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        children: [
+          Text(
+            '$value',
+            style: const TextStyle(
+              color: navy,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(color: Colors.black54)),
+        ],
+      ),
+    ),
+  );
+}
+
 class UtbkPage extends StatelessWidget {
   const UtbkPage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Lolos UTBK 800'), foregroundColor: navy),
+    appBar: AppBar(title: const Text('SIAP UTBK'), foregroundColor: navy),
     body: ListView(
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
       children: [
@@ -2897,6 +3017,8 @@ class UtbkPage extends StatelessWidget {
           'Pilih ruang belajar sesuai kebutuhanmu hari ini.',
           style: TextStyle(color: Colors.black54, fontSize: 14),
         ),
+        const SizedBox(height: 18),
+        const _SiapUtbkCountdownCard(),
         const SizedBox(height: 18),
         _UtbkFeatureCard(
           category: 'DRILL HARIAN',
@@ -10286,16 +10408,6 @@ class _RecommendationCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: orange,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(Icons.auto_awesome, color: navy),
-          ),
-          const SizedBox(width: 12),
           const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -10310,7 +10422,7 @@ class _RecommendationCard extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Persiapan UTBK',
+                  'SIAP UTBK',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
