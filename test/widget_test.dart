@@ -496,6 +496,22 @@ void main() {
     expect(find.text('minggu'), findsOneWidget);
     expect(find.text('bulan'), findsOneWidget);
   });
+  testWidgets('layout soal memisahkan area scroll dan tombol tetap', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: UtbkQuestionPage()),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.byType(Scrollable), findsOneWidget);
+    expect(find.text('Selesai'), findsOneWidget);
+    expect(
+      find.ancestor(
+        of: find.text('Selesai'),
+        matching: find.byType(Scrollable),
+      ),
+      findsNothing,
+    );
+  });
   testWidgets('target UTBK berpindah ke progress profil', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: Scaffold(body: ProfilePage())),

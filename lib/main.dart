@@ -4531,8 +4531,11 @@ class _UtbkQuestionPageState extends State<UtbkQuestionPage> {
         title: const Text('Lolos UTBK 800'),
         foregroundColor: navy,
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
         children: [
           TextButton.icon(
             onPressed: () => Navigator.pop(context),
@@ -4655,14 +4658,21 @@ class _UtbkQuestionPageState extends State<UtbkQuestionPage> {
                     );
                   }),
                   const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: FilledButton(
-                      onPressed: selected == null ? null : finish,
-                      child: const Text('Selesai'),
-                    ),
-                  ),
                 ],
+              ),
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+              color: Colors.white,
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: selected == null ? null : finish,
+                  child: const Text('Selesai'),
+                ),
               ),
             ),
           ),
@@ -4794,8 +4804,11 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
         if (questions.isEmpty) return Center(child: Text('Belum ada soal untuk ${subtests[activeCode]}.'));
         final current = questions[questionIndex.clamp(0, questions.length - 1)];
         final options = Map<String, dynamic>.from(current['options'] as Map);
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(14, 14, 14, 28),
+        return Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 20),
           children: [
             if (widget.initialSubject == null)
               SizedBox(height: 44, child: ListView(scrollDirection: Axis.horizontal, children: subtests.entries.map((entry) => Padding(padding: const EdgeInsets.only(right: 8), child: ChoiceChip(label: Text(entry.key), selected: activeCode == entry.key, selectedColor: blue, labelStyle: TextStyle(color: activeCode == entry.key ? Colors.white : navy, fontWeight: FontWeight.w800), onSelected: (_) => setState(() { activeCode = entry.key; questionIndex = 0; })))).toList())),
@@ -4807,26 +4820,39 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
               const SizedBox(height: 16),
               ...['A', 'B', 'C', 'D', 'E'].where(options.containsKey).map((key) { final chosen = answers[questionIndex] == key; return InkWell(onTap: () => setState(() => answers[questionIndex] = key), child: Container(margin: const EdgeInsets.only(bottom: 9), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: chosen ? const Color(0xFFEAF1FF) : Colors.transparent, border: Border.all(color: chosen ? blue : Colors.black12), borderRadius: BorderRadius.circular(12)), child: Row(children: [CircleAvatar(radius: 15, backgroundColor: chosen ? blue : Colors.black12, child: Text(key, style: TextStyle(color: chosen ? Colors.white : navy, fontWeight: FontWeight.w800))), const SizedBox(width: 10), Expanded(child: Text('${options[key]}')), Icon(chosen ? Icons.radio_button_checked : Icons.radio_button_unchecked, color: chosen ? blue : Colors.black38)]))); }),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                alignment: WrapAlignment.spaceBetween,
-                children: [
-                  OutlinedButton(
-                    onPressed: questionIndex == 0 ? null : () => setState(() => questionIndex--),
-                    child: const Text('<< Sebelumnya'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () => setState(() => doubtful.contains(questionIndex) ? doubtful.remove(questionIndex) : doubtful.add(questionIndex)),
-                    child: Text(doubtful.contains(questionIndex) ? 'Ragu-ragu ✓' : 'Ragu-ragu'),
-                  ),
-                  FilledButton(
-                    onPressed: questionIndex == questions.length - 1 ? () => _finish() : () => setState(() => questionIndex++),
-                    child: Text(questionIndex == questions.length - 1 ? 'Selesai' : 'Selanjutnya >>'),
-                  ),
-                ],
+            ])),
+            SafeArea(
+              top: false,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, -2))],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: questionIndex == 0 ? null : () => setState(() => questionIndex--),
+                        child: const Text('Sebelumnya'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    OutlinedButton(
+                      onPressed: () => setState(() => doubtful.contains(questionIndex) ? doubtful.remove(questionIndex) : doubtful.add(questionIndex)),
+                      child: Text(doubtful.contains(questionIndex) ? 'Ragu ✓' : 'Ragu'),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: questionIndex == questions.length - 1 ? () => _finish() : () => setState(() => questionIndex++),
+                        child: Text(questionIndex == questions.length - 1 ? 'Selesai' : 'Selanjutnya'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ]))),
+            ),
           ],
         );
       },
