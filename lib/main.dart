@@ -2803,16 +2803,9 @@ class HomePage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final gap = 10.0;
-                final availableWidth = constraints.maxWidth - gap;
-                final teacherWidth = (availableWidth * .4).clamp(
-                  120.0,
-                  180.0,
-                ).toDouble();
-                final liveClassWidth = (availableWidth - teacherWidth).clamp(
-                  0.0,
-                  constraints.maxWidth,
-                ).toDouble();
+                const liveClassWidth = 220.0;
+                const teacherWidth = 120.0;
+                const gap = 10.0;
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -9521,16 +9514,14 @@ class _CreativeMenuCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 140,
+      height: 122,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final width = ((constraints.maxWidth - 24) / 3).clamp(
-            108.0,
-            150.0,
+          final width = ((constraints.maxWidth - 36) / 4).clamp(
+            68.0,
+            110.0,
           ).toDouble();
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
+          return Row(
               children: [
                 for (var index = 0; index < items.length; index++) ...[
                   SizedBox(
@@ -9539,7 +9530,7 @@ class _CreativeMenuCards extends StatelessWidget {
                       onTap: () => onTap(items[index].title),
                       borderRadius: BorderRadius.circular(18),
                       child: Container(
-                        height: 140,
+                        height: 122,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 12,
@@ -9596,8 +9587,7 @@ class _CreativeMenuCards extends StatelessWidget {
                   if (index < items.length - 1) const SizedBox(width: 12),
                 ],
               ],
-            ),
-          );
+            );
         },
       ),
     );
