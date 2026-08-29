@@ -2789,7 +2789,16 @@ class HomePage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 14),
-          _LiveClassCard(
+          _UtbkFeatureCard(
+            category: 'KELAS ONLINE RUTIN',
+            title: 'LiveClass',
+            description:
+                'Belajar online bersama pengajar profesional dan berpengalaman.',
+            tags: 'Live · Profesional · Rutin',
+            actionLabel: 'Lihat jadwal',
+            icon: Icons.ondemand_video_outlined,
+            color: const Color(0xFFD84B78),
+            backgroundColor: const Color(0xFFFFE8F0),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const UtbkLiveClassPage()),
             ),
@@ -9785,61 +9794,6 @@ void _showCreativeMenuDialog(BuildContext context, String title) {
           child: const Text('Tutup'),
         ),
       ],
-    ),
-  );
-}
-
-class _LiveClassCard extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _LiveClassCard({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    borderRadius: BorderRadius.circular(18),
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF5E9),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: orange.withValues(alpha: .18)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: orange,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(Icons.event_available, color: navy),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'LiveClass',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: navy,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Kelas online · Lihat jadwal dan pengajar',
-                  style: TextStyle(color: Colors.black54, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          const Icon(Icons.chevron_right, color: navy),
-        ],
-      ),
     ),
   );
 }
