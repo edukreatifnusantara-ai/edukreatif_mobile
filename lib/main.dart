@@ -4662,6 +4662,9 @@ class _UtbkQuestionPageState extends State<UtbkQuestionPage> {
               ),
             ),
           ),
+          ],
+        ),
+      ),
           SafeArea(
             top: false,
             child: Container(
@@ -4820,7 +4823,10 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
               const SizedBox(height: 16),
               ...['A', 'B', 'C', 'D', 'E'].where(options.containsKey).map((key) { final chosen = answers[questionIndex] == key; return InkWell(onTap: () => setState(() => answers[questionIndex] = key), child: Container(margin: const EdgeInsets.only(bottom: 9), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: chosen ? const Color(0xFFEAF1FF) : Colors.transparent, border: Border.all(color: chosen ? blue : Colors.black12), borderRadius: BorderRadius.circular(12)), child: Row(children: [CircleAvatar(radius: 15, backgroundColor: chosen ? blue : Colors.black12, child: Text(key, style: TextStyle(color: chosen ? Colors.white : navy, fontWeight: FontWeight.w800))), const SizedBox(width: 10), Expanded(child: Text('${options[key]}')), Icon(chosen ? Icons.radio_button_checked : Icons.radio_button_unchecked, color: chosen ? blue : Colors.black38)]))); }),
               const SizedBox(height: 8),
-            ])),
+            ]))),
+                ],
+              ),
+            ),
             SafeArea(
               top: false,
               child: Container(
