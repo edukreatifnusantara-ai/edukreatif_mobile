@@ -445,6 +445,11 @@ void main() {
     expect(find.byType(CreativeTeacherJoinPage), findsOneWidget);
     expect(find.text('Mengapa bergabung?'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.text('Saya tertarik bergabung'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Saya tertarik bergabung'));
     await tester.pumpAndSettle();
     expect(find.text('Minat bergabung'), findsOneWidget);
