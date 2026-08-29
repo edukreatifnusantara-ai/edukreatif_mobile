@@ -2787,7 +2787,7 @@ class HomePage extends StatelessWidget {
                 );
                 return;
               }
-              if (title == 'Guru Kreativ, Join Us') {
+              if (title == 'Guru Kreativ Join Us') {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const CreativeTeacherJoinPage(),
@@ -2822,6 +2822,28 @@ class HomePage extends StatelessWidget {
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => const UtbkLiveClassPage(),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final cardWidth =
+                    ((constraints.maxWidth - 36) / 4)
+                        .clamp(82.0, 150.0)
+                        .toDouble();
+                return SizedBox(
+                  width: cardWidth,
+                  child: _TeacherJoinCard(
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const CreativeTeacherJoinPage(),
                       ),
                     ),
                   ),
@@ -9436,6 +9458,52 @@ void _showComingSoon(BuildContext context, String title) {
   );
 }
 
+class _TeacherJoinCard extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _TeacherJoinCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      height: 170,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFF168C87).withValues(alpha: .18)),
+        boxShadow: const [
+          BoxShadow(color: Color(0x0C152B55), blurRadius: 10, offset: Offset(0, 4)),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFF168C87).withValues(alpha: .15),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Icon(Icons.school_outlined, color: Color(0xFF168C87), size: 27),
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            'Guru Kreativ Join Us',
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: navy, fontSize: 13, fontWeight: FontWeight.w800),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 class _CreativeMenuCards extends StatelessWidget {
   final ValueChanged<String> onTap;
 
@@ -9453,11 +9521,6 @@ class _CreativeMenuCards extends StatelessWidget {
       title: 'Camp Kreativ',
       icon: Icons.groups_2_outlined,
       color: Color(0xFF8B6FE8),
-    ),
-    (
-      title: 'Guru Kreativ, Join Us',
-      icon: Icons.school_outlined,
-      color: Color(0xFF168C87),
     ),
   ];
 
@@ -10039,7 +10102,7 @@ class CreativeTeacherJoinPage extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: const Color(0xFFF7F9FC),
     appBar: AppBar(
-      title: const Text('Guru Kreativ, Join Us'),
+      title: const Text('Guru Kreativ Join Us'),
       foregroundColor: navy,
     ),
     body: ListView(
