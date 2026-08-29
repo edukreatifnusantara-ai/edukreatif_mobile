@@ -2834,13 +2834,13 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 25),
           _CreativeRoomCard(
             onOpenKarya: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const StoryCreativePage()),
+              MaterialPageRoute(builder: (_) => const CreativeWorksPage()),
             ),
-            onOpenKuis: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ExamPage()),
+            onOpenInspirasi: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CreativeInspirationPage()),
             ),
-            onOpenMisi: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const MissionSeriesPage()),
+            onOpenJurnal: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CreativeJournalPage()),
             ),
           ),
         ],
@@ -9691,15 +9691,268 @@ class _StoryReaderPageState extends State<StoryReaderPage> {
   }
 }
 
+class CreativeWorksPage extends StatelessWidget {
+  const CreativeWorksPage({super.key});
+
+  static const works = [
+    (
+      title: 'Poster Hemat Air',
+      creator: 'Alya · Kelas 8',
+      description: 'Poster kampanye sederhana untuk menjaga air di rumah.',
+      icon: Icons.water_drop_outlined,
+      color: blue,
+    ),
+    (
+      title: 'Kebun Mini dari Botol Bekas',
+      creator: 'Raka · Kelas 6',
+      description: 'Proyek sains dan lingkungan yang bisa dicoba di rumah.',
+      icon: Icons.eco_outlined,
+      color: Color(0xFF238B62),
+    ),
+    (
+      title: 'Cerita tentang Kejujuran',
+      creator: 'Naya · Kelas 5',
+      description: 'Cerita pendek dengan pesan untuk berani berkata jujur.',
+      icon: Icons.auto_stories_outlined,
+      color: orange,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF7F9FC),
+    appBar: AppBar(
+      title: const Text('Karya Kreativ'),
+      foregroundColor: navy,
+    ),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        const Text(
+          'Karya nyata dari ide yang diwujudkan.',
+          style: TextStyle(
+            color: navy,
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Lihat karya pilihan dan temukan inspirasi untuk membuat karyamu sendiri.',
+          style: TextStyle(color: Colors.black54, height: 1.4),
+        ),
+        const SizedBox(height: 20),
+        ...works.map(
+          (work) => Card(
+            elevation: 0,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(14),
+              leading: CircleAvatar(
+                backgroundColor: work.color.withValues(alpha: .14),
+                foregroundColor: work.color,
+                child: Icon(work.icon),
+              ),
+              title: Text(
+                work.title,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+              subtitle: Text('${work.creator}\\n${work.description}'),
+              isThreeLine: true,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class CreativeInspirationPage extends StatelessWidget {
+  const CreativeInspirationPage({super.key});
+
+  static const ideas = [
+    (
+      title: 'Mulai dari benda di sekitarmu',
+      description: 'Pilih satu benda dan tuliskan tiga kegunaan atau cerita tentangnya.',
+      icon: Icons.lightbulb_outline,
+    ),
+    (
+      title: 'Ubah masalah menjadi ide',
+      description: 'Pikirkan masalah kecil di rumah atau sekolah, lalu cari solusi sederhana.',
+      icon: Icons.auto_awesome_outlined,
+    ),
+    (
+      title: 'Cerita dari budaya Nusantara',
+      description: 'Cari satu tradisi daerah dan ceritakan kembali dengan caramu sendiri.',
+      icon: Icons.public,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF7F9FC),
+    appBar: AppBar(
+      title: const Text('Inspirasi Kreativ'),
+      foregroundColor: navy,
+    ),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        const Text(
+          'Temukan ide, lalu kembangkan dengan caramu.',
+          style: TextStyle(
+            color: navy,
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Inspirasi bukan untuk disalin, tetapi untuk memulai sesuatu yang baru.',
+          style: TextStyle(color: Colors.black54, height: 1.4),
+        ),
+        const SizedBox(height: 20),
+        ...ideas.map(
+          (idea) => Card(
+            elevation: 0,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(14),
+              leading: CircleAvatar(
+                backgroundColor: const Color(0xFFFFE8D4),
+                foregroundColor: orange,
+                child: Icon(idea.icon, color: orange),
+              ),
+              title: Text(
+                idea.title,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+              subtitle: Text(idea.description),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class CreativeJournalPage extends StatefulWidget {
+  const CreativeJournalPage({super.key});
+
+  @override
+  State<CreativeJournalPage> createState() => _CreativeJournalPageState();
+}
+
+class _CreativeJournalPageState extends State<CreativeJournalPage> {
+  final controller = TextEditingController();
+  final entries = <String>[];
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void saveEntry() {
+    final text = controller.text.trim();
+    if (text.isEmpty) return;
+    setState(() {
+      entries.insert(0, text);
+      controller.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF7F9FC),
+    appBar: AppBar(
+      title: const Text('Jurnal Kreativ'),
+      foregroundColor: navy,
+    ),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        const Text(
+          'Catat proses, ide, dan perkembanganmu.',
+          style: TextStyle(
+            color: navy,
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Jurnal ini menjadi tempat untuk berhenti sejenak, mengingat, dan merencanakan langkah berikutnya.',
+          style: TextStyle(color: Colors.black54, height: 1.4),
+        ),
+        const SizedBox(height: 18),
+        TextField(
+          controller: controller,
+          maxLines: 4,
+          decoration: const InputDecoration(
+            labelText: 'Catatan hari ini',
+            hintText: 'Apa yang kamu pelajari atau ingin coba?',
+            alignLabelWithHint: true,
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton.icon(
+            onPressed: saveEntry,
+            icon: const Icon(Icons.save_outlined),
+            label: const Text('Simpan jurnal'),
+          ),
+        ),
+        const SizedBox(height: 24),
+        const Text(
+          'Catatan terbaru',
+          style: TextStyle(
+            color: navy,
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 10),
+        if (entries.isEmpty)
+          const Card(
+            elevation: 0,
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('Belum ada catatan. Tulis satu ide untuk memulai.'),
+            ),
+          )
+        else
+          ...entries.map(
+            (entry) => Card(
+              elevation: 0,
+              margin: const EdgeInsets.only(bottom: 10),
+              child: ListTile(
+                leading: const Icon(Icons.edit_note, color: blue),
+                title: Text(entry),
+              ),
+            ),
+          ),
+      ],
+    ),
+  );
+}
+
 class _CreativeRoomCard extends StatelessWidget {
   final VoidCallback onOpenKarya;
-  final VoidCallback onOpenKuis;
-  final VoidCallback onOpenMisi;
+  final VoidCallback onOpenInspirasi;
+  final VoidCallback onOpenJurnal;
 
   const _CreativeRoomCard({
     required this.onOpenKarya,
-    required this.onOpenKuis,
-    required this.onOpenMisi,
+    required this.onOpenInspirasi,
+    required this.onOpenJurnal,
   });
 
   void _openMenu(BuildContext context) {
@@ -9736,12 +9989,12 @@ class _CreativeRoomCard extends StatelessWidget {
                 backgroundColor: Color(0xFFE3EDFF),
                 child: Icon(Icons.quiz_outlined, color: blue),
               ),
-              title: const Text('Kuis Kreativ'),
-              subtitle: const Text('Uji pemahaman dengan latihan singkat.'),
+              title: const Text('Inspirasi Kreativ'),
+              subtitle: const Text('Temukan ide dan cerita yang menginspirasi.'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pop(sheetContext);
-                onOpenKuis();
+                onOpenInspirasi();
               },
             ),
             ListTile(
@@ -9749,12 +10002,12 @@ class _CreativeRoomCard extends StatelessWidget {
                 backgroundColor: Color(0xFFE5F7EF),
                 child: Icon(Icons.flag_outlined, color: Color(0xFF238B62)),
               ),
-              title: const Text('Misi Kreativ'),
-              subtitle: const Text('Selesaikan misi belajar secara bertahap.'),
+              title: const Text('Jurnal Kreativ'),
+              subtitle: const Text('Catat ide, proses, dan refleksi belajarmu.'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pop(sheetContext);
-                onOpenMisi();
+                onOpenJurnal();
               },
             ),
             const SizedBox(height: 8),
@@ -9802,7 +10055,7 @@ class _CreativeRoomCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Karya, kuis, dan misi dalam satu ruang.',
+                    'Karya, inspirasi, dan jurnal dalam satu ruang.',
                     style: TextStyle(color: Colors.white70),
                   ),
                 ],

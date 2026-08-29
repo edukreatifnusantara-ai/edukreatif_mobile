@@ -95,8 +95,32 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Karya Kreativ'), findsOneWidget);
-    expect(find.text('Kuis Kreativ'), findsOneWidget);
-    expect(find.text('Misi Kreativ'), findsOneWidget);
+    expect(find.text('Inspirasi Kreativ'), findsOneWidget);
+    expect(find.text('Jurnal Kreativ'), findsOneWidget);
+  });
+
+  testWidgets('halaman Ruang Kreativ berisi karya inspirasi dan jurnal', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: CreativeWorksPage()));
+    expect(find.text('Karya nyata dari ide yang diwujudkan.'), findsOneWidget);
+    expect(find.text('Poster Hemat Air'), findsOneWidget);
+
+    await tester.pumpWidget(
+      const MaterialApp(home: CreativeInspirationPage()),
+    );
+    expect(find.text('Temukan ide, lalu kembangkan dengan caramu.'), findsOneWidget);
+    expect(find.text('Ubah masalah menjadi ide'), findsOneWidget);
+
+    await tester.pumpWidget(const MaterialApp(home: CreativeJournalPage()));
+    expect(find.text('Catatan hari ini'), findsOneWidget);
+    await tester.enterText(
+      find.byType(TextField),
+      'Hari ini saya menemukan ide baru.',
+    );
+    await tester.tap(find.text('Simpan jurnal'));
+    await tester.pump();
+    expect(find.text('Hari ini saya menemukan ide baru.'), findsOneWidget);
   });
 
   testWidgets('materi premium menampilkan paywall sebelum login', (
