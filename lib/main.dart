@@ -2789,7 +2789,11 @@ class HomePage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 14),
-          const _StudyScheduleCard(),
+          _LiveClassCard(
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const UtbkLiveClassPage()),
+            ),
+          ),
           const SizedBox(height: 14),
           _KedinasanMenuCard(
             onTap: () => Navigator.of(context)
@@ -2975,21 +2979,6 @@ class UtbkPage extends StatelessWidget {
           onTap: () => Navigator.of(
             context,
           ).push(MaterialPageRoute(builder: (_) => const UtbkProgressPage())),
-        ),
-        const SizedBox(height: 12),
-        _UtbkFeatureCard(
-          category: 'KELAS ONLINE RUTIN',
-          title: 'LiveClass',
-          description:
-              'Belajar online bersama pengajar profesional dan berpengalaman.',
-          tags: 'Live · Profesional · Rutin',
-          actionLabel: 'Lihat jadwal',
-          icon: Icons.ondemand_video_outlined,
-          color: const Color(0xFFD84B78),
-          backgroundColor: const Color(0xFFFFE8F0),
-          onTap: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const UtbkLiveClassPage())),
         ),
       ],
     ),
@@ -9800,27 +9789,15 @@ void _showCreativeMenuDialog(BuildContext context, String title) {
   );
 }
 
-class _StudyScheduleCard extends StatelessWidget {
-  const _StudyScheduleCard();
+class _LiveClassCard extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _LiveClassCard({required this.onTap});
 
   @override
   Widget build(BuildContext context) => InkWell(
     borderRadius: BorderRadius.circular(18),
-    onTap: () => showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Jadwal Kreativ'),
-        content: const Text(
-          'Kelas Sains akan dimulai hari ini pukul 16.00.\n\nSiapkan catatan dan ikuti kelas tepat waktu, ya!',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Siap'),
-          ),
-        ],
-      ),
-    ),
+    onTap: onTap,
     child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -9845,7 +9822,7 @@ class _StudyScheduleCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Jadwal Kreativ',
+                  'LiveClass',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -9854,7 +9831,7 @@ class _StudyScheduleCard extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Kelas Sains · Hari ini, 16.00',
+                  'Kelas online · Lihat jadwal dan pengajar',
                   style: TextStyle(color: Colors.black54, fontSize: 12),
                 ),
               ],
