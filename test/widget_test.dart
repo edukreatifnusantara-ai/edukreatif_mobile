@@ -322,25 +322,28 @@ void main() {
     );
 
     await tester.scrollUntilVisible(
-      find.text('Belajar Kreativ'),
+      find.text('Game Kreativ'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Belajar Kreativ'));
+    await tester.tap(find.text('Game Kreativ'));
     await tester.pumpAndSettle();
-    expect(find.text('Academy Kreativ'), findsOneWidget);
-    Navigator.of(tester.element(find.text('Academy Kreativ'))).pop();
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Ujian Kreativ'));
-    await tester.pumpAndSettle();
-    expect(find.text('Pilih ujian'), findsOneWidget);
-    Navigator.of(tester.element(find.text('Pilih ujian'))).pop();
+    expect(
+      find.text('Kumpulan game edukasi Kreativ sedang disiapkan.'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Tutup'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Tanya Kreativ'));
+    await tester.tap(find.text('Cerita Kreativ'));
     await tester.pumpAndSettle();
-    expect(find.text('Tanya apa saja'), findsOneWidget);
+    expect(find.text('Cerita pendek Nusantara'), findsOneWidget);
+    Navigator.of(tester.element(find.text('Cerita pendek Nusantara'))).pop();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('LiveClass'));
+    await tester.pumpAndSettle();
+    expect(find.text('Jadwal kelas'), findsOneWidget);
   });
 
   testWidgets('rekomendasi dan target beranda dapat dibuka', (tester) async {
@@ -355,9 +358,9 @@ void main() {
     );
     await tester.tap(find.text('Rekomendasi untukmu'));
     await tester.pumpAndSettle();
-    expect(find.text('Persiapan UTBK'), findsOneWidget);
+    expect(find.text('Lolos UTBK 800'), findsOneWidget);
 
-    Navigator.of(tester.element(find.text('Persiapan UTBK'))).pop();
+    Navigator.of(tester.element(find.text('Lolos UTBK 800'))).pop();
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Target UTBK hari ini'),
