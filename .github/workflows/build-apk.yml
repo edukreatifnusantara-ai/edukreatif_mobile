@@ -32,8 +32,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build release APK
-        run: flutter build apk --release
+      - name: Build small arm64 release APK
+        run: flutter build apk --release --target-platform android-arm64
 
       - name: Upload APK artifact
         if: always()
