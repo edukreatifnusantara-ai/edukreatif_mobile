@@ -415,6 +415,38 @@ void main() {
     expect(find.text('Jadwal kelas'), findsOneWidget);
   });
 
+  testWidgets('LiveClass dipendekkan dan Guru Kreativ membuka ajakan guru', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: HomePage())),
+    );
+
+    await tester.scrollUntilVisible(
+      find.text('LiveClass'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    final liveClassCard = find
+        .ancestor(of: find.text('LiveClass'), matching: find.byType(Card))
+        .first;
+    expect(tester.getSize(liveClassCard).width, lessThan(320));
+
+    await tester.scrollUntilVisible(
+      find.text('Guru Kreativ, Join Us'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Guru Kreativ, Join Us'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CreativeTeacherJoinPage), findsOneWidget);
+    expect(find.text('Mengapa bergabung?'), findsOneWidget);
+
+    await tester.tap(find.text('Saya tertarik bergabung'));
+    await tester.pumpAndSettle();
+    expect(find.text('Minat bergabung'), findsOneWidget);
+    expect(find.text('Tutup'), findsOneWidget);
+  });
   testWidgets('beranda menampilkan tiga jalur persiapan baru', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: Scaffold(body: HomePage())),

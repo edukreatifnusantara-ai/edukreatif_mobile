@@ -2787,22 +2787,46 @@ class HomePage extends StatelessWidget {
                 );
                 return;
               }
+              if (title == 'Guru Kreativ, Join Us') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const CreativeTeacherJoinPage(),
+                  ),
+                );
+                return;
+              }
               _showCreativeMenuDialog(context, title);
             },
           ),
           const SizedBox(height: 14),
-          _UtbkFeatureCard(
-            category: 'KELAS ONLINE RUTIN',
-            title: 'LiveClass',
-            description:
-                'Belajar online bersama pengajar profesional dan berpengalaman.',
-            tags: 'Live · Profesional · Rutin',
-            actionLabel: 'Lihat jadwal',
-            icon: Icons.ondemand_video_outlined,
-            color: const Color(0xFFD84B78),
-            backgroundColor: const Color(0xFFFFE8F0),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const UtbkLiveClassPage()),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final menuCardWidth =
+                    ((constraints.maxWidth - 36) / 4)
+                        .clamp(82.0, 150.0)
+                        .toDouble();
+                return SizedBox(
+                  width: menuCardWidth * 3 + 24,
+                  child: _UtbkFeatureCard(
+                    category: 'KELAS ONLINE RUTIN',
+                    title: 'LiveClass',
+                    description:
+                        'Belajar online bersama pengajar profesional dan berpengalaman.',
+                    tags: 'Live · Profesional · Rutin',
+                    actionLabel: 'Lihat jadwal',
+                    icon: Icons.ondemand_video_outlined,
+                    color: const Color(0xFFD84B78),
+                    backgroundColor: const Color(0xFFFFE8F0),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const UtbkLiveClassPage(),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(height: 14),
@@ -9276,6 +9300,11 @@ class _CreativeMenuCards extends StatelessWidget {
       icon: Icons.groups_2_outlined,
       color: Color(0xFF8B6FE8),
     ),
+    (
+      title: 'Guru Kreativ, Join Us',
+      icon: Icons.school_outlined,
+      color: Color(0xFF168C87),
+    ),
   ];
 
   @override
@@ -9846,6 +9875,143 @@ class CreativeInspirationPage extends StatelessWidget {
         ),
       ],
     ),
+  );
+}
+
+class CreativeTeacherJoinPage extends StatelessWidget {
+  const CreativeTeacherJoinPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF7F9FC),
+    appBar: AppBar(
+      title: const Text('Guru Kreativ, Join Us'),
+      foregroundColor: navy,
+    ),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        Card(
+          elevation: 0,
+          color: const Color(0xFFE5F7F4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Color(0xFF168C87),
+                  child: Icon(Icons.school_outlined, color: Colors.white),
+                ),
+                SizedBox(height: 18),
+                Text(
+                  'Mari tumbuh dan mengajar bersama EduKreativ.',
+                  style: TextStyle(
+                    color: navy,
+                    fontSize: 24,
+                    height: 1.15,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Bagikan ilmu, pengalaman, dan cara belajar yang bermakna untuk lebih banyak pelajar.',
+                  style: TextStyle(color: Colors.black54, height: 1.45),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
+        const Text(
+          'Mengapa bergabung?',
+          style: TextStyle(
+            color: navy,
+            fontSize: 19,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 10),
+        const _TeacherJoinBenefit(
+          icon: Icons.menu_book_outlined,
+          title: 'Bagikan keahlian',
+          description: 'Bantu pelajar memahami materi dengan pendekatanmu.',
+        ),
+        const _TeacherJoinBenefit(
+          icon: Icons.groups_outlined,
+          title: 'Jangkau lebih banyak pelajar',
+          description: 'Bangun kelas dan pengalaman belajar yang berdampak.',
+        ),
+        const _TeacherJoinBenefit(
+          icon: Icons.auto_awesome_outlined,
+          title: 'Tumbuh bersama komunitas',
+          description: 'Kembangkan ide pembelajaran bersama EduKreativ.',
+        ),
+        const SizedBox(height: 16),
+        Card(
+          elevation: 0,
+          color: Colors.white,
+          child: const Padding(
+            padding: EdgeInsets.all(16),
+            child: Text(
+              'Kami terbuka untuk guru, tutor, praktisi, dan orang-orang yang memiliki pengalaman belajar untuk dibagikan.',
+              style: TextStyle(color: Colors.black54, height: 1.45),
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton.icon(
+            onPressed: () => showDialog<void>(
+              context: context,
+              builder: (dialogContext) => AlertDialog(
+                title: const Text('Minat bergabung'),
+                content: const Text(
+                  'Pendaftaran guru akan dihubungkan ke sistem EduKreativ pada tahap berikutnya. Terima kasih sudah tertarik bergabung.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Tutup'),
+                  ),
+                ],
+              ),
+            ),
+            icon: const Icon(Icons.arrow_forward),
+            label: const Text('Saya tertarik bergabung'),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _TeacherJoinBenefit extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+
+  const _TeacherJoinBenefit({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    contentPadding: EdgeInsets.zero,
+    leading: CircleAvatar(
+      backgroundColor: const Color(0xFFE5F7F4),
+      foregroundColor: const Color(0xFF168C87),
+      child: Icon(icon),
+    ),
+    title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+    subtitle: Text(description),
   );
 }
 
