@@ -78,7 +78,25 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1400));
     await tester.pump();
     expect(find.text('Mau belajar apa hari ini?'), findsOneWidget);
-    expect(find.text('Materi pilihan'), findsOneWidget);
+    expect(find.text('Ruang Kreativ'), findsOneWidget);
+  });
+
+  testWidgets('Ruang Kreativ membuka tiga submenu', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: HomePage())),
+    );
+
+    await tester.scrollUntilVisible(
+      find.text('Ruang Kreativ'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Ruang Kreativ'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Karya Kreativ'), findsOneWidget);
+    expect(find.text('Kuis Kreativ'), findsOneWidget);
+    expect(find.text('Misi Kreativ'), findsOneWidget);
   });
 
   testWidgets('materi premium menampilkan paywall sebelum login', (

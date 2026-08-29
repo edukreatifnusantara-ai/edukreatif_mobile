@@ -2832,37 +2832,16 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 25),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Materi pilihan',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: navy,
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const CatalogPage())),
-                child: const Text('Lihat semua'),
-              ),
-            ],
-          ),
-          const _CourseCard(
-            title: 'Matematika Dasar',
-            subtitle: 'SD · Bilangan dan Operasi',
-            free: true,
-            icon: Icons.calculate,
-          ),
-          const SizedBox(height: 12),
-          const _CourseCard(
-            title: 'Sains di Sekitar Kita',
-            subtitle: 'SMP · Makhluk Hidup',
-            free: false,
-            icon: Icons.science,
+          _CreativeRoomCard(
+            onOpenKarya: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const StoryCreativePage()),
+            ),
+            onOpenKuis: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ExamPage()),
+            ),
+            onOpenMisi: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const MissionSeriesPage()),
+            ),
           ),
         ],
       ),
@@ -9710,6 +9689,129 @@ class _StoryReaderPageState extends State<StoryReaderPage> {
       ),
     );
   }
+}
+
+class _CreativeRoomCard extends StatelessWidget {
+  final VoidCallback onOpenKarya;
+  final VoidCallback onOpenKuis;
+  final VoidCallback onOpenMisi;
+
+  const _CreativeRoomCard({
+    required this.onOpenKarya,
+    required this.onOpenKuis,
+    required this.onOpenMisi,
+  });
+
+  void _openMenu(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const ListTile(
+              title: Text(
+                'Ruang Kreativ',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+              ),
+              subtitle: Text('Pilih cara untuk belajar dan berkarya.'),
+            ),
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFFFFE8D4),
+                child: Icon(Icons.palette_outlined, color: orange),
+              ),
+              title: const Text('Karya Kreativ'),
+              subtitle: const Text('Baca, lihat, dan nikmati karya edukatif.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                onOpenKarya();
+              },
+            ),
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFFE3EDFF),
+                child: Icon(Icons.quiz_outlined, color: blue),
+              ),
+              title: const Text('Kuis Kreativ'),
+              subtitle: const Text('Uji pemahaman dengan latihan singkat.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                onOpenKuis();
+              },
+            ),
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFFE5F7EF),
+                child: Icon(Icons.flag_outlined, color: Color(0xFF238B62)),
+              ),
+              title: const Text('Misi Kreativ'),
+              subtitle: const Text('Selesaikan misi belajar secara bertahap.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                onOpenMisi();
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => Card(
+    elevation: 0,
+    color: navy,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    child: InkWell(
+      key: const Key('ruang-kreativ'),
+      borderRadius: BorderRadius.circular(20),
+      onTap: () => _openMenu(context),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: orange,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.auto_awesome, color: navy, size: 28),
+            ),
+            const SizedBox(width: 14),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Ruang Kreativ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Karya, kuis, dan misi dalam satu ruang.',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Colors.white),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 void _showCreativeMenuDialog(BuildContext context, String title) {
