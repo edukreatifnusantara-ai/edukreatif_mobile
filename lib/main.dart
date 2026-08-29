@@ -4545,6 +4545,18 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
     'PM': 'Penalaran Matematika',
   };
 
+  static const questionLimits = <String, int>{
+    'PU': 30,
+    'PPU': 20,
+    'PBM': 20,
+    'PK': 20,
+    'LBI': 30,
+    'LBE': 20,
+    'PM': 20,
+  };
+
+  static int limitFor(String code) => questionLimits[code] ?? 0;
+
   late Future<List<Map<String, dynamic>>> questionsFuture;
   String activeCode = 'PU';
   int questionIndex = 0;
@@ -4627,7 +4639,10 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
         if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
         if (snapshot.hasError) return Center(child: Text('Soal gagal dimuat: ${snapshot.error}'));
         final all = snapshot.data ?? const <Map<String, dynamic>>[];
-        final questions = all.where((q) => q['subject_code'] == activeCode).toList();
+        final questions = all
+            .where((q) => q['subject_code'] == activeCode)
+            .take(UtbkRealCbtPage.limitFor(activeCode))
+            .toList();
         activeQuestions = questions;
         if (questions.isEmpty) return Center(child: Text('Belum ada soal untuk ${subtests[activeCode]}.'));
         final current = questions[questionIndex.clamp(0, questions.length - 1)];
@@ -5153,12 +5168,7 @@ class _UtbkCbtPageState extends State<UtbkCbtPage> {
   );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF6F8FC),
-    appBar: AppBar(
-      backgroundColor: navy,
-      foregroundColor: Colors.white,
-      title: const Text('Lolos UTBK 800'),
+  Widget build(BuildContext context) => const UtbkRealCbtPage(); /* Scaffold(
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
@@ -5254,7 +5264,7 @@ class _UtbkCbtPageState extends State<UtbkCbtPage> {
         ),
       ],
     ),
-  );
+  ); */
 }
 
 class UtbkResultPage extends StatelessWidget {

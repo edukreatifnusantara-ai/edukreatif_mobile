@@ -11,6 +11,32 @@ import 'package:edukreativ_mobile/main.dart';
 import 'package:edukreativ_mobile/tni_academic_data.dart';
 
 void main() {
+  test('batas soal UTBK mengikuti jumlah paket, bukan seluruh bank', () {
+    expect(UtbkRealCbtPage.limitFor('PU'), 30);
+    expect(UtbkRealCbtPage.limitFor('PPU'), 20);
+    expect(UtbkRealCbtPage.limitFor('PK'), 20);
+    expect(UtbkRealCbtPage.limitFor('LBE'), 20);
+    expect(UtbkRealCbtPage.limitFor('PM'), 20);
+  });
+
+  testWidgets('hasil UTBK menampilkan skor dan jumlah soal', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: UtbkCbtResultPage(
+          subject: 'Pengetahuan Kuantitatif',
+          correct: 15,
+          answered: 20,
+          total: 20,
+        ),
+      ),
+    );
+
+    expect(find.text('Try Out selesai!'), findsOneWidget);
+    expect(find.text('75'), findsOneWidget);
+    expect(find.text('15'), findsOneWidget);
+    expect(find.text('20/20'), findsOneWidget);
+  });
+
   test('bank soal Mental Ideologi dan Akademik Siber tervalidasi', () {
     expect(mentalIdeologyQuestions, hasLength(30));
     expect(
