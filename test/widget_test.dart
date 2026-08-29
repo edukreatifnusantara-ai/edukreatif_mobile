@@ -438,7 +438,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('GURU KREATIV JOIN US'),
       300,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find.byType(Scrollable).last,
     );
     await tester.tap(find.text('GURU KREATIV JOIN US'));
     await tester.pumpAndSettle();
@@ -610,13 +610,13 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('PMK — Penelusuran Mental Kepribadian'),
       300,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('PMK — Penelusuran Mental Kepribadian'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Antropometri'),
       300,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Antropometri'), findsOneWidget);
     await tester.pageBack();
@@ -637,7 +637,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('akpol-tryout-psikotest')),
       200,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find.byType(Scrollable).first,
     );
     expect(find.byKey(const Key('akpol-tryout-psikotest')), findsOneWidget);
     await tester.tap(find.byKey(const Key('akpol-tryout-pmk')));
@@ -650,7 +650,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('akpol-tryout-wawancara')),
       200,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(find.byKey(const Key('akpol-tryout-wawancara')));
     await tester.pumpAndSettle();
@@ -677,7 +677,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('skd-school-Poltek SSN')),
       200,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find.byType(Scrollable).first,
     );
     expect(find.byKey(const Key('skd-school-Poltek SSN')), findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('skd-school-STIN')));
