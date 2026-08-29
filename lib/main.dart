@@ -2803,50 +2803,50 @@ class HomePage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final menuCardWidth =
-                    ((constraints.maxWidth - 36) / 4)
-                        .clamp(82.0, 150.0)
-                        .toDouble();
-                return SizedBox(
-                  width: menuCardWidth * 3 + 24,
-                  child: _UtbkFeatureCard(
-                    category: 'KELAS ONLINE RUTIN',
-                    title: 'LiveClass',
-                    description:
-                        'Belajar online bersama pengajar profesional dan berpengalaman.',
-                    tags: 'Live · Profesional · Rutin',
-                    actionLabel: 'Lihat jadwal',
-                    icon: Icons.ondemand_video_outlined,
-                    color: const Color(0xFFD84B78),
-                    backgroundColor: const Color(0xFFFFE8F0),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const UtbkLiveClassPage(),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
                 final cardWidth =
                     ((constraints.maxWidth - 36) / 4)
                         .clamp(82.0, 150.0)
                         .toDouble();
-                return SizedBox(
-                  width: cardWidth,
-                  child: _TeacherJoinCard(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const CreativeTeacherJoinPage(),
+                final gap = 10.0;
+                final liveClassWidth =
+                    (constraints.maxWidth - cardWidth - gap).clamp(
+                      0.0,
+                      constraints.maxWidth,
+                    );
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: liveClassWidth,
+                      child: _UtbkFeatureCard(
+                        category: 'KELAS ONLINE RUTIN',
+                        title: 'LiveClass',
+                        description:
+                            'Belajar online bersama pengajar profesional dan berpengalaman.',
+                        tags: 'Live · Profesional · Rutin',
+                        actionLabel: 'Lihat jadwal',
+                        icon: Icons.ondemand_video_outlined,
+                        color: const Color(0xFFD84B78),
+                        backgroundColor: const Color(0xFFFFE8F0),
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const UtbkLiveClassPage(),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    SizedBox(width: gap),
+                    SizedBox(
+                      width: cardWidth,
+                      child: _TeacherJoinCard(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const CreativeTeacherJoinPage(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -9471,9 +9471,9 @@ class _TeacherJoinCard extends StatelessWidget {
       height: 170,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFD8F3E6),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF168C87).withValues(alpha: .18)),
+        border: Border.all(color: const Color(0xFF168C87).withValues(alpha: .28)),
         boxShadow: const [
           BoxShadow(color: Color(0x0C152B55), blurRadius: 10, offset: Offset(0, 4)),
         ],
@@ -9484,13 +9484,13 @@ class _TeacherJoinCard extends StatelessWidget {
           const Text(
             'GURU KREATIV',
             textAlign: TextAlign.center,
-            style: TextStyle(color: navy, fontSize: 13, fontWeight: FontWeight.w800),
+            style: TextStyle(color: Color(0xFF126B4B), fontSize: 12, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 4),
           const Text(
             'JOIN US',
             textAlign: TextAlign.center,
-            style: TextStyle(color: navy, fontSize: 13, fontWeight: FontWeight.w800),
+            style: TextStyle(color: Color(0xFF126B4B), fontSize: 18, fontWeight: FontWeight.w900),
           ),
         ],
       ),
