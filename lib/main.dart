@@ -2806,8 +2806,9 @@ class HomePage extends StatelessWidget {
                 const liveClassWidth = 220.0;
                 const teacherWidth = 120.0;
                 const gap = 10.0;
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                return IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(
                       width: liveClassWidth,
@@ -2840,7 +2841,8 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ],
-                );
+                ),
+              );
               },
             ),
           ),
@@ -9461,7 +9463,6 @@ class _TeacherJoinCard extends StatelessWidget {
     onTap: onTap,
     borderRadius: BorderRadius.circular(18),
     child: Container(
-      height: 170,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
       decoration: BoxDecoration(
         color: const Color(0xFFD8F3E6),
