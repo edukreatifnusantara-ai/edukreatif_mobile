@@ -4528,6 +4528,19 @@ class _UtbkQuestionPageState extends State<UtbkQuestionPage> {
 
 class UtbkRealCbtPage extends StatefulWidget {
   final String? initialSubject;
+
+  static const questionLimits = <String, int>{
+    'PU': 30,
+    'PPU': 20,
+    'PBM': 20,
+    'PK': 20,
+    'LBI': 30,
+    'LBE': 20,
+    'PM': 20,
+  };
+
+  static int limitFor(String code) => questionLimits[code] ?? 0;
+
   const UtbkRealCbtPage({super.key, this.initialSubject});
 
   @override
@@ -4544,18 +4557,6 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
     'LBE': 'Literasi Bahasa Inggris',
     'PM': 'Penalaran Matematika',
   };
-
-  static const questionLimits = <String, int>{
-    'PU': 30,
-    'PPU': 20,
-    'PBM': 20,
-    'PK': 20,
-    'LBI': 30,
-    'LBE': 20,
-    'PM': 20,
-  };
-
-  static int limitFor(String code) => questionLimits[code] ?? 0;
 
   late Future<List<Map<String, dynamic>>> questionsFuture;
   String activeCode = 'PU';
