@@ -436,11 +436,11 @@ void main() {
     );
 
     await tester.scrollUntilVisible(
-      find.text('Guru Kreativ Join Us'),
+      find.text('GURU KREATIV JOIN US'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Guru Kreativ Join Us'));
+    await tester.tap(find.text('GURU KREATIV JOIN US'));
     await tester.pumpAndSettle();
     expect(find.byType(CreativeTeacherJoinPage), findsOneWidget);
     expect(find.text('Mengapa bergabung?'), findsOneWidget);
