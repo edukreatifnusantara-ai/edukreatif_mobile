@@ -2803,47 +2803,35 @@ class HomePage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final teacherWidth = (constraints.maxWidth * .22).clamp(
-                  120.0,
-                  180.0,
-                ).toDouble();
-                const gap = 10.0;
-                return IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(
-                      child: _UtbkFeatureCard(
-                        category: 'KELAS ONLINE RUTIN',
-                        title: 'LiveClass',
-                        description:
-                            'Belajar online bersama pengajar profesional dan berpengalaman.',
-                        tags: 'Live · Profesional · Rutin',
-                        actionLabel: 'Lihat jadwal',
-                        icon: Icons.ondemand_video_outlined,
-                        color: const Color(0xFFD84B78),
-                        backgroundColor: const Color(0xFFFFE8F0),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const UtbkLiveClassPage(),
-                          ),
+                    _UtbkFeatureCard(
+                      category: 'KELAS ONLINE RUTIN',
+                      title: 'LiveClass',
+                      description:
+                          'Belajar online bersama pengajar profesional dan berpengalaman.',
+                      tags: 'Live · Profesional · Rutin',
+                      actionLabel: 'Lihat jadwal',
+                      icon: Icons.ondemand_video_outlined,
+                      color: const Color(0xFFD84B78),
+                      backgroundColor: const Color(0xFFFFE8F0),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const UtbkLiveClassPage(),
                         ),
                       ),
                     ),
-                    SizedBox(width: gap),
-                    SizedBox(
-                      width: teacherWidth,
-                      child: _TeacherJoinCard(
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const CreativeTeacherJoinPage(),
-                          ),
+                    const SizedBox(height: 10),
+                    _TeacherJoinCard(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const CreativeTeacherJoinPage(),
                         ),
                       ),
                     ),
                   ],
-                ),
-              );
+                );
               },
             ),
           ),
