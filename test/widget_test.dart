@@ -72,6 +72,23 @@ void main() {
     }
   });
 
+  test('bank UTBK menerapkan batas soal per subtes', () {
+    final questions = [
+      for (final code in utbkQuestionLimits.keys)
+        for (var index = 0; index < 100; index++)
+          <String, dynamic>{'subject_code': code, 'source_number': index + 1},
+    ];
+    final limited = limitUtbkQuestions(questions);
+
+    expect(limited.length, 160);
+    for (final entry in utbkQuestionLimits.entries) {
+      expect(
+        limited.where((question) => question['subject_code'] == entry.key),
+        hasLength(entry.value),
+      );
+    }
+  });
+
   testWidgets('guest melihat splash lalu katalog publik', (tester) async {
     await tester.pumpWidget(const EduKreativApp());
     expect(find.text('Belajar dengan cara kreatif'), findsOneWidget);

@@ -4240,7 +4240,9 @@ class _UtbkBankPageState extends State<UtbkBankPage> {
         if (snapshot.hasError) {
           return Center(child: Text('Bank soal gagal dimuat: ${snapshot.error}'));
         }
-        final all = snapshot.data ?? const <Map<String, dynamic>>[];
+        final all = limitUtbkQuestions(
+          snapshot.data ?? const <Map<String, dynamic>>[],
+        );
         final visible = all.where((item) {
           final matchesSubject = selectedCode == 'SEMUA' || item['subject_code'] == selectedCode;
           final haystack = '${item['question']} ${item['subject']}'.toLowerCase();
@@ -4299,6 +4301,31 @@ class _UtbkBankPageState extends State<UtbkBankPage> {
       onSelected: (_) => setState(() => selectedCode = code),
     ),
   );
+}
+
+const utbkQuestionLimits = <String, int>{
+  'PU': 30,
+  'PPU': 20,
+  'PBM': 20,
+  'PK': 20,
+  'LBI': 30,
+  'LBE': 20,
+  'PM': 20,
+};
+
+List<Map<String, dynamic>> limitUtbkQuestions(
+  Iterable<Map<String, dynamic>> questions,
+) {
+  final counts = <String, int>{};
+  return questions.where((question) {
+    final code = question['subject_code'] as String?;
+    final limit = utbkQuestionLimits[code];
+    if (code == null || limit == null) return false;
+    final count = counts[code] ?? 0;
+    if (count >= limit) return false;
+    counts[code] = count + 1;
+    return true;
+  }).toList();
 }
 
 class UtbkQuestionDetailPage extends StatelessWidget {
@@ -4645,7 +4672,9 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
         if (snapshot.hasError) return Center(child: Text('Soal gagal dimuat: ${snapshot.error}'));
-        final all = snapshot.data ?? const <Map<String, dynamic>>[];
+        final all = limitUtbkQuestions(
+          snapshot.data ?? const <Map<String, dynamic>>[],
+        );
         final questions = all.where((q) => q['subject_code'] == activeCode).toList();
         activeQuestions = questions;
         if (questions.isEmpty) return Center(child: Text('Belum ada soal untuk ${subtests[activeCode]}.'));
