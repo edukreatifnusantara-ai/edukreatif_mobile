@@ -10771,7 +10771,7 @@ class UnhanPage extends StatelessWidget {
         _KedinasanStatusCard(
           icon: Icons.fact_check_outlined,
           title: 'Latihan dan try out',
-          subtitle: 'Latihan administrasi, akademik, wawancara, dan kesiapan mengikuti seleksi.',
+          subtitle: 'Latihan akademik, wawasan pertahanan, psikologi, dan try out soal.',
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const UnhanPracticePage()),
           ),
@@ -10825,12 +10825,10 @@ class UnhanPracticePage extends StatelessWidget {
   const UnhanPracticePage({super.key});
 
   static const items = [
-    ('Latihan Administrasi Tertulis', 'Latihan mencocokkan data diri, ijazah atau transkrip, nilai, dan dokumen lain dengan persyaratan jenjang yang dipilih. Gunakan checklist agar tidak ada berkas yang terlewat.'),
-    ('Latihan Akademik Tertulis', 'Latihan soal sesuai jenjang dan program studi, termasuk kemampuan numerik, verbal, sains, dan literasi Bahasa Indonesia. Gunakan try out untuk melatih ketelitian dan pengelolaan waktu.'),
-    ('Latihan Wawasan Pertahanan', 'Baca sumber resmi lalu jawab pertanyaan tertulis tentang wawasan kebangsaan, pertahanan dan keamanan, integritas, serta motivasi memilih Unhan RI. Hindari menganggapnya sebagai kisi-kisi resmi.'),
-    ('Latihan Psikologi Tertulis', 'Latihan logika, pola, kemampuan verbal, numerik, konsistensi, ketelitian, pengenalan diri, dan situasi kepribadian dalam bentuk soal atau lembar jawaban tertulis.'),
-    ('Latihan Wawancara Tertulis', 'Susun jawaban tertulis tentang motivasi, pilihan program studi, pengalaman belajar, integritas, kelebihan, tantangan, dan kesiapan mengikuti pendidikan di Unhan RI.'),
-    ('Try Out Tertulis Terpadu', 'Simulasikan administrasi, akademik, wawasan pertahanan, psikologi, dan wawancara tertulis dalam satu sesi dengan batas waktu. Hasilnya hanya untuk evaluasi belajar.'),
+    ('Latihan Akademik', 'Latihan soal sesuai jenjang dan program studi, termasuk kemampuan numerik, verbal, sains, dan literasi Bahasa Indonesia. Gunakan try out untuk melatih ketelitian dan pengelolaan waktu.'),
+    ('Latihan Wawasan Pertahanan', 'Baca sumber resmi lalu jawab pertanyaan tentang wawasan kebangsaan, pertahanan dan keamanan, integritas, serta motivasi memilih Unhan RI. Hindari menganggapnya sebagai kisi-kisi resmi.'),
+    ('Latihan Psikologi', 'Latihan logika, pola, kemampuan verbal, numerik, konsistensi, ketelitian, dan pengenalan diri dalam bentuk soal psikologi.'),
+    ('Try Out Terpadu', 'Simulasikan soal akademik, wawasan pertahanan, dan psikologi dalam satu sesi dengan batas waktu. Hasilnya hanya untuk evaluasi belajar.'),
   ];
 
   @override
@@ -10941,11 +10939,10 @@ class SmaTarunaPracticePage extends StatelessWidget {
   const SmaTarunaPracticePage({super.key});
 
   static const items = [
-    ('Latihan Akademik CBT', 'Latihan tertulis Matematika, IPA, Bahasa Indonesia, dan Bahasa Inggris dengan format computer-based test. Gunakan try out mandiri untuk melatih ketelitian dan pengelolaan waktu.'),
-    ('Latihan Wawancara Tertulis', 'Jawab secara tertulis pertanyaan tentang motivasi, kesungguhan, pengalaman belajar, kelebihan, tantangan, dan alasan memilih SMA TN secara jujur dan terstruktur.'),
+    ('Latihan Akademik CBT', 'Latihan Matematika, IPA, Bahasa Indonesia, dan Bahasa Inggris dengan format computer-based test. Gunakan try out mandiri untuk melatih ketelitian dan pengelolaan waktu.'),
     ('Latihan Akademik Lanjutan', 'Ulangi konsep inti empat mata pelajaran, kerjakan soal bertingkat, lalu catat kesalahan dan pembahasan untuk menentukan materi yang perlu dipelajari kembali.'),
-    ('Latihan Psikologi Tertulis', 'Latihan konsistensi, ketelitian, logika, pola, kemampuan verbal, numerik, pengenalan diri, dan situasi kepribadian dalam bentuk soal atau lembar jawaban tertulis.'),
-    ('Try Out Tertulis Terpadu', 'Simulasikan beberapa bagian latihan tertulis dalam satu sesi dengan batas waktu. Nilai try out hanya untuk evaluasi belajar dan bukan penilaian penerimaan.'),
+    ('Latihan Psikologi', 'Latihan konsistensi, ketelitian, logika, pola, kemampuan verbal, numerik, dan pengenalan diri dalam bentuk soal psikologi.'),
+    ('Try Out Terpadu', 'Simulasikan beberapa bagian soal akademik dan psikologi dalam satu sesi dengan batas waktu. Nilai try out hanya untuk evaluasi belajar dan bukan penilaian penerimaan.'),
   ];
 
   @override
