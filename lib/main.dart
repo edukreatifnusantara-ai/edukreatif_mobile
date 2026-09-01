@@ -10653,9 +10653,7 @@ class _PreparationMenuRow extends StatelessWidget {
             assetPath: 'assets/unhan_emblem.jpg',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => const PreparationPlaceholderPage(
-                  title: 'Universitas Pertahanan',
-                ),
+                builder: (_) => const UnhanPage(),
               ),
             ),
           ),
@@ -10736,6 +10734,131 @@ class _PreparationMenuButton extends StatelessWidget {
         ),
       ),
     ),
+  );
+}
+
+class UnhanPage extends StatelessWidget {
+  const UnhanPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: const Text('Universitas Pertahanan RI'),
+      foregroundColor: navy,
+    ),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        const Text(
+          'Persiapan Universitas Pertahanan RI',
+          style: TextStyle(color: navy, fontSize: 24, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Pilih jalur belajar berdasarkan jenjang pendidikan, program studi, dan proses penerimaan resmi Unhan RI.',
+          style: TextStyle(color: Colors.black54, height: 1.4),
+        ),
+        const SizedBox(height: 20),
+        _KedinasanStatusCard(
+          icon: Icons.menu_book_outlined,
+          title: 'Materi persiapan',
+          subtitle: 'Kenali jenjang, fakultas, program studi, dan fondasi belajar bidang pertahanan.',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const UnhanMaterialsPage()),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _KedinasanStatusCard(
+          icon: Icons.fact_check_outlined,
+          title: 'Latihan dan try out',
+          subtitle: 'Latihan administrasi, akademik, wawancara, dan kesiapan mengikuti seleksi.',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const UnhanPracticePage()),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _KedinasanStatusCard(
+          icon: Icons.info_outline,
+          title: 'Informasi seleksi',
+          subtitle: 'Jalur D-3, S-1, S-2, S-3, persyaratan, jadwal, dan petunjuk resmi.',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const UnhanSelectionInfoPage()),
+          ),
+        ),
+        const SizedBox(height: 18),
+        const Card(
+          color: Color(0xFFFFF7E8),
+          child: Padding(
+            padding: EdgeInsets.all(14),
+            child: Text(
+              'Penerimaan mahasiswa Unhan RI dapat memberikan beasiswa dan tidak memungut biaya pendaftaran/seleksi. Pastikan membaca pengumuman resmi periode berjalan.',
+              style: TextStyle(color: Color(0xFF704214), height: 1.4),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class UnhanMaterialsPage extends StatelessWidget {
+  const UnhanMaterialsPage({super.key});
+
+  static const items = [
+    ('Jenjang pendidikan', 'Portal PMB Unhan RI menyediakan jalur Vokasi/D-3, Sarjana/S-1, Magister/S-2, dan Doktoral/S-3. Pilih materi sesuai jenjang yang dituju.'),
+    ('Program studi dan fakultas', 'Kenali pilihan program studi pada portal resmi, termasuk rumpun Kedokteran Militer, Farmasi Militer, MIPA Militer, Teknik, Teknologi Pertahanan, Strategi Pertahanan, Manajemen Pertahanan, Keamanan Nasional, dan Ilmu Pertahanan sesuai jenjangnya.'),
+    ('Fondasi akademik', 'Perkuat kemampuan sesuai persyaratan program studi yang dipilih, kemampuan membaca informasi akademik, penalaran, numerik, sains, dan literasi Bahasa Indonesia.'),
+    ('Wawasan pertahanan', 'Pelajari isu pertahanan dan keamanan secara bertanggung jawab dari sumber resmi. Materi persiapan bukan kisi-kisi dan tidak menjamin kelulusan.'),
+    ('Kesiapan kadet/mahasiswa', 'Bangun disiplin, integritas, kebugaran, komunikasi, manajemen waktu, dan kesiapan mengikuti pendidikan sesuai ketentuan Unhan RI.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) => _SmaSectionPage(
+    title: 'Materi Persiapan Unhan RI',
+    intro: 'Ringkasan ini mengikuti struktur jenjang dan program yang ditampilkan portal resmi PMB Unhan RI. Detail program dapat berubah.',
+    items: items,
+    source: 'Sumber resmi: https://penerimaan.idu.ac.id/ dan https://www.idu.ac.id/',
+  );
+}
+
+class UnhanPracticePage extends StatelessWidget {
+  const UnhanPracticePage({super.key});
+
+  static const items = [
+    ('Tahap 1 · Pilih jenjang dan program studi', 'Tentukan jenjang D-3, S-1, S-2, atau S-3 dan pelajari program studi yang tersedia sebelum membuat akun.'),
+    ('Tahap 2 · Administrasi', 'Latihan menyiapkan identitas, ijazah/transkrip atau dokumen sesuai jenjang, pasfoto, dan berkas lain yang tercantum pada persyaratan resmi.'),
+    ('Tahap 3 · Akademik', 'Latihan kemampuan akademik sesuai pengumuman dan program studi. Jangan memakai materi latihan ini sebagai pengganti kisi-kisi panitia.'),
+    ('Tahap 4 · Seleksi lanjutan', 'Siapkan diri untuk tahapan lanjutan yang tercantum pada jadwal resmi, termasuk pemeriksaan atau seleksi offline bila diwajibkan pada periode tersebut.'),
+    ('Tahap 5 · Wawancara dan kesiapan diri', 'Latih penyampaian motivasi, integritas, pemahaman pilihan studi, komunikasi, dan kesiapan mengikuti pendidikan pertahanan.'),
+    ('Try out mandiri', 'Gunakan try out sebagai simulasi pengelolaan waktu dan evaluasi belajar. Jadwal, bentuk tes, dan perangkat wajib mengikuti instruksi resmi panitia.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) => _SmaSectionPage(
+    title: 'Latihan dan Try Out Unhan RI',
+    intro: 'Tahapan latihan dibuat mengikuti alur umum portal penerimaan. Urutan dan bentuk seleksi wajib mengikuti pengumuman resmi terbaru.',
+    items: items,
+    source: 'Sumber resmi: https://penerimaan.idu.ac.id/',
+  );
+}
+
+class UnhanSelectionInfoPage extends StatelessWidget {
+  const UnhanSelectionInfoPage({super.key});
+
+  static const items = [
+    ('Jalur penerimaan', 'Portal resmi menampilkan menu penerimaan untuk Vokasi/D-3, Sarjana/S-1, Magister/S-2, dan Doktoral/S-3. Persyaratan dan jadwal dibuka pada menu masing-masing jenjang.'),
+    ('Jadwal contoh yang dipublikasikan', 'Pengumuman portal pada 16 Maret 2026 mencantumkan pendaftaran D-3 pada 1 April–22 Mei 2026 serta S-2 dan S-3 pada 1 April–5 Juni 2026. Jadwal ini harus dicek ulang karena berlaku untuk pengumuman periode tersebut.'),
+    ('Biaya dan beasiswa', 'Portal PMB menyatakan calon tidak dipungut biaya apa pun dan Unhan RI memberikan beasiswa kepada putra-putri terbaik bangsa. Ikuti hanya instruksi dari kanal resmi.'),
+    ('Cara memperoleh informasi', 'Buat akun/login hanya melalui portal resmi penerimaan.idu.ac.id dan baca menu Program Studi, Persyaratan, Jadwal, serta Petunjuk Pendaftaran pada jenjang yang dipilih.'),
+    ('Peringatan keamanan', 'Institusi menyatakan tidak melibatkan pihak lain untuk menghubungi peserta. Jangan menyerahkan data atau uang kepada pihak yang mengatasnamakan panitia di luar kanal resmi.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) => _SmaSectionPage(
+    title: 'Informasi Seleksi Unhan RI',
+    intro: 'Informasi di bawah diringkas dari portal resmi PMB Unhan RI dan harus diverifikasi kembali pada periode pendaftaran berjalan.',
+    items: items,
+    source: 'Portal resmi: https://penerimaan.idu.ac.id/\nSitus Unhan RI: https://www.idu.ac.id/',
   );
 }
 
