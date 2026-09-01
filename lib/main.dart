@@ -2779,8 +2779,10 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _CreativeMenuCards(
-            onTap: (title) {
+          _HomeAnimatedSection(
+            index: 0,
+            child: _CreativeMenuCards(
+              onTap: (title) {
               if (title == 'Cerita Kreativ') {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const StoryCreativePage()),
@@ -2798,10 +2800,13 @@ class HomePage extends StatelessWidget {
               _showCreativeMenuDialog(context, title);
             },
           ),
+        ),
           const SizedBox(height: 14),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: LayoutBuilder(
+          _HomeAnimatedSection(
+            index: 1,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: LayoutBuilder(
               builder: (context, constraints) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2832,53 +2837,117 @@ class HomePage extends StatelessWidget {
                     ),
                   ],
                 );
-              },
+                },
+              ),
             ),
           ),
           const SizedBox(height: 14),
-          _KedinasanMenuCard(
-            onTap: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => const KedinasanPage())),
+          _HomeAnimatedSection(
+            index: 2,
+            child: _KedinasanMenuCard(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const KedinasanPage()),
+              ),
+            ),
           ),
           const SizedBox(height: 14),
-          const _PreparationMenuRow(),
+          const _HomeAnimatedSection(index: 2, child: _PreparationMenuRow()),
           const SizedBox(height: 25),
-          _RecommendationCard(
-            onTap: () =>
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => const UtbkPage())),
+          _HomeAnimatedSection(
+            index: 3,
+            child: _RecommendationCard(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const UtbkPage()),
+              ),
+            ),
           ),
           const SizedBox(height: 14),
-          _UtbkFeatureCard(
-            category: 'SMART PLAYBOOK',
-            title: 'Strategi UTBK Terarah (PREMIUM MEMBER)',
-            description:
-                'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
-            tags: 'Taktik · Roadmap · Target',
-            actionLabel: 'Pilih strategi',
-            icon: Icons.track_changes_outlined,
-            color: const Color(0xFFE38A2D),
-            backgroundColor: const Color(0xFFFFF2DF),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const UtbkStrategyPage()),
+          _HomeAnimatedSection(
+            index: 4,
+            child: _UtbkFeatureCard(
+              category: 'SMART PLAYBOOK',
+              title: 'Strategi UTBK Terarah (PREMIUM MEMBER)',
+              description:
+                  'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
+              tags: 'Taktik · Roadmap · Target',
+              actionLabel: 'Pilih strategi',
+              icon: Icons.track_changes_outlined,
+              color: const Color(0xFFE38A2D),
+              backgroundColor: const Color(0xFFFFF2DF),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const UtbkStrategyPage()),
+              ),
             ),
           ),
           const SizedBox(height: 25),
-          _CreativeRoomCard(
-            onOpenKarya: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CreativeWorksPage()),
-            ),
-            onOpenInspirasi: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CreativeInspirationPage()),
-            ),
-            onOpenJurnal: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CreativeJournalPage()),
+          _HomeAnimatedSection(
+            index: 5,
+            child: _CreativeRoomCard(
+              onOpenKarya: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CreativeWorksPage()),
+              ),
+              onOpenInspirasi: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const CreativeInspirationPage(),
+                ),
+              ),
+              onOpenJurnal: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CreativeJournalPage()),
+              ),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+class _HomeAnimatedSection extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const _HomeAnimatedSection({required this.index, required this.child});
+
+  @override
+  State<_HomeAnimatedSection> createState() => _HomeAnimatedSectionState();
+}
+
+class _HomeAnimatedSectionState extends State<_HomeAnimatedSection>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 520),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(Duration(milliseconds: 80 * widget.index), () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _controller,
+    child: widget.child,
+    builder: (context, child) {
+      final value = Curves.easeOutCubic.transform(_controller.value);
+      return Opacity(
+        opacity: value,
+        child: Transform.translate(
+          offset: Offset(0, 18 * (1 - value)),
+          child: child,
+        ),
+      );
+    },
+  );
 }
 
 class _SiapUtbkCountdownCard extends StatefulWidget {
