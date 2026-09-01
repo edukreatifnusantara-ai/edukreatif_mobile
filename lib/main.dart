@@ -7325,31 +7325,170 @@ class KedinasanOfflineLocationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: Text(location), foregroundColor: navy),
-    body: Padding(
-      padding: const EdgeInsets.all(20),
-      child: Card(
+    body: location == 'SEMARANG'
+        ? const _SemarangOfflineContent()
+        : Padding(
+            padding: const EdgeInsets.all(20),
+            child: Card(
+              elevation: 0,
+              color: const Color(0xFFF7F9FC),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'BIMBEL KEDINASAN OFFLINE - $location',
+                      style: const TextStyle(
+                        color: navy,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Informasi program dan jadwal untuk lokasi ini akan ditambahkan setelah tersedia.',
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+  );
+}
+
+class _SemarangOfflineContent extends StatelessWidget {
+  const _SemarangOfflineContent();
+
+  @override
+  Widget build(BuildContext context) => ListView(
+    padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+    children: [
+      Container(
+        padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF123B63), Color(0xFF1769AA)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x241769AA),
+              blurRadius: 18,
+              offset: Offset(0, 8),
+            ),
+          ],
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.school_outlined, color: Colors.white, size: 42),
+            SizedBox(height: 18),
+            Text(
+              'BIMBEL KEDINASAN\nEDUKREATIV NUSANTARA',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 23,
+                height: 1.12,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Persiapan kedinasan dengan pendampingan langsung dari pengalaman terbaik.',
+              style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16),
+      Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF7E6),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFF2D28B)),
+        ),
+        child: const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.military_tech_outlined, color: Color(0xFFB7791F), size: 28),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Bimbel Kedinasan di pegang langsung Alumni Akademi TNI.',
+                style: TextStyle(
+                  color: Color(0xFF6B4B16),
+                  fontSize: 15,
+                  height: 1.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16),
+      Card(
         elevation: 0,
         color: const Color(0xFFF7F9FC),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          padding: const EdgeInsets.all(18),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'BIMBEL KEDINASAN OFFLINE - $location',
-                style: const TextStyle(color: navy, fontSize: 20, fontWeight: FontWeight.w800),
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE2F0FF),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(Icons.location_on_outlined, color: Color(0xFF1769AA)),
               ),
-              const SizedBox(height: 10),
-              const Text(
-                'Informasi program dan jadwal untuk lokasi ini akan ditambahkan setelah tersedia.',
-                style: TextStyle(color: Colors.black54),
+              const SizedBox(width: 14),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'LOKASI BIMBEL',
+                      style: TextStyle(
+                        color: Color(0xFF1769AA),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      'taman belimbing no 11 Peterongan, Semarang Selatan.',
+                      style: TextStyle(
+                        color: navy,
+                        fontSize: 17,
+                        height: 1.35,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
       ),
-    ),
+      const SizedBox(height: 16),
+      const Text(
+        'Bangun persiapanmu bersama pendamping yang memahami proses seleksi kedinasan.',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.black54, height: 1.4),
+      ),
+    ],
   );
 }
 
