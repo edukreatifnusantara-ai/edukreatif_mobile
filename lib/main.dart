@@ -2855,16 +2855,33 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 25),
           _HomeAnimatedSection(
             index: 3,
-            child: _RecommendationCard(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const UtbkPage()),
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final siapUtbk = _RecommendationCard(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const UtbkPage()),
+                  ),
+                );
+                const countdown = _SiapUtbkCountdownCard();
+                if (constraints.maxWidth >= 520) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: siapUtbk),
+                      const SizedBox(width: 10),
+                      Expanded(child: countdown),
+                    ],
+                  );
+                }
+                return Column(
+                  children: [
+                    siapUtbk,
+                    const SizedBox(height: 14),
+                    countdown,
+                  ],
+                );
+              },
             ),
-          ),
-          const SizedBox(height: 14),
-          const _HomeAnimatedSection(
-            index: 4,
-            child: _SiapUtbkCountdownCard(),
           ),
           const SizedBox(height: 14),
           _HomeAnimatedSection(
