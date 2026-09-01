@@ -10603,6 +10603,7 @@ class _PreparationMenuRow extends StatelessWidget {
             title: 'Psikotest',
             icon: Icons.psychology_outlined,
             color: blue,
+            assetPath: 'assets/logo_emblem.png',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const PreparationPlaceholderPage(
@@ -10632,7 +10633,7 @@ class _PreparationMenuRow extends StatelessWidget {
             title: 'Universitas Pertahanan',
             icon: Icons.account_balance_outlined,
             color: const Color(0xFFE38A2D),
-            assetPath: 'assets/satu_nusa_emblem.jpg',
+            assetPath: 'assets/unhan_emblem.jpg',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const PreparationPlaceholderPage(
