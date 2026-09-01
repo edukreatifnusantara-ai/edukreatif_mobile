@@ -10620,9 +10620,7 @@ class _PreparationMenuRow extends StatelessWidget {
             color: const Color(0xFF238B62),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => const PreparationPlaceholderPage(
-                  title: 'SMA Taruna Nusantara',
-                ),
+                builder: (_) => const SmaTarunaNusantaraPage(),
               ),
             ),
           ),
@@ -10698,6 +10696,193 @@ class _PreparationMenuButton extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+class SmaTarunaNusantaraPage extends StatelessWidget {
+  const SmaTarunaNusantaraPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: const Text('SMA Taruna Nusantara'),
+      foregroundColor: navy,
+    ),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        const Text(
+          'Persiapan SMA Taruna Nusantara',
+          style: TextStyle(color: navy, fontSize: 24, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Belajar bertahap berdasarkan kurikulum, tahapan seleksi, dan informasi resmi SMA Taruna Nusantara.',
+          style: TextStyle(color: Colors.black54, height: 1.4),
+        ),
+        const SizedBox(height: 20),
+        _KedinasanStatusCard(
+          icon: Icons.menu_book_outlined,
+          title: 'Materi persiapan',
+          subtitle: 'Kurikulum umum, kurikulum khusus, dan wawasan pembinaan SMA TN.',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SmaTarunaMaterialsPage()),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _KedinasanStatusCard(
+          icon: Icons.fact_check_outlined,
+          title: 'Latihan dan try out',
+          subtitle: 'Latihan akademik dan simulasi mengikuti urutan seleksi resmi.',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SmaTarunaPracticePage()),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _KedinasanStatusCard(
+          icon: Icons.info_outline,
+          title: 'Informasi seleksi',
+          subtitle: 'Persyaratan, jalur, tahapan, dan portal resmi pendaftaran.',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SmaTarunaSelectionInfoPage()),
+          ),
+        ),
+        const SizedBox(height: 18),
+        const _SmaOfficialNote(),
+      ],
+    ),
+  );
+}
+
+class SmaTarunaMaterialsPage extends StatelessWidget {
+  const SmaTarunaMaterialsPage({super.key});
+
+  static const items = [
+    ('Kurikulum umum', 'Kurikulum Merdeka dan K-13 dengan Bahasa Indonesia, Matematika, IPA, IPS, Bahasa Inggris, PJOK, Informatika, Seni Musik, Kewirausahaan, Bahasa Jawa, Kenusantaraan, Kepemimpinan, dan Bela Negara.'),
+    ('Kenusantaraan dan Kepemimpinan', 'Pahami nilai moral, keagamaan, kenegaraan, kejuangan, kesusilaan, kemasyarakatan, wawasan Nusantara, disiplin nasional, serta dasar-dasar kepemimpinan dan manajemen.'),
+    ('Bela Negara', 'Pelajari Peraturan Baris-berbaris, Peraturan Penghormatan, Tata Upacara, pembinaan jasmani, ketangkasan, pengetahuan medan, keterampilan lapangan, dan praktik lapangan.'),
+    ('Kegiatan pembinaan', 'Kenali pola kegiatan rutin terjadwal, terprogram, terproyek, dan kreatif mandiri sebagai bagian dari pembentukan mental spiritual, ideologi, kejuangan, dan kepemimpinan.'),
+    ('Prioritas belajar calon siswa', 'Bangun fondasi Matematika, IPA, Bahasa Indonesia, dan Bahasa Inggris. Latih disiplin belajar, kebugaran bertahap, komunikasi, motivasi, dan pengenalan diri.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) => _SmaSectionPage(
+    title: 'Materi Persiapan SMA TN',
+    intro: 'Materi ini merangkum struktur kurikulum resmi dan area persiapan calon siswa. Jangan menganggapnya sebagai kisi-kisi ujian.',
+    items: items,
+    source: 'Sumber: https://magelang.tarunanusantara.sch.id/kurikulum/ dan https://magelang.tarunanusantara.sch.id/kurikulum-khusus/',
+  );
+}
+
+class SmaTarunaPracticePage extends StatelessWidget {
+  const SmaTarunaPracticePage({super.key});
+
+  static const items = [
+    ('Tahap 1 · Administrasi', 'Latihan cek data diri, nilai rapor, dokumen, dan kesesuaian berkas dengan persyaratan. Data yang tidak sesuai dapat menggugurkan calon siswa.'),
+    ('Tahap 2 · Akademik CBT', 'Latihan Matematika, IPA, Bahasa Indonesia, dan Bahasa Inggris dengan format computer-based test. Try out mandiri untuk latihan kapan saja; try out serentak mengikuti jadwal panitia.'),
+    ('Tahap 3 · Kesehatan', 'Persiapkan kebiasaan hidup sehat dan pahami bahwa pemeriksaan kesehatan dilakukan oleh tim dokter/profesional sesuai ketentuan panitia.'),
+    ('Tahap 4 · Wawancara', 'Latihan menyampaikan motivasi, kesungguhan, pengalaman belajar, dan alasan memilih SMA TN secara jujur dan terstruktur.'),
+    ('Tahap 5 · Akademik lanjutan', 'Ulangi konsep inti empat mata pelajaran dan latihan soal bertingkat setelah memahami hasil latihan sebelumnya.'),
+    ('Tahap 6 · Psikologi dan jasmani', 'Latih konsistensi, ketelitian, pengenalan diri, lari 12 menit, push-up, pull-up/chin-up, sit-up, dan shuttle run secara aman dan bertahap.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) => _SmaSectionPage(
+    title: 'Latihan dan Try Out SMA TN',
+    intro: 'Urutan latihan mengikuti tahapan seleksi umum yang dipublikasikan SMA TN. Try out adalah simulasi dan hasilnya bukan penilaian penerimaan.',
+    items: items,
+    source: 'Sumber: https://cimahi.tarunanusantara.sch.id/siswa-baru/',
+  );
+}
+
+class SmaTarunaSelectionInfoPage extends StatelessWidget {
+  const SmaTarunaSelectionInfoPage({super.key});
+
+  static const items = [
+    ('Tahapan seleksi umum', 'Seleksi Administrasi → Seleksi Akademik Tahap 1 (Webinar, CBT Try Out, CBT Serentak, CBT Mandiri) → Pemeriksaan Kesehatan → Wawancara → Seleksi Akademik Tahap 2 → Tes Psikologi → Tes Kesegaran Jasmani → Pengumuman.'),
+    ('Jalur pendaftaran', 'Informasi resmi menyebut jalur Iuran Sekolah, Kontribusi Khusus, dan Beasiswa. Perbedaannya pada biaya; materi seleksi, fasilitas, dan perlakuan sekolah dinyatakan sama. Beasiswa Undangan dan Non-Undangan memiliki ketentuan berbeda.'),
+    ('Pendaftaran dan lokasi', 'Pendaftaran dilakukan secara online. Pengumuman TA 2026/2027 mencantumkan kampus Magelang, Cimahi, Malang, IKN, Minahasa, dan Pagar Alam; daftar kampus dan jadwal harus dicek ulang pada pengumuman tahun berjalan.'),
+    ('Catatan penting', 'Syarat, jadwal, kuota, biaya, dan materi dapat berubah. Aplikasi ini bukan kanal pendaftaran dan tidak menggantikan pengumuman panitia.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) => _SmaSectionPage(
+    title: 'Informasi Seleksi SMA TN',
+    intro: 'Ringkasan ini bersumber dari situs resmi kampus SMA TN dan FAQ penerimaan. Verifikasi pengumuman terbaru sebelum mendaftar.',
+    items: items,
+    source: 'Portal resmi: https://pensisru.tarunanusantara.id/\nReferensi: https://magelang.tarunanusantara.sch.id/penerimaan-siswa-baru-tahun-ajaran-2026-2027-sma-taruna-nusantara/',
+  );
+}
+
+class _SmaSectionPage extends StatelessWidget {
+  final String title;
+  final String intro;
+  final List<(String, String)> items;
+  final String source;
+
+  const _SmaSectionPage({required this.title, required this.intro, required this.items, required this.source});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text(title), foregroundColor: navy),
+    backgroundColor: const Color(0xFFF7F9FC),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        Text(title, style: const TextStyle(color: navy, fontSize: 24, fontWeight: FontWeight.w800)),
+        const SizedBox(height: 8),
+        Text(intro, style: const TextStyle(color: Colors.black54, height: 1.4)),
+        const SizedBox(height: 18),
+        ...items.asMap().entries.map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: orange.withValues(alpha: .18),
+                      foregroundColor: navy,
+                      child: Text('${entry.key + 1}', style: const TextStyle(fontWeight: FontWeight.w800)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(entry.value.$1, style: const TextStyle(color: navy, fontWeight: FontWeight.w800)),
+                          const SizedBox(height: 6),
+                          Text(entry.value.$2, style: const TextStyle(height: 1.45)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Text(source, style: const TextStyle(color: Colors.black54, fontSize: 12, height: 1.4)),
+      ],
+    ),
+  );
+}
+
+class _SmaOfficialNote extends StatelessWidget {
+  const _SmaOfficialNote();
+
+  @override
+  Widget build(BuildContext context) => Card(
+    color: const Color(0xFFFFF7E8),
+    child: const Padding(
+      padding: EdgeInsets.all(14),
+      child: Text(
+        'Jadwal dan persyaratan penerimaan bersifat dinamis. Cek selalu portal resmi pensisru.tarunanusantara.id sebelum mengambil keputusan.',
+        style: TextStyle(color: Color(0xFF704214), height: 1.4),
       ),
     ),
   );
