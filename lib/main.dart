@@ -2866,7 +2866,7 @@ class HomePage extends StatelessWidget {
             index: 5,
             child: _UtbkFeatureCard(
               category: 'SMART PLAYBOOK',
-              title: 'Strategi UTBK Terarah (PREMIUM MEMBER)',
+              title: 'Strategi Lolos UTBK',
               description:
                   'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
               tags: 'Taktik · Roadmap · Target',
