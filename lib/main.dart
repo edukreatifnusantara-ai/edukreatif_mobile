@@ -3296,7 +3296,7 @@ class UtbkPage extends StatelessWidget {
         const SizedBox(height: 12),
         _UtbkFeatureCard(
           category: 'SMART PLAYBOOK',
-          title: 'Strategi UTBK Terarah',
+          title: 'Strategi Lolos UTBK',
           description: 'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
           tags: 'Taktik · Roadmap · Target',
           actionLabel: 'Pilih strategi',
@@ -5811,7 +5811,7 @@ class UtbkStrategyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _UtbkContentPage(
-    title: 'Strategi UTBK Terarah',
+    title: 'Strategi Lolos UTBK',
     subtitle:
         'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
     icon: Icons.track_changes_outlined,
