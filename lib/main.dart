@@ -2918,17 +2918,19 @@ class _HomeAnimatedSectionState extends State<_HomeAnimatedSection>
     vsync: this,
     duration: const Duration(milliseconds: 520),
   );
+  Timer? _startTimer;
 
   @override
   void initState() {
     super.initState();
-    Future<void>.delayed(Duration(milliseconds: 80 * widget.index), () {
+    _startTimer = Timer(Duration(milliseconds: 80 * widget.index), () {
       if (mounted) _controller.forward();
     });
   }
 
   @override
   void dispose() {
+    _startTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
