@@ -10618,6 +10618,7 @@ class _PreparationMenuRow extends StatelessWidget {
             title: 'SMA Taruna Nusantara',
             icon: Icons.school_outlined,
             color: const Color(0xFF238B62),
+            assetPath: 'assets/satu_nusa_emblem.jpg',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const SmaTarunaNusantaraPage(),
@@ -10631,6 +10632,7 @@ class _PreparationMenuRow extends StatelessWidget {
             title: 'Universitas Pertahanan',
             icon: Icons.account_balance_outlined,
             color: const Color(0xFFE38A2D),
+            assetPath: 'assets/satu_nusa_emblem.jpg',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const PreparationPlaceholderPage(
@@ -10649,12 +10651,14 @@ class _PreparationMenuButton extends StatelessWidget {
   final String title;
   final IconData icon;
   final Color color;
+  final String? assetPath;
   final VoidCallback onTap;
 
   const _PreparationMenuButton({
     required this.title,
     required this.icon,
     required this.color,
+    this.assetPath,
     required this.onTap,
   });
 
@@ -10675,12 +10679,28 @@ class _PreparationMenuButton extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: color.withValues(alpha: .16),
-              foregroundColor: color,
-              child: Icon(icon, size: 27),
-            ),
+            if (assetPath == null)
+              CircleAvatar(
+                radius: 25,
+                backgroundColor: color.withValues(alpha: .16),
+                foregroundColor: color,
+                child: Icon(icon, size: 27),
+              )
+            else
+              ClipOval(
+                child: Image.asset(
+                  assetPath!,
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, error, stackTrace) => CircleAvatar(
+                    radius: 25,
+                    backgroundColor: color.withValues(alpha: .16),
+                    foregroundColor: color,
+                    child: Icon(icon, size: 27),
+                  ),
+                ),
+              ),
             const SizedBox(height: 12),
             Text(
               title,

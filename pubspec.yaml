@@ -63,6 +63,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo_emblem.png
+    - assets/satu_nusa_emblem.jpg
     - assets/utbk_questions.json
 
   # To add assets to your application, add an assets section, like this:
