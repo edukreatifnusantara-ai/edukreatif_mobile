@@ -28,8 +28,17 @@ class LocalAccount {
   static String? email;
   static String? password;
   static bool isPremium = false;
+  static bool isLoggedIn = false;
 
   static bool get isRegistered => email != null && password != null;
+}
+
+Future<bool> ensureLoggedIn(BuildContext context) async {
+  if (LocalAccount.isLoggedIn) return true;
+  final result = await Navigator.of(context).push<bool>(
+    MaterialPageRoute(builder: (_) => const LoginPage()),
+  );
+  return result == true || LocalAccount.isLoggedIn;
 }
 
 class LearningActivityStore extends ChangeNotifier {
@@ -1947,6 +1956,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
+    LocalAccount.isLoggedIn = true;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Berhasil masuk ke akun Kreativ.')),
     );
@@ -2112,6 +2122,7 @@ class _RegisterPageState extends State<RegisterPage> {
     LocalAccount.name = name;
     LocalAccount.email = email.toLowerCase();
     LocalAccount.password = password;
+    LocalAccount.isLoggedIn = true;
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -2545,8 +2556,11 @@ class HomePage extends StatelessWidget {
                                                   method.icon,
                                                   color: orange,
                                                 ),
-                                                onTap: () {
+                                                onTap: () async {
                                                   Navigator.pop(sheetContext);
+                                                  if (!await ensureLoggedIn(context) || !context.mounted) {
+                                                    return;
+                                                  }
                                                   if (index >= 3) {
                                                     Navigator.push(
                                                       context,
@@ -6723,7 +6737,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 
   int get completedCount => completed.where((item) => item).length;
 
-  void openMaterial() {
+  Future<void> openMaterial() async {
+    if (!await ensureLoggedIn(context) || !mounted) return;
     if (!widget.free) {
       showModalBottomSheet(
         context: context,
@@ -10451,7 +10466,8 @@ class _CreativeJournalPageState extends State<CreativeJournalPage> {
     super.dispose();
   }
 
-  void saveEntry() {
+  Future<void> saveEntry() async {
+    if (!await ensureLoggedIn(context) || !mounted) return;
     final text = controller.text.trim();
     if (text.isEmpty) return;
     setState(() {
@@ -11094,14 +11110,19 @@ class _SmaPracticeMenuPage extends StatelessWidget {
                 child: Card(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => _SmaPracticeDetailPage(
-                          title: '${group.title} · ${item.$1}',
-                          description: item.$2,
+                    onTap: () async {
+                      if (!await ensureLoggedIn(context) || !context.mounted) {
+                        return;
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => _SmaPracticeDetailPage(
+                            title: '${group.title} · ${item.$1}',
+                            description: item.$2,
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Row(
