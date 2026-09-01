@@ -6049,7 +6049,7 @@ class OfficialBooksPage extends StatefulWidget {
 class _OfficialBooksPageState extends State<OfficialBooksPage> {
   final searchController = TextEditingController();
   String query = '';
-  String selectedLevel = 'SD';
+  String selectedLevel = 'SMP';
   late Future<List<OfficialBook>> booksFuture;
 
   @override
@@ -6142,7 +6142,8 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
             final filtered = allBooks.where((book) {
               final haystack = '${book.title} ${book.subject} ${book.level}'
                   .toLowerCase();
-              return !excludedSubjects.hasMatch(haystack) &&
+              return !book.level.toUpperCase().contains('SD') &&
+                  !excludedSubjects.hasMatch(haystack) &&
                   (query.isEmpty ||
                       haystack.contains(query.toLowerCase())) &&
                   (selectedLevel == 'Semua' ||
@@ -6217,7 +6218,7 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
                   height: 40,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: ['SD', 'SMP', 'SMA', 'SMK', 'Semua'].map((level) {
+                    children: ['SMP', 'SMA', 'SMK', 'Semua'].map((level) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: ChoiceChip(
