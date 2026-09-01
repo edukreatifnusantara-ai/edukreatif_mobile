@@ -6020,16 +6020,20 @@ class _UtbkContentPage extends StatelessWidget {
 }
 
 class OfficialBook {
+  final String id;
   final String title;
   final String level;
   final String subject;
-  final String pdfUrl;
+  final String coverUrl;
+  final String sourceUrl;
 
   const OfficialBook({
+    required this.id,
     required this.title,
     required this.level,
     required this.subject,
-    required this.pdfUrl,
+    required this.coverUrl,
+    required this.sourceUrl,
   });
 }
 
@@ -6056,26 +6060,29 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
 
   Future<List<OfficialBook>> _loadOfficialBooks() async {
     final books = <OfficialBook>[];
-    for (var page = 1; page <= 2; page++) {
+    for (var page = 1; page <= 21; page++) {
       final uri = Uri.parse(
-        'https://api.buku.cloudapp.web.id/api/catalogue/getBooksByTag'
-        '?tag=STEM&page=$page&limit=100&type=pelajaran',
+        'https://api.buku.kemendikdasmen.go.id/btucatalogue/book'
+        '?code=GuruSejahtera2025&page=$page&limit=100',
       );
       final response = await http.get(uri);
       if (response.statusCode != 200) continue;
       final payload = jsonDecode(response.body) as Map<String, dynamic>;
-      final results = payload['results'] as List<dynamic>? ?? const [];
+      final results = payload['data'] as List<dynamic>? ?? const [];
       for (final raw in results) {
-        final item = raw as Map<String, dynamic>;
-        final attachment = item['attachment'] as String? ?? '';
+        final item = Map<String, dynamic>.from(raw as Map);
+        final id = item['id'] as String? ?? '';
         final title = item['title'] as String? ?? '';
-        if (attachment.isEmpty || title.isEmpty) continue;
+        final cover = item['cover_image'] as String? ?? '';
+        if (id.isEmpty || title.isEmpty || cover.isEmpty) continue;
         books.add(
           OfficialBook(
+            id: id,
             title: title,
             level: item['level'] as String? ?? 'Umum',
             subject: item['subject'] as String? ?? 'Buku pelajaran',
-            pdfUrl: attachment,
+            coverUrl: cover,
+            sourceUrl: 'https://buku.kemendikdasmen.go.id/katalog/$id',
           ),
         );
       }
@@ -6136,6 +6143,17 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
                   (selectedLevel == 'Semua' ||
                       book.level.toUpperCase().contains(selectedLevel));
             }).toList();
+            final grouped = <String, List<OfficialBook>>{};
+            for (final book in filtered) {
+              final subject = book.subject
+                  .replaceFirst(
+                    RegExp(r'\s+(SD|SMP|SMA|SMK)(?:/\w+)?\s+\d+.*', caseSensitive: false),
+                    '',
+                  )
+                  .trim();
+              final key = subject.isEmpty ? 'Buku pelajaran' : subject;
+              (grouped[key] ??= []).add(book);
+            }
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
               children: [
@@ -6223,7 +6241,36 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
                     ),
                   )
                 else
-                  ...filtered.map((book) => _OfficialBookCard(book: book)),
+                  ...grouped.entries.map(
+                    (entry) => Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            entry.key,
+                            style: const TextStyle(
+                              color: navy,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            height: 248,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: entry.value.length,
+                              separatorBuilder: (_, _) => const SizedBox(width: 12),
+                              itemBuilder: (_, index) => _OfficialBookCard(
+                                book: entry.value[index],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
             );
           },
@@ -6255,24 +6302,55 @@ class _OfficialBookCard extends StatelessWidget {
   const _OfficialBookCard({required this.book});
 
   @override
-  Widget build(BuildContext context) => Card(
-    margin: const EdgeInsets.only(bottom: 10),
-    elevation: 0,
-    child: ListTile(
-      leading: const CircleAvatar(
-        backgroundColor: Color(0xFFEAF0FF),
-        child: Icon(Icons.menu_book_outlined, color: blue),
-      ),
-      title: Text(
-        book.title,
-        style: const TextStyle(fontWeight: FontWeight.w700),
-      ),
-      subtitle: Text(
-        '${book.level} · ${book.subject.isEmpty ? 'Buku siswa' : book.subject}',
-      ),
-      trailing: const Icon(Icons.chevron_right, color: blue),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => OfficialPdfReaderPage(book: book)),
+  Widget build(BuildContext context) => SizedBox(
+    width: 154,
+    child: Card(
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => launchUrl(
+          Uri.parse(book.sourceUrl),
+          mode: LaunchMode.externalApplication,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 166,
+              child: Image.network(
+                book.coverUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => const ColoredBox(
+                  color: Color(0xFFEAF0FF),
+                  child: Icon(Icons.menu_book_outlined, color: blue, size: 42),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 9, 10, 4),
+              child: Text(
+                book.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: navy,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Text(
+                book.level,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.black54, fontSize: 11),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -6305,7 +6383,7 @@ class _OfficialPdfReaderPageState extends State<OfficialPdfReaderPage> {
       );
       final file = File('${directory.path}/official_books_$safeName.pdf');
       if (!await file.exists()) {
-        final response = await http.get(Uri.parse(widget.book.pdfUrl));
+        final response = await http.get(Uri.parse(widget.book.sourceUrl));
         if (response.statusCode != 200) {
           throw Exception('HTTP ${response.statusCode}');
         }
@@ -6323,7 +6401,7 @@ class _OfficialPdfReaderPageState extends State<OfficialPdfReaderPage> {
 
   Future<void> _openOfficialDownload() async {
     await launchUrl(
-      Uri.parse(widget.book.pdfUrl),
+      Uri.parse(widget.book.sourceUrl),
       mode: LaunchMode.externalApplication,
     );
   }
