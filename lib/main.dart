@@ -7172,7 +7172,183 @@ class KedinasanPage extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 24),
+        _KedinasanOfflineCard(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const KedinasanOfflinePage(),
+            ),
+          ),
+        ),
       ],
+    ),
+  );
+}
+
+class _KedinasanOfflineCard extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _KedinasanOfflineCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    margin: EdgeInsets.zero,
+    elevation: 0,
+    color: const Color(0xFF102A43),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.location_city, color: Colors.white, size: 28),
+            ),
+            const SizedBox(width: 16),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'BIMBEL KEDINASAN OFFLINE',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Pilihan lokasi bimbingan tatap muka.',
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 18),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class KedinasanOfflinePage extends StatelessWidget {
+  const KedinasanOfflinePage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: const Text('BIMBEL KEDINASAN OFFLINE'),
+      foregroundColor: navy,
+    ),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
+      children: [
+        const Text(
+          'Pilih lokasi',
+          style: TextStyle(color: navy, fontSize: 24, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Informasi bimbingan tatap muka berdasarkan lokasi pilihanmu.',
+          style: TextStyle(color: Colors.black54),
+        ),
+        const SizedBox(height: 20),
+        _OfflineLocationCard(
+          location: 'JAKARTA',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const KedinasanOfflineLocationPage(location: 'JAKARTA'),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _OfflineLocationCard(
+          location: 'SEMARANG',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const KedinasanOfflineLocationPage(location: 'SEMARANG'),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _OfflineLocationCard extends StatelessWidget {
+  final String location;
+  final VoidCallback onTap;
+
+  const _OfflineLocationCard({required this.location, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    elevation: 0,
+    margin: EdgeInsets.zero,
+    color: const Color(0xFFF0F7FF),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(18),
+      side: const BorderSide(color: Color(0xFFD7E7F7)),
+    ),
+    child: ListTile(
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+      leading: const CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Icon(Icons.place_outlined, color: Color(0xFF1769AA)),
+      ),
+      title: Text(
+        location,
+        style: const TextStyle(color: navy, fontWeight: FontWeight.w800),
+      ),
+      subtitle: const Text('Lihat informasi lokasi'),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: navy),
+    ),
+  );
+}
+
+class KedinasanOfflineLocationPage extends StatelessWidget {
+  final String location;
+
+  const KedinasanOfflineLocationPage({required this.location, super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text(location), foregroundColor: navy),
+    body: Padding(
+      padding: const EdgeInsets.all(20),
+      child: Card(
+        elevation: 0,
+        color: const Color(0xFFF7F9FC),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'BIMBEL KEDINASAN OFFLINE - $location',
+                style: const TextStyle(color: navy, fontSize: 20, fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Informasi program dan jadwal untuk lokasi ini akan ditambahkan setelah tersedia.',
+                style: TextStyle(color: Colors.black54),
+              ),
+            ],
+          ),
+        ),
+      ),
     ),
   );
 }
