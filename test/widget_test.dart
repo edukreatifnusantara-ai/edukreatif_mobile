@@ -471,7 +471,7 @@ void main() {
     expect(find.text('Materi dan latihan untuk menu ini sedang disiapkan.'), findsOneWidget);
   });
 
-  testWidgets('SIAP UTBK menampilkan countdown pelaksanaan', (tester) async {
+  testWidgets('SIAP UTBK menampilkan countdown di beranda', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: Scaffold(body: HomePage())),
     );
@@ -482,15 +482,16 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('SIAP UTBK'), findsOneWidget);
-    await tester.tap(find.text('SIAP UTBK'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('SIAP UTBK'), findsOneWidget);
     expect(find.text('HITUNG MUNDUR UTBK 2027'), findsOneWidget);
     expect(find.text('Senin, 1 Maret 2027'), findsOneWidget);
     expect(find.text('hari'), findsOneWidget);
     expect(find.text('minggu'), findsOneWidget);
     expect(find.text('bulan'), findsOneWidget);
+
+    await tester.tap(find.text('SIAP UTBK'));
+    await tester.pumpAndSettle();
+    expect(find.text('SIAP UTBK'), findsOneWidget);
+    expect(find.text('HITUNG MUNDUR UTBK 2027'), findsNothing);
   });
   testWidgets('layout soal memisahkan area scroll dan tombol tetap', (tester) async {
     await tester.pumpWidget(
