@@ -2855,32 +2855,10 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 25),
           _HomeAnimatedSection(
             index: 3,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final siapUtbk = _RecommendationCard(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const UtbkPage()),
-                  ),
-                );
-                const countdown = _SiapUtbkCountdownCard();
-                if (constraints.maxWidth >= 520) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: siapUtbk),
-                      const SizedBox(width: 10),
-                      Expanded(child: countdown),
-                    ],
-                  );
-                }
-                return Column(
-                  children: [
-                    siapUtbk,
-                    const SizedBox(height: 14),
-                    countdown,
-                  ],
-                );
-              },
+            child: _SiapUtbkHomeCard(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const UtbkPage()),
+              ),
             ),
           ),
           const SizedBox(height: 14),
@@ -2969,6 +2947,148 @@ class _HomeAnimatedSectionState extends State<_HomeAnimatedSection>
           offset: Offset(0, 18 * (1 - value)),
           child: child,
         ),
+      );
+    },
+  );
+}
+
+class _SiapUtbkHomeCard extends StatefulWidget {
+  final VoidCallback onTap;
+
+  const _SiapUtbkHomeCard({required this.onTap});
+
+  @override
+  State<_SiapUtbkHomeCard> createState() => _SiapUtbkHomeCardState();
+}
+
+class _SiapUtbkHomeCardState extends State<_SiapUtbkHomeCard> {
+  static final examDate = DateTime(2027, 3, 1);
+  late final Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  int get daysLeft =>
+      (examDate.difference(DateTime.now()).inSeconds / 86400)
+          .ceil()
+          .clamp(0, 99999)
+          .toInt();
+
+  int get weeksLeft => (daysLeft / 7).ceil();
+
+  int get monthsLeft {
+    final now = DateTime.now();
+    final value =
+        (examDate.year - now.year) * 12 + examDate.month - now.month;
+    final dayFraction = (examDate.day - now.day) / 31;
+    return (value + dayFraction).ceil().clamp(0, 999).toInt();
+  }
+
+  Widget _countdown(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'HITUNG MUNDUR UTBK 2027',
+        style: TextStyle(
+          color: Colors.white70,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          letterSpacing: .8,
+        ),
+      ),
+      const SizedBox(height: 4),
+      const Text(
+        'Senin, 1 Maret 2027',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          _CountdownValue(value: daysLeft, label: 'hari'),
+          const SizedBox(width: 6),
+          _CountdownValue(value: weeksLeft, label: 'minggu'),
+          const SizedBox(width: 6),
+          _CountdownValue(value: monthsLeft, label: 'bulan'),
+        ],
+      ),
+    ],
+  );
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final recommendation = InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: const Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Rekomendasi untukmu',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'SIAP UTBK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'TPS · Literasi · Latihan soal',
+                style: TextStyle(color: Colors.white70, fontSize: 11),
+              ),
+            ],
+          ),
+        ),
+      );
+      final countdown = Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        child: _countdown(context),
+      );
+      return Container(
+        padding: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          color: navy,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: constraints.maxWidth >= 620
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(child: recommendation),
+                  const SizedBox(width: 8),
+                  Expanded(child: countdown),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [recommendation, countdown],
+              ),
       );
     },
   );
