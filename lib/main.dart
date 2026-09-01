@@ -3588,9 +3588,12 @@ class UtbkTryoutPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: FilledButton.icon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => UtbkRealCbtPage()),
-                    ),
+                    onPressed: () async {
+                      if (!await ensureLoggedIn(context) || !context.mounted) return;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => UtbkRealCbtPage()),
+                      );
+                    },
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: const Text('Mulai Try Out →'),
                   ),
@@ -3639,8 +3642,14 @@ class UtbkTryoutPage extends StatelessWidget {
               ),
               subtitle: Text(pack.$3),
               trailing: const Icon(Icons.chevron_right, color: blue),
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => UtbkRealCbtPage(initialSubject: pack.$2))),
+              onTap: () async {
+                if (!await ensureLoggedIn(context) || !context.mounted) return;
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => UtbkRealCbtPage(initialSubject: pack.$2),
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -4538,9 +4547,14 @@ class UtbkPracticeModePage extends StatelessWidget {
           description:
               'Latihan pilihan ganda · 36 soal · Fokus satu soal sekali waktu.',
           actionLabel: 'Mulai latihan',
-          onTap: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => UtbkRealCbtPage(initialSubject: title))),
+          onTap: () async {
+            if (!await ensureLoggedIn(context) || !context.mounted) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => UtbkRealCbtPage(initialSubject: title),
+              ),
+            );
+          },
         ),
         _UtbkContentSection(
           title: 'Pilih topik lainnya',
