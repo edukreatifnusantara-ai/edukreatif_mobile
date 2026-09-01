@@ -7931,14 +7931,17 @@ class SkdSchoolTryoutPage extends StatelessWidget {
               '${school.tkpQuestions.length} soal TKP khusus ${school.name}',
             ),
             trailing: const Icon(Icons.chevron_right, color: navy),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => TkpPracticePage(
-                  title: 'Try Out TKP ${school.name}',
-                  questions: school.tkpQuestions,
+            onTap: () async {
+              if (!await ensureLoggedIn(context) || !context.mounted) return;
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => TkpPracticePage(
+                    title: 'Try Out TKP ${school.name}',
+                    questions: school.tkpQuestions,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ],
@@ -7959,14 +7962,17 @@ class SkdSchoolTryoutPage extends StatelessWidget {
       title: Text(title),
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.chevron_right, color: navy),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => TniBankPracticePage(
-            title: 'Try Out $title ${school.name}',
-            questions: questions,
+      onTap: () async {
+        if (!await ensureLoggedIn(context) || !context.mounted) return;
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => TniBankPracticePage(
+              title: 'Try Out $title ${school.name}',
+              questions: questions,
+            ),
           ),
-        ),
-      ),
+        );
+      },
     ),
   );
 }
@@ -8858,14 +8864,17 @@ class AkpolTryoutMenuPage extends StatelessWidget {
           key: const Key('akpol-tryout-akademik-cat'),
           title: 'Tes Akademik CAT',
           subtitle: 'Pengetahuan umum, wawasan, bahasa, matematika, dan logika',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => TniBankPracticePage(
-                title: 'Try Out Tes Akademik CAT AKPOL',
-                questions: _akpolCatTryoutItems,
+          onTap: () async {
+            if (!await ensureLoggedIn(context) || !context.mounted) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => TniBankPracticePage(
+                  title: 'Try Out Tes Akademik CAT AKPOL',
+                  questions: _akpolCatTryoutItems,
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
@@ -8929,8 +8938,12 @@ class TniTryoutMenuPage extends StatelessWidget {
           key: const Key('tryout-tka-akademi-tni'),
           title: 'TKA Akademi TNI',
           subtitle: '50 soal · Matematika, bahasa, IPA, wawasan, dan logika',
-          onTap: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => const TniPracticePage())),
+          onTap: () async {
+            if (!await ensureLoggedIn(context) || !context.mounted) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const TniPracticePage()),
+            );
+          },
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
@@ -8938,28 +8951,34 @@ class TniTryoutMenuPage extends StatelessWidget {
           title: 'Mental Ideologi',
           subtitle:
               'Latihan nilai kebangsaan, NKRI, integritas, dan tanggung jawab',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => TniBankPracticePage(
-                title: 'Try Out Mental Ideologi',
-                questions: _mentalIdeologyTryoutItems,
+          onTap: () async {
+            if (!await ensureLoggedIn(context) || !context.mounted) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => TniBankPracticePage(
+                  title: 'Try Out Mental Ideologi',
+                  questions: _mentalIdeologyTryoutItems,
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
           key: const Key('tryout-akademik-siber'),
           title: 'Akademik dan Siber',
           subtitle: 'Latihan akademik dasar dan keamanan siber',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => TniBankPracticePage(
-                title: 'Try Out Akademik dan Siber',
-                questions: _tniAcademicTryoutItems,
+          onTap: () async {
+            if (!await ensureLoggedIn(context) || !context.mounted) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => TniBankPracticePage(
+                  title: 'Try Out Akademik dan Siber',
+                  questions: _tniAcademicTryoutItems,
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
