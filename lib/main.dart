@@ -2995,35 +2995,35 @@ class _SiapUtbkHomeCardState extends State<_SiapUtbkHomeCard> {
     return (value + dayFraction).ceil().clamp(0, 999).toInt();
   }
 
-  Widget _countdown(BuildContext context) => Column(
+  Widget _countdown({required bool compact}) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Text(
+      Text(
         'HITUNG MUNDUR UTBK 2027',
         style: TextStyle(
           color: Colors.white70,
-          fontSize: 11,
+          fontSize: compact ? 10 : 11,
           fontWeight: FontWeight.w800,
-          letterSpacing: .8,
+          letterSpacing: compact ? .5 : .8,
         ),
       ),
-      const SizedBox(height: 4),
-      const Text(
+      SizedBox(height: compact ? 3 : 4),
+      Text(
         'Senin, 1 Maret 2027',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 16,
+          fontSize: compact ? 14 : 16,
           fontWeight: FontWeight.w800,
         ),
       ),
-      const SizedBox(height: 10),
+      SizedBox(height: compact ? 7 : 10),
       Row(
         children: [
-          _CountdownValue(value: daysLeft, label: 'hari'),
-          const SizedBox(width: 6),
-          _CountdownValue(value: weeksLeft, label: 'minggu'),
-          const SizedBox(width: 6),
-          _CountdownValue(value: monthsLeft, label: 'bulan'),
+          _CountdownValue(value: daysLeft, label: 'hari', compact: compact),
+          SizedBox(width: compact ? 5 : 6),
+          _CountdownValue(value: weeksLeft, label: 'minggu', compact: compact),
+          SizedBox(width: compact ? 5 : 6),
+          _CountdownValue(value: monthsLeft, label: 'bulan', compact: compact),
         ],
       ),
     ],
@@ -3032,6 +3032,7 @@ class _SiapUtbkHomeCardState extends State<_SiapUtbkHomeCard> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
+      final compact = constraints.maxWidth < 620;
       final recommendation = InkWell(
         onTap: widget.onTap,
         borderRadius: BorderRadius.circular(18),
@@ -3067,8 +3068,8 @@ class _SiapUtbkHomeCardState extends State<_SiapUtbkHomeCard> {
         ),
       );
       final countdown = Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-        child: _countdown(context),
+        padding: EdgeInsets.fromLTRB(16, compact ? 12 : 16, 16, compact ? 12 : 16),
+        child: _countdown(compact: compact),
       );
       return Container(
         padding: const EdgeInsets.only(right: 16),
@@ -3185,29 +3186,43 @@ class _SiapUtbkCountdownCardState extends State<_SiapUtbkCountdownCard> {
 class _CountdownValue extends StatelessWidget {
   final int value;
   final String label;
+  final bool compact;
 
-  const _CountdownValue({required this.value, required this.label});
+  const _CountdownValue({
+    required this.value,
+    required this.label,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) => Expanded(
     child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+      padding: EdgeInsets.symmetric(
+        vertical: compact ? 8 : 12,
+        horizontal: compact ? 3 : 6,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(compact ? 11 : 14),
       ),
       child: Column(
         children: [
           Text(
             '$value',
-            style: const TextStyle(
+            style: TextStyle(
               color: navy,
-              fontSize: 22,
+              fontSize: compact ? 18 : 22,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 2),
-          Text(label, style: const TextStyle(color: Colors.black54)),
+          SizedBox(height: compact ? 1 : 2),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: compact ? 11 : 14,
+            ),
+          ),
         ],
       ),
     ),
