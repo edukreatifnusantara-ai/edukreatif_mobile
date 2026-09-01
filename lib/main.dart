@@ -2862,8 +2862,13 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          _HomeAnimatedSection(
+          const _HomeAnimatedSection(
             index: 4,
+            child: _SiapUtbkCountdownCard(),
+          ),
+          const SizedBox(height: 14),
+          _HomeAnimatedSection(
+            index: 5,
             child: _UtbkFeatureCard(
               category: 'SMART PLAYBOOK',
               title: 'Strategi UTBK Terarah (PREMIUM MEMBER)',
@@ -2881,7 +2886,7 @@ class HomePage extends StatelessWidget {
           ),
           const SizedBox(height: 25),
           _HomeAnimatedSection(
-            index: 5,
+            index: 6,
             child: _CreativeRoomCard(
               onOpenKarya: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CreativeWorksPage()),
@@ -3094,8 +3099,6 @@ class UtbkPage extends StatelessWidget {
           'Pilih ruang belajar sesuai kebutuhanmu hari ini.',
           style: TextStyle(color: Colors.black54, fontSize: 14),
         ),
-        const SizedBox(height: 18),
-        const _SiapUtbkCountdownCard(),
         const SizedBox(height: 18),
         _UtbkFeatureCard(
           category: 'DRILL HARIAN',
