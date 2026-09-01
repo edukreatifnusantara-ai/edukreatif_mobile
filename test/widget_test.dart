@@ -138,6 +138,7 @@ void main() {
     expect(find.text('Temukan ide, lalu kembangkan dengan caramu.'), findsOneWidget);
     expect(find.text('Ubah masalah menjadi ide'), findsOneWidget);
 
+    LocalAccount.isLoggedIn = true;
     await tester.pumpWidget(const MaterialApp(home: CreativeJournalPage()));
     expect(find.text('Catatan hari ini'), findsOneWidget);
     await tester.enterText(
@@ -149,9 +150,10 @@ void main() {
     expect(find.text('Hari ini saya menemukan ide baru.'), findsOneWidget);
   });
 
-  testWidgets('materi premium menampilkan paywall sebelum login', (
+  testWidgets('materi premium meminta login sebelum paywall', (
     tester,
   ) async {
+    LocalAccount.isLoggedIn = false;
     await tester.pumpWidget(
       const MaterialApp(home: Scaffold(body: CatalogPage())),
     );
@@ -166,13 +168,14 @@ void main() {
     expect(find.text('Lihat pilihan akses'), findsOneWidget);
     await tester.tap(find.text('Lihat pilihan akses'));
     await tester.pumpAndSettle();
-    expect(find.text('Materi premium'), findsNWidgets(2));
-    expect(find.text('Lanjut ke login / daftar'), findsOneWidget);
+    expect(find.text('Selamat datang kembali!'), findsOneWidget);
+    expect(find.text('Buat akun baru'), findsOneWidget);
   });
 
   testWidgets('materi gratis dapat menandai lesson dan memperbarui progres', (
     tester,
   ) async {
+    LocalAccount.isLoggedIn = true;
     await tester.pumpWidget(
       const MaterialApp(
         home: CourseDetailPage(title: 'Matematika Dasar', free: true),
