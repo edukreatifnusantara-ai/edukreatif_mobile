@@ -6135,10 +6135,15 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
               );
             }
             final allBooks = snapshot.data ?? const <OfficialBook>[];
+            final excludedSubjects = RegExp(
+              r'\b(musik|seni\s+rupa|sejarah|agama)\b',
+              caseSensitive: false,
+            );
             final filtered = allBooks.where((book) {
               final haystack = '${book.title} ${book.subject} ${book.level}'
                   .toLowerCase();
-              return (query.isEmpty ||
+              return !excludedSubjects.hasMatch(haystack) &&
+                  (query.isEmpty ||
                       haystack.contains(query.toLowerCase())) &&
                   (selectedLevel == 'Semua' ||
                       book.level.toUpperCase().contains(selectedLevel));
