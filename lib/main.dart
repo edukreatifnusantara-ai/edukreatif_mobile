@@ -6154,6 +6154,13 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
               final key = subject.isEmpty ? 'Buku pelajaran' : subject;
               (grouped[key] ??= []).add(book);
             }
+            final phoneWidth = MediaQuery.sizeOf(context).width;
+            final bookCardWidth = phoneWidth < 360
+                ? 128.0
+                : phoneWidth < 600
+                ? 142.0
+                : 154.0;
+            final shelfHeight = bookCardWidth * 1.62;
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
               children: [
@@ -6257,13 +6264,14 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
                           ),
                           const SizedBox(height: 10),
                           SizedBox(
-                            height: 248,
+                            height: shelfHeight,
                             child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               itemCount: entry.value.length,
                               separatorBuilder: (_, _) => const SizedBox(width: 12),
                               itemBuilder: (_, index) => _OfficialBookCard(
                                 book: entry.value[index],
+                                width: bookCardWidth,
                               ),
                             ),
                           ),
@@ -6299,11 +6307,13 @@ class _OfficialBooksError extends StatelessWidget {
 
 class _OfficialBookCard extends StatelessWidget {
   final OfficialBook book;
-  const _OfficialBookCard({required this.book});
+  final double width;
+
+  const _OfficialBookCard({required this.book, required this.width});
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: 154,
+    width: width,
     child: Card(
       margin: EdgeInsets.zero,
       elevation: 0,
@@ -6317,7 +6327,7 @@ class _OfficialBookCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(
-              height: 166,
+              height: width * 1.08,
               child: Image.network(
                 book.coverUrl,
                 fit: BoxFit.cover,
