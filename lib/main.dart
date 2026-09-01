@@ -11021,19 +11021,132 @@ class SmaTarunaMaterialsPage extends StatelessWidget {
 class SmaTarunaPracticePage extends StatelessWidget {
   const SmaTarunaPracticePage({super.key});
 
-  static const items = [
-    ('Latihan Akademik CBT', 'Latihan Matematika, IPA, Bahasa Indonesia, dan Bahasa Inggris dengan format computer-based test. Gunakan try out mandiri untuk melatih ketelitian dan pengelolaan waktu.'),
-    ('Latihan Akademik Lanjutan', 'Ulangi konsep inti empat mata pelajaran, kerjakan soal bertingkat, lalu catat kesalahan dan pembahasan untuk menentukan materi yang perlu dipelajari kembali.'),
-    ('Latihan Psikologi', 'Latihan konsistensi, ketelitian, logika, pola, kemampuan verbal, numerik, dan pengenalan diri dalam bentuk soal psikologi.'),
-    ('Try Out Terpadu', 'Simulasikan beberapa bagian soal akademik dan psikologi dalam satu sesi dengan batas waktu. Nilai try out hanya untuk evaluasi belajar dan bukan penilaian penerimaan.'),
+  static const cbtItems = [
+    ('Matematika', 'Latihan soal Matematika dengan format CBT untuk menguji pemahaman konsep, penalaran, ketelitian, dan kecepatan mengerjakan.'),
+    ('IPA', 'Latihan soal IPA yang mencakup konsep dasar, penerapan, analisis, dan penalaran ilmiah.'),
+    ('Bahasa Indonesia', 'Latihan pemahaman bacaan, ide pokok, simpulan, makna kata, ejaan, dan penalaran Bahasa Indonesia.'),
+    ('Bahasa Inggris', 'Latihan reading comprehension, vocabulary, grammar, main idea, inference, dan informasi tersurat maupun tersirat.'),
+  ];
+
+  static const advancedItems = [
+    ('Matematika', 'Latihan soal Matematika bertingkat untuk memperdalam konsep, strategi penyelesaian, dan soal penalaran.'),
+    ('IPA', 'Latihan soal IPA lanjutan dengan penerapan konsep, interpretasi data, dan analisis masalah.'),
+    ('Bahasa Indonesia', 'Latihan lanjutan tentang analisis bacaan, hubungan antaride, keefektifan kalimat, dan penalaran bahasa.'),
+    ('Bahasa Inggris', 'Latihan lanjutan tentang bacaan kompleks, vocabulary in context, grammar, inference, dan evaluasi informasi.'),
+  ];
+
+  static const psychologyItems = [
+    ('Logika', 'Latihan penalaran logis, hubungan sebab-akibat, pengelompokan, dan penyelesaian masalah.'),
+    ('Pola', 'Latihan mengenali pola angka, bentuk, urutan, perubahan, dan hubungan antarunsur.'),
+    ('Verbal', 'Latihan sinonim, antonim, analogi, klasifikasi kata, dan pemahaman hubungan makna.'),
+    ('Numerik', 'Latihan operasi hitung, deret angka, perbandingan, aritmetika, dan interpretasi data sederhana.'),
+    ('Konsistensi dan Ketelitian', 'Latihan mencocokkan informasi, menemukan perbedaan, mengikuti aturan, dan menjaga konsistensi jawaban.'),
+    ('Pengenalan Diri', 'Latihan refleksi tertulis tentang kebiasaan belajar, kekuatan, tantangan, motivasi, dan cara menghadapi situasi.'),
   ];
 
   @override
-  Widget build(BuildContext context) => _SmaSectionPage(
-    title: 'Latihan dan Try Out SMA TN',
-    intro: 'Urutan latihan mengikuti tahapan seleksi umum yang dipublikasikan SMA TN. Try out adalah simulasi dan hasilnya bukan penilaian penerimaan.',
-    items: items,
-    source: 'Sumber: https://cimahi.tarunanusantara.sch.id/siswa-baru/',
+  Widget build(BuildContext context) => _SmaPracticeMenuPage(
+    groups: [
+      (title: '1. Latihan Akademik CBT', items: cbtItems),
+      (title: '2. Latihan Akademik Lanjutan', items: advancedItems),
+      (title: '3. Latihan Psikologi', items: psychologyItems),
+      (
+        title: '4. Try Out Terpadu',
+        items: const [
+          ('Simulasi Try Out', 'Simulasikan soal Matematika, IPA, Bahasa Indonesia, Bahasa Inggris, dan psikologi dalam satu sesi dengan batas waktu. Hasilnya hanya untuk evaluasi belajar.'),
+        ],
+      ),
+    ],
+  );
+}
+
+class _SmaPracticeMenuPage extends StatelessWidget {
+  final List<({String title, List<(String, String)> items})> groups;
+
+  const _SmaPracticeMenuPage({required this.groups});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Latihan dan Try Out SMA TN'), foregroundColor: navy),
+    backgroundColor: const Color(0xFFF7F9FC),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        const Text(
+          'Latihan dan Try Out SMA TN',
+          style: TextStyle(color: navy, fontSize: 24, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Pilih pelajaran atau aspek yang ingin dilatih. Semua menu di halaman ini berisi latihan soal dan pengembangan kemampuan akademik atau psikologi.',
+          style: TextStyle(color: Colors.black54, height: 1.4),
+        ),
+        const SizedBox(height: 18),
+        ...groups.expand(
+          (group) => [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text(group.title, style: const TextStyle(color: navy, fontSize: 17, fontWeight: FontWeight.w800)),
+            ),
+            ...group.items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Card(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => _SmaPracticeDetailPage(
+                          title: '${group.title} · ${item.$1}',
+                          description: item.$2,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(item.$1, style: const TextStyle(color: navy, fontWeight: FontWeight.w800))),
+                          const Icon(Icons.chevron_right, color: blue),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+        const Text('Sumber: https://cimahi.tarunanusantara.sch.id/siswa-baru/', style: TextStyle(color: Colors.black54, fontSize: 12, height: 1.4)),
+      ],
+    ),
+  );
+}
+
+class _SmaPracticeDetailPage extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const _SmaPracticeDetailPage({required this.title, required this.description});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Latihan SMA TN'), foregroundColor: navy),
+    backgroundColor: const Color(0xFFF7F9FC),
+    body: ListView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      children: [
+        Text(title, style: const TextStyle(color: navy, fontSize: 24, fontWeight: FontWeight.w800)),
+        const SizedBox(height: 18),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Text(description, style: const TextStyle(height: 1.5)),
+          ),
+        ),
+      ],
+    ),
   );
 }
 
