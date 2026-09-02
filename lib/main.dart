@@ -7327,6 +7327,8 @@ class KedinasanOfflineLocationPage extends StatelessWidget {
     appBar: AppBar(title: Text(location), foregroundColor: navy),
     body: location == 'SEMARANG'
         ? const _SemarangOfflineContent()
+        : location == 'JAKARTA'
+        ? const _JakartaOfflineContent()
         : Padding(
             padding: const EdgeInsets.all(20),
             child: Card(
@@ -7356,6 +7358,75 @@ class KedinasanOfflineLocationPage extends StatelessWidget {
               ),
             ),
           ),
+  );
+}
+
+class _JakartaOfflineContent extends StatelessWidget {
+  const _JakartaOfflineContent();
+
+  @override
+  Widget build(BuildContext context) => ListView(
+    padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+    children: [
+      Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF123B63), Color(0xFF1769AA)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(26),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.construction_outlined, color: Colors.white, size: 42),
+            SizedBox(height: 18),
+            Text(
+              'BIMBEL KEDINASAN OFFLINE',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Jabodetabek',
+              style: TextStyle(color: Colors.white70, fontSize: 15),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16),
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF7E6),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFF2D28B)),
+        ),
+        child: const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.info_outline, color: Color(0xFFB7791F), size: 28),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Bimbel kedinasan offline Jabodetabek sedang dipersiapkan.',
+                style: TextStyle(
+                  color: Color(0xFF6B4B16),
+                  fontSize: 16,
+                  height: 1.45,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
   );
 }
 
