@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12095,11 +12096,21 @@ class _AssessmentPageState extends State<AssessmentPage> {
     final root = jsonDecode(
       await rootBundle.loadString('assets/assessment_bank.json'),
     ) as Map<String, dynamic>;
+    final loaded = (root['questions'] as List<dynamic>)
+        .map((item) => Map<String, dynamic>.from(item as Map))
+        .toList();
+    final minat = loaded.where((q) => q['section'] == 'minat').toList()
+      ..shuffle(Random());
+    final kemampuan = loaded.where((q) => q['section'] == 'kemampuan').toList()
+      ..shuffle(Random());
+    final mixed = <Map<String, dynamic>>[];
+    while (minat.isNotEmpty || kemampuan.isNotEmpty) {
+      if (minat.isNotEmpty) mixed.add(minat.removeLast());
+      if (kemampuan.isNotEmpty) mixed.add(kemampuan.removeLast());
+    }
     if (!mounted) return;
     setState(() {
-      _questions = (root['questions'] as List<dynamic>)
-          .map((item) => Map<String, dynamic>.from(item as Map))
-          .toList();
+      _questions = mixed;
       _loading = false;
     });
   }
