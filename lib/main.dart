@@ -11702,24 +11702,25 @@ class _SmaCbtBankPageState extends State<_SmaCbtBankPage> {
 
   void _finish() {
     timer?.cancel();
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('CBT selesai'),
-        content: Text('Jawaban terisi ${answers.length} soal.'),
-        actions: [
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              Navigator.pop(context);
-            },
-            child: const Text('Kembali ke menu'),
-          ),
-        ],
+    final questions = _loadedQuestions;
+    final correct = questions.asMap().entries.where((entry) {
+      final selected = answers[entry.key];
+      final key = entry.value['answer'] as String?;
+      return selected != null && key != null && selected == key;
+    }).length;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => SmaCbtResultPage(
+          subject: widget.subject,
+          correct: correct,
+          answered: answers.length,
+          total: questions.length,
+        ),
       ),
     );
   }
+
+  List<Map<String, dynamic>> _loadedQuestions = [];
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -11749,6 +11750,7 @@ class _SmaCbtBankPageState extends State<_SmaCbtBankPage> {
             final questions = (snapshot.data?['questions'] as List<dynamic>? ?? const [])
                 .map((item) => Map<String, dynamic>.from(item as Map))
                 .toList();
+            _loadedQuestions = questions;
             if (questions.isEmpty) return const Center(child: Text('Belum ada soal.'));
             final current = questions[index.clamp(0, questions.length - 1)];
             final options = Map<String, dynamic>.from(current['options'] as Map);
@@ -11831,6 +11833,41 @@ class _SmaCbtBankPageState extends State<_SmaCbtBankPage> {
           },
         ),
       );
+}
+
+class SmaCbtResultPage extends StatelessWidget {
+  final String subject;
+  final int correct;
+  final int answered;
+  final int total;
+
+  const SmaCbtResultPage({super.key, required this.subject, required this.correct, required this.answered, required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    final percent = total == 0 ? 0 : (correct * 100 / total).round();
+    return Scaffold(
+      appBar: AppBar(title: const Text('Hasil CBT SMA TN'), foregroundColor: navy),
+      backgroundColor: const Color(0xFFF7F9FC),
+      body: ListView(padding: const EdgeInsets.all(20), children: [
+        const Icon(Icons.emoji_events_outlined, color: orange, size: 72),
+        const SizedBox(height: 12),
+        const Text('CBT selesai!', textAlign: TextAlign.center, style: TextStyle(color: navy, fontSize: 25, fontWeight: FontWeight.w800)),
+        const SizedBox(height: 6),
+        Text(subject, textAlign: TextAlign.center, style: const TextStyle(color: Colors.black54)),
+        const SizedBox(height: 22),
+        Card(color: const Color(0xFFEAF1FF), elevation: 0, child: Padding(padding: const EdgeInsets.all(24), child: Column(children: [const Text('Skor kamu', style: TextStyle(color: Colors.black54)), const SizedBox(height: 8), Text('$percent', style: const TextStyle(color: navy, fontSize: 52, fontWeight: FontWeight.w800)), const Text('persen', style: TextStyle(color: Colors.black54))]))),
+        const SizedBox(height: 14),
+        Row(children: [Expanded(child: _stat('$correct', 'Benar')), const SizedBox(width: 10), Expanded(child: _stat('${total - correct}', 'Salah/kosong')), const SizedBox(width: 10), Expanded(child: _stat('$answered/$total', 'Dijawab'))]),
+        const SizedBox(height: 22),
+        const Card(child: Padding(padding: EdgeInsets.all(16), child: Text('Skor dihitung dari jumlah jawaban yang sesuai dengan kunci pada bank soal. Gunakan hasil ini sebagai bahan evaluasi belajar.', style: TextStyle(color: Colors.black54, height: 1.45)))),
+        const SizedBox(height: 14),
+        FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Kembali ke menu SMA TN')),
+      ]),
+    );
+  }
+
+  Widget _stat(String value, String label) => Card(elevation: 0, child: Padding(padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4), child: Column(children: [Text(value, style: const TextStyle(color: blue, fontSize: 18, fontWeight: FontWeight.w800)), const SizedBox(height: 4), Text(label, textAlign: TextAlign.center, style: const TextStyle(color: Colors.black54, fontSize: 10))])));
 }
 
 class _SmaPracticeDetailPage extends StatelessWidget {
