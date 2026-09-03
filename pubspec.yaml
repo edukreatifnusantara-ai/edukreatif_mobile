@@ -66,6 +66,7 @@ flutter:
     - assets/satu_nusa_emblem.jpg
     - assets/unhan_emblem.jpg
     - assets/utbk_questions.json
+    - assets/assessment_bank.json
     - assets/sma_tn_cbt/ipa.json
     - assets/sma_tn_cbt/bahasa_indonesia.json
     - assets/sma_tn_cbt/bahasa_inggris.json

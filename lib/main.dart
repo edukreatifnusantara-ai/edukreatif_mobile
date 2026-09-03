@@ -12018,10 +12018,12 @@ class PsychologyMenuPage extends StatelessWidget {
                     trailing: const Icon(Icons.chevron_right, color: navy),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => PsychologyOptionPage(
-                          title: option.title,
-                          description: option.subtitle,
-                        ),
+                        builder: (_) => option.title == 'Assesment'
+                            ? const AssessmentPage()
+                            : PsychologyOptionPage(
+                                title: option.title,
+                                description: option.subtitle,
+                              ),
                       ),
                     ),
                   ),
@@ -12031,6 +12033,153 @@ class PsychologyMenuPage extends StatelessWidget {
           ],
         ),
       );
+}
+
+class AssessmentPage extends StatefulWidget {
+  const AssessmentPage({super.key});
+
+  @override
+  State<AssessmentPage> createState() => _AssessmentPageState();
+}
+
+class _AssessmentPageState extends State<AssessmentPage> {
+  List<Map<String, dynamic>> _questions = [];
+  final Map<int, int> _answers = {};
+  int _index = 0;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final root = jsonDecode(
+      await rootBundle.loadString('assets/assessment_bank.json'),
+    ) as Map<String, dynamic>;
+    if (!mounted) return;
+    setState(() {
+      _questions = (root['questions'] as List<dynamic>)
+          .map((item) => Map<String, dynamic>.from(item as Map))
+          .toList();
+      _loading = false;
+    });
+  }
+
+  void _finish() {
+    if (_answers.length < _questions.length) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Masih ada ${_questions.length - _answers.length} soal yang belum dijawab.')),
+      );
+      return;
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => AssessmentResultPage(questions: _questions, answers: _answers)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    final q = _questions[_index];
+    final options = List<String>.from(q['options'] as List<dynamic>);
+    final selected = _answers[_index];
+    return Scaffold(
+      appBar: AppBar(title: const Text('Assessment Potensi Arah dan Bakat'), foregroundColor: navy),
+      backgroundColor: const Color(0xFFF7F9FC),
+      body: ListView(padding: const EdgeInsets.all(20), children: [
+        Card(color: const Color(0xFFEAF1FF), elevation: 0, child: Padding(padding: const EdgeInsets.all(18), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('Temukan arah yang paling sesuai untukmu', style: TextStyle(color: navy, fontSize: 22, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 8),
+          const Text('Assessment ini membaca pola minat dan kemampuan untuk memberikan rekomendasi awal sekolah atau jalur belajar.', style: TextStyle(height: 1.4)),
+          const SizedBox(height: 12),
+          Text('Soal ${_index + 1} dari ${_questions.length}  •  Terjawab ${_answers.length}', style: const TextStyle(color: blue, fontWeight: FontWeight.w700)),
+        ]))),
+        const SizedBox(height: 16),
+        Card(child: Padding(padding: const EdgeInsets.all(18), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(q['section'] == 'minat' ? 'Bagian A — Minat' : 'Bagian B — Kemampuan Objektif', style: const TextStyle(color: blue, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 12),
+          Text(q['question'] as String, style: const TextStyle(color: navy, fontSize: 18, fontWeight: FontWeight.w700, height: 1.35)),
+          const SizedBox(height: 14),
+          ...List.generate(options.length, (i) => RadioListTile<int>(value: i, groupValue: selected, title: Text(options[i]), contentPadding: EdgeInsets.zero, onChanged: (v) { if (v == null) return; setState(() => _answers[_index] = v); })),
+        ]))),
+        const SizedBox(height: 16),
+        Row(children: [
+          Expanded(child: OutlinedButton(onPressed: _index == 0 ? null : () => setState(() => _index--), child: const Text('Sebelumnya'))),
+          const SizedBox(width: 12),
+          Expanded(child: ElevatedButton(onPressed: _index == _questions.length - 1 ? _finish : () => setState(() => _index++), child: Text(_index == _questions.length - 1 ? 'Lihat Hasil' : 'Berikutnya'))),
+        ]),
+      ]),
+    );
+  }
+}
+
+class AssessmentResultPage extends StatelessWidget {
+  final List<Map<String, dynamic>> questions;
+  final Map<int, int> answers;
+
+  const AssessmentResultPage({required this.questions, required this.answers, super.key});
+
+  List<Map<String, dynamic>> _recommendations() {
+    final interest = <String, double>{for (final d in ['R','I','A','S','E','C']) d: 0};
+    var objective = 0;
+    for (var i = 0; i < questions.length; i++) {
+      final q = questions[i];
+      final a = answers[i];
+      if (a == null) continue;
+      if (q['section'] == 'minat') interest[q['dimension'] as String] = interest[q['dimension'] as String]! + a;
+      if (q['section'] == 'kemampuan' && a == ((q['answer'] as String).codeUnitAt(0) - 65)) objective++;
+    }
+    final ability = objective / 20;
+    final raw = <String, double>{
+      'SMA Taruna Nusantara': 0.25 + interest['C']! / 60 + interest['E']! / 75 + ability * .25,
+      'Akademi TNI': 0.20 + interest['R']! / 60 + interest['E']! / 75 + interest['C']! / 90 + ability * .25,
+      'AKPOL': 0.20 + interest['S']! / 75 + interest['E']! / 75 + interest['C']! / 90 + ability * .25,
+      'UNHAN': 0.20 + interest['I']! / 60 + interest['C']! / 75 + ability * .30,
+      'Sekolah Kedinasan': 0.20 + interest['C']! / 60 + interest['S']! / 90 + ability * .30,
+      'Kedokteran': 0.18 + interest['I']! / 55 + interest['S']! / 75 + ability * .30,
+      'Olimpiade Sains': 0.18 + interest['I']! / 45 + interest['R']! / 90 + ability * .35,
+    };
+    final total = raw.values.reduce((a, b) => a + b);
+    final descriptions = <String, String>{
+      'SMA Taruna Nusantara': 'Jalur pendidikan berasrama dengan penguatan akademik, kepemimpinan, dan kedisiplinan.',
+      'Akademi TNI': 'Arah pengembangan untuk kepemimpinan, kedisiplinan, kebugaran, dan pengabdian.',
+      'AKPOL': 'Arah pengembangan untuk penalaran, komunikasi, kepemimpinan, dan pelayanan publik.',
+      'UNHAN': 'Arah akademik yang memadukan sains, analisis, wawasan pertahanan, dan kebangsaan.',
+      'Sekolah Kedinasan': 'Arah belajar untuk penalaran, administrasi publik, analisis, dan wawasan kebangsaan.',
+      'Kedokteran': 'Arah akademik untuk minat sains, analisis, ketelitian, dan kepedulian terhadap sesama.',
+      'Olimpiade Sains': 'Arah pengembangan untuk rasa ingin tahu, penalaran, eksperimen, dan pemecahan masalah.',
+    };
+    return raw.entries.map((e) => {'name': e.key, 'percent': (e.value / total * 100).round(), 'description': descriptions[e.key]!}).toList()..sort((a,b) => (b['percent'] as int).compareTo(a['percent'] as int));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final result = _recommendations();
+    final top = result.first;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Hasil Assessment'), foregroundColor: navy),
+      backgroundColor: const Color(0xFFF7F9FC),
+      body: ListView(padding: const EdgeInsets.all(20), children: [
+        Card(color: const Color(0xFFEAF1FF), elevation: 0, child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('Profil arah potensimu', style: TextStyle(color: navy, fontSize: 24, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 8),
+          const Text('Hasil utama menunjukkan arah yang paling selaras dengan pola jawabanmu.', style: TextStyle(height: 1.4)),
+          const SizedBox(height: 16),
+          Text(top['name'] as String, style: const TextStyle(color: blue, fontSize: 22, fontWeight: FontWeight.w800)),
+          Text('${top['percent']}% indikasi kecocokan', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 6), Text(top['description'] as String, style: const TextStyle(height: 1.4)),
+        ]))),
+        const SizedBox(height: 16),
+        const Text('Rekomendasi arah lainnya', style: TextStyle(color: navy, fontSize: 20, fontWeight: FontWeight.w800)),
+        const SizedBox(height: 8),
+        ...result.map((item) => Card(child: ListTile(title: Text(item['name'] as String, style: const TextStyle(fontWeight: FontWeight.w800)), subtitle: Text(item['description'] as String), trailing: Text('${item['percent']}%', style: const TextStyle(color: blue, fontWeight: FontWeight.w800))))),
+        const SizedBox(height: 14),
+        const Card(child: Padding(padding: EdgeInsets.all(16), child: Text('Catatan: persentase ini adalah indikasi kecocokan dari jawaban assessment, bukan peluang diterima dan bukan diagnosis psikologis. Gunakan sebagai bahan eksplorasi bersama orang tua, guru, atau konselor.', style: TextStyle(color: Colors.black54, height: 1.45)))),
+      ]),
+    );
+  }
 }
 
 class PsychologyOptionPage extends StatelessWidget {

@@ -1,0 +1,727 @@
+{
+  "title": "Assessment Potensi Arah dan Bakat",
+  "subtitle": "Kenali pola minat dan kemampuan untuk menemukan arah belajar yang lebih sesuai.",
+  "disclaimer": "Hasil ini bersifat eksploratif, bukan diagnosis psikologis, keputusan tunggal, peluang pasti diterima, atau pengganti konsultasi dengan orang tua dan guru.",
+  "questions": [
+    {
+      "number": 1,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: membuat benda dengan tangan?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "R"
+    },
+    {
+      "number": 2,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: merakit alat sederhana?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "R"
+    },
+    {
+      "number": 3,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: praktik menggunakan alat?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "R"
+    },
+    {
+      "number": 4,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menggunakan teknologi untuk membuat sesuatu?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "R"
+    },
+    {
+      "number": 5,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: merawat tanaman atau hewan?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "R"
+    },
+    {
+      "number": 6,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: mencari tahu penyebab sesuatu?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "I"
+    },
+    {
+      "number": 7,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: memecahkan teka-teki logika?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "I"
+    },
+    {
+      "number": 8,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: melakukan percobaan sains?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "I"
+    },
+    {
+      "number": 9,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menganalisis informasi?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "I"
+    },
+    {
+      "number": 10,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: membaca tentang tubuh dan alam?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "I"
+    },
+    {
+      "number": 11,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menggambar atau membuat desain?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "A"
+    },
+    {
+      "number": 12,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menulis cerita atau puisi?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "A"
+    },
+    {
+      "number": 13,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: membuat video atau musik?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "A"
+    },
+    {
+      "number": 14,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menemukan cara unik menyampaikan ide?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "A"
+    },
+    {
+      "number": 15,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menghargai karya seni?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "A"
+    },
+    {
+      "number": 16,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: membantu teman memahami pelajaran?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "S"
+    },
+    {
+      "number": 17,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: mendengarkan masalah orang lain?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "S"
+    },
+    {
+      "number": 18,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: mengajar atau menjelaskan?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "S"
+    },
+    {
+      "number": 19,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: bekerja dalam kelompok?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "S"
+    },
+    {
+      "number": 20,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: terlibat dalam kegiatan sosial?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "S"
+    },
+    {
+      "number": 21,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: memimpin kelompok?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "E"
+    },
+    {
+      "number": 22,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menyampaikan ide di depan orang lain?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "E"
+    },
+    {
+      "number": 23,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menetapkan target?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "E"
+    },
+    {
+      "number": 24,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: mengatur kegiatan?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "E"
+    },
+    {
+      "number": 25,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: meyakinkan orang lain dengan alasan?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "E"
+    },
+    {
+      "number": 26,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: menyusun informasi dengan rapi?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "C"
+    },
+    {
+      "number": 27,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: membuat jadwal?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "C"
+    },
+    {
+      "number": 28,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: memeriksa ketelitian pekerjaan?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "C"
+    },
+    {
+      "number": 29,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: mengikuti langkah kerja?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "C"
+    },
+    {
+      "number": 30,
+      "section": "minat",
+      "question": "Seberapa kamu tertarik dengan kegiatan: mengatur dokumen atau catatan?",
+      "options": [
+        "Sangat tidak tertarik",
+        "Tidak terlalu tertarik",
+        "Tertarik",
+        "Sangat tertarik"
+      ],
+      "answer": null,
+      "explanation": "Jawaban menggambarkan minat pribadi. Skor: 0, 1, 2, atau 3.",
+      "dimension": "C"
+    },
+    {
+      "number": 1,
+      "section": "kemampuan",
+      "question": "Makna kata “cermat” paling dekat dengan ...",
+      "options": [
+        "tergesa-gesa",
+        "teliti",
+        "ramai",
+        "lemah"
+      ],
+      "answer": "B",
+      "explanation": "Cermat berarti teliti.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 2,
+      "section": "kemampuan",
+      "question": "Lawan kata “optimistis” ialah ...",
+      "options": [
+        "pesimistis",
+        "realistis",
+        "aktif",
+        "tekun"
+      ],
+      "answer": "A",
+      "explanation": "Lawan optimistis adalah pesimistis.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 3,
+      "section": "kemampuan",
+      "question": "Kalimat paling efektif ialah ...",
+      "options": [
+        "Para siswa-siswa belajar.",
+        "Siswa sedang belajar.",
+        "Siswa-siswa pada sedang belajar.",
+        "Banyak para siswa belajar."
+      ],
+      "answer": "B",
+      "explanation": "Kalimat B tidak memakai bentuk jamak ganda.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 4,
+      "section": "kemampuan",
+      "question": "Dokter : Rumah sakit = Guru : ...",
+      "options": [
+        "pasar",
+        "sekolah",
+        "kantor pos",
+        "terminal"
+      ],
+      "answer": "B",
+      "explanation": "Guru bekerja di sekolah.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 5,
+      "section": "kemampuan",
+      "question": "Ide utama paragraf disebut ...",
+      "options": [
+        "kalimat penjelas",
+        "gagasan pokok",
+        "contoh",
+        "judul buku"
+      ],
+      "answer": "B",
+      "explanation": "Gagasan pokok adalah inti paragraf.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 6,
+      "section": "kemampuan",
+      "question": "Jika 3 buku Rp24.000, harga 5 buku ...",
+      "options": [
+        "Rp32.000",
+        "Rp36.000",
+        "Rp40.000",
+        "Rp48.000"
+      ],
+      "answer": "C",
+      "explanation": "Harga satu buku Rp8.000; 5 buku Rp40.000.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 7,
+      "section": "kemampuan",
+      "question": "Deret 2, 4, 8, 16, ...",
+      "options": [
+        "18",
+        "24",
+        "30",
+        "32"
+      ],
+      "answer": "D",
+      "explanation": "Setiap suku dikali 2; berikutnya 32.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 8,
+      "section": "kemampuan",
+      "question": "Nilai 25% dari 200 ...",
+      "options": [
+        "25",
+        "40",
+        "50",
+        "75"
+      ],
+      "answer": "C",
+      "explanation": "25/100 × 200 = 50.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 9,
+      "section": "kemampuan",
+      "question": "Rata-rata 6, 8, dan 10 ...",
+      "options": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "answer": "C",
+      "explanation": "(6+8+10)/3 = 8.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 10,
+      "section": "kemampuan",
+      "question": "Barang Rp100.000 diskon 15%; harga akhir ...",
+      "options": [
+        "Rp75.000",
+        "Rp85.000",
+        "Rp90.000",
+        "Rp115.000"
+      ],
+      "answer": "B",
+      "explanation": "Diskon Rp15.000; harga akhir Rp85.000.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 11,
+      "section": "kemampuan",
+      "question": "Semua A adalah B. Semua B adalah C. Kesimpulan pasti ...",
+      "options": [
+        "Semua A adalah C.",
+        "Semua C adalah A.",
+        "Sebagian C bukan B.",
+        "Tidak berhubungan."
+      ],
+      "answer": "A",
+      "explanation": "Hubungan kategori transitif.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 12,
+      "section": "kemampuan",
+      "question": "Jika Senin, 10 hari lagi ...",
+      "options": [
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu"
+      ],
+      "answer": "B",
+      "explanation": "10 mod 7 = 3; Senin + 3 hari = Kamis.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 13,
+      "section": "kemampuan",
+      "question": "Pola A, C, F, J, ...",
+      "options": [
+        "M",
+        "N",
+        "O",
+        "P"
+      ],
+      "answer": "C",
+      "explanation": "Lompatan bertambah satu: +2, +3, +4, lalu +5. J + 5 posisi = O.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 14,
+      "section": "kemampuan",
+      "question": "Jika hujan maka jalan basah. Jalan tidak basah. Kesimpulan logis ...",
+      "options": [
+        "Pasti hujan.",
+        "Mungkin hujan deras.",
+        "Tidak hujan.",
+        "Jalan dicuci."
+      ],
+      "answer": "C",
+      "explanation": "Kontraposisi: tidak basah berarti tidak hujan, dalam model soal.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 15,
+      "section": "kemampuan",
+      "question": "1,1,2,3,5,...",
+      "options": [
+        "6",
+        "7",
+        "8",
+        "10"
+      ],
+      "answer": "C",
+      "explanation": "Setiap suku adalah jumlah dua suku sebelumnya; berikutnya 8.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 16,
+      "section": "kemampuan",
+      "question": "Kubus memiliki sisi sebanyak ...",
+      "options": [
+        "4",
+        "6",
+        "8",
+        "12"
+      ],
+      "answer": "B",
+      "explanation": "Kubus memiliki 6 sisi.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 17,
+      "section": "kemampuan",
+      "question": "Arah berlawanan dari timur ...",
+      "options": [
+        "utara",
+        "selatan",
+        "barat",
+        "tenggara"
+      ],
+      "answer": "C",
+      "explanation": "Lawan arah timur adalah barat.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 18,
+      "section": "kemampuan",
+      "question": "Persegi diputar 90 derajat, bentuknya ...",
+      "options": [
+        "tetap persegi",
+        "segitiga",
+        "lingkaran",
+        "trapesium"
+      ],
+      "answer": "A",
+      "explanation": "Rotasi tidak mengubah bentuk persegi.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 19,
+      "section": "kemampuan",
+      "question": "Benda di kanan cermin tampak di ...",
+      "options": [
+        "kanan",
+        "kiri",
+        "atas",
+        "bawah"
+      ],
+      "answer": "B",
+      "explanation": "Cermin membalik arah lateral.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    },
+    {
+      "number": 20,
+      "section": "kemampuan",
+      "question": "Jaring-jaring kubus membentuk ...",
+      "options": [
+        "bola",
+        "kerucut",
+        "kubus",
+        "tabung"
+      ],
+      "answer": "C",
+      "explanation": "Jaring-jaring kubus dilipat menjadi kubus.",
+      "dimension": "kemampuan",
+      "scoreType": "objective"
+    }
+  ]
+}
