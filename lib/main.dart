@@ -11234,11 +11234,7 @@ class _PreparationMenuRow extends StatelessWidget {
             color: blue,
             assetPath: 'assets/logo_emblem.png',
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const PreparationPlaceholderPage(
-                  title: 'Psikotest',
-                ),
-              ),
+              MaterialPageRoute(builder: (_) => const PsychologyMenuPage()),
             ),
           ),
         ),
@@ -11952,6 +11948,138 @@ class _SmaOfficialNote extends StatelessWidget {
       ),
     ),
   );
+}
+
+class PsychologyMenuPage extends StatelessWidget {
+  const PsychologyMenuPage({super.key});
+
+  static const options = <({String title, String subtitle, IconData icon})>[
+    (
+      title: 'Assesment',
+      subtitle: 'Kenali kesiapan diri, gaya belajar, dan area pengembangan pribadi.',
+      icon: Icons.fact_check_outlined,
+    ),
+    (
+      title: 'Psikotest SMA TN',
+      subtitle: 'Persiapan psikotes untuk seleksi SMA Taruna Nusantara.',
+      icon: Icons.school_outlined,
+    ),
+    (
+      title: 'Psikotest Kedinasan',
+      subtitle: 'Persiapan psikotes untuk berbagai sekolah kedinasan.',
+      icon: Icons.account_balance_outlined,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Psikologi'),
+          foregroundColor: navy,
+        ),
+        backgroundColor: const Color(0xFFF7F9FC),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text(
+              'Pilih latihan psikologi',
+              key: Key('psychology-menu-title'),
+              style: TextStyle(
+                color: navy,
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Materi dan latihan disusun untuk membantu mengenali potensi diri serta mempersiapkan tahapan psikologi.',
+              style: TextStyle(color: Colors.black54, height: 1.4),
+            ),
+            const SizedBox(height: 20),
+            ...options.map(
+              (option) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Card(
+                  child: ListTile(
+                    key: Key('psychology-option-${option.title}'),
+                    contentPadding: const EdgeInsets.all(16),
+                    leading: CircleAvatar(
+                      backgroundColor: blue.withValues(alpha: .12),
+                      child: Icon(option.icon, color: blue),
+                    ),
+                    title: Text(
+                      option.title,
+                      style: const TextStyle(fontWeight: FontWeight.w800),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(option.subtitle),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, color: navy),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => PsychologyOptionPage(
+                          title: option.title,
+                          description: option.subtitle,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class PsychologyOptionPage extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const PsychologyOptionPage({
+    required this.title,
+    required this.description,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: Text(title), foregroundColor: navy),
+        backgroundColor: const Color(0xFFF7F9FC),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Card(
+              color: const Color(0xFFEAF1FF),
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.psychology_outlined, color: blue, size: 40),
+                    const SizedBox(height: 14),
+                    Text(title, style: const TextStyle(color: navy, fontSize: 23, fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 8),
+                    Text(description, style: const TextStyle(height: 1.45)),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            const Card(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Modul latihan sedang disiapkan. Gunakan latihan ini sebagai persiapan, bukan sebagai diagnosis psikologis atau jaminan hasil seleksi.',
+                  style: TextStyle(color: Colors.black54, height: 1.45),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 }
 
 class PreparationPlaceholderPage extends StatelessWidget {
