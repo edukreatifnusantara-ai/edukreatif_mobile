@@ -11629,10 +11629,12 @@ class _SmaPracticeMenuPage extends StatelessWidget {
                       }
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => _SmaPracticeDetailPage(
-                            title: '${group.title} · ${item.$1}',
-                            description: item.$2,
-                          ),
+                          builder: (_) => group.title == '1. Latihan Akademik CBT'
+                              ? _SmaCbtBankPage(subject: item.$1)
+                              : _SmaPracticeDetailPage(
+                                  title: '${group.title} · ${item.$1}',
+                                  description: item.$2,
+                                ),
                         ),
                       );
                     },
@@ -11656,6 +11658,183 @@ class _SmaPracticeMenuPage extends StatelessWidget {
       ],
     ),
   );
+}
+
+class _SmaCbtBankPage extends StatefulWidget {
+  final String subject;
+
+  const _SmaCbtBankPage({required this.subject});
+
+  @override
+  State<_SmaCbtBankPage> createState() => _SmaCbtBankPageState();
+}
+
+class _SmaCbtBankPageState extends State<_SmaCbtBankPage> {
+  late Future<Map<String, dynamic>> bankFuture;
+  int index = 0;
+  int remainingSeconds = 60 * 60;
+  Timer? timer;
+  final answers = <int, String>{};
+
+  String get assetDirectory => 'assets/sma_tn_cbt';
+  String get bankAsset => '$assetDirectory/${widget.subject.toLowerCase().replaceAll(' ', '_')}.json';
+
+  @override
+  void initState() {
+    super.initState();
+    bankFuture = _loadBank();
+    timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      if (remainingSeconds <= 1) {
+        timer?.cancel();
+        _finish();
+      } else {
+        setState(() => remainingSeconds--);
+      }
+    });
+  }
+
+  Future<Map<String, dynamic>> _loadBank() async => jsonDecode(
+        await rootBundle.loadString(bankAsset),
+      ) as Map<String, dynamic>;
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void _finish() {
+    timer?.cancel();
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('CBT selesai'),
+        content: Text('Jawaban terisi ${answers.length} soal.'),
+        actions: [
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              Navigator.pop(context);
+            },
+            child: const Text('Kembali ke menu'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text('CBT SMA TN · ${widget.subject}'),
+          foregroundColor: navy,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Text(
+                '${(remainingSeconds ~/ 60).toString().padLeft(2, '0')}:${(remainingSeconds % 60).toString().padLeft(2, '0')}',
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFFF7F9FC),
+        body: FutureBuilder<Map<String, dynamic>>(
+          future: bankFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Bank soal gagal dimuat: ${snapshot.error}'));
+            }
+            final questions = (snapshot.data?['questions'] as List<dynamic>? ?? const [])
+                .map((item) => Map<String, dynamic>.from(item as Map))
+                .toList();
+            if (questions.isEmpty) return const Center(child: Text('Belum ada soal.'));
+            final current = questions[index.clamp(0, questions.length - 1)];
+            final options = Map<String, dynamic>.from(current['options'] as Map);
+            final image = current['image'] as String?;
+            final selected = answers[index];
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(14, 14, 14, 20),
+                    children: [
+                      Card(
+                        color: const Color(0xFFEAF1FF),
+                        elevation: 0,
+                        child: ListTile(
+                          leading: const Icon(Icons.quiz_outlined, color: blue),
+                          title: Text('${widget.subject} · Soal ${index + 1} dari ${questions.length}', style: const TextStyle(fontWeight: FontWeight.w800)),
+                          subtitle: Text('Terjawab ${answers.length} soal · Materi latihan mandiri'),
+                        ),
+                      ),
+                      Card(
+                        elevation: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Chip(label: Text(current['topic'] as String? ?? widget.subject)),
+                              const SizedBox(height: 10),
+                              Text(current['question'] as String, style: const TextStyle(color: navy, fontSize: 17, height: 1.45, fontWeight: FontWeight.w700)),
+                              if (image != null) ...[
+                                const SizedBox(height: 14),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.asset('$assetDirectory/$image', fit: BoxFit.contain),
+                                ),
+                              ],
+                              const SizedBox(height: 14),
+                              ...options.entries.map((option) {
+                                final isSelected = selected == option.key;
+                                return InkWell(
+                                  onTap: () => setState(() => answers[index] = option.key),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 8),
+                                    padding: const EdgeInsets.all(11),
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? blue.withValues(alpha: .08) : Colors.transparent,
+                                      border: Border.all(color: isSelected ? blue : Colors.black12),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Row(children: [
+                                      CircleAvatar(radius: 15, backgroundColor: isSelected ? blue : Colors.black12, child: Text(option.key, style: TextStyle(color: isSelected ? Colors.white : navy, fontWeight: FontWeight.w800))),
+                                      const SizedBox(width: 10),
+                                      Expanded(child: Text(option.value.toString())),
+                                    ]),
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 8, 14, 12),
+                    child: Row(children: [
+                      OutlinedButton(onPressed: index == 0 ? null : () => setState(() => index--), child: const Text('Sebelumnya')),
+                      const Spacer(),
+                      FilledButton(onPressed: index == questions.length - 1 ? _finish : () => setState(() => index++), child: Text(index == questions.length - 1 ? 'Selesai' : 'Berikutnya')),
+                    ]),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
 }
 
 class _SmaPracticeDetailPage extends StatelessWidget {

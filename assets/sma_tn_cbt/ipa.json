@@ -1,0 +1,457 @@
+{
+  "subject": "IPA",
+  "source": "Soal_CBT_IPA_SMA_TN_30_Soal_10_Gambar.docx",
+  "disclaimer": "Materi latihan mandiri, bukan soal resmi atau bocoran seleksi SMA TN.",
+  "questions": [
+    {
+      "number": 1,
+      "question": "Perhatikan gambar stomata daun. Proses yang paling langsung diatur oleh membuka dan menutupnya struktur tersebut adalah ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "penyerapan ion mineral oleh akar",
+        "B": "pertukaran gas dan pelepasan uap air",
+        "C": "pengangkutan sukrosa melalui floem",
+        "D": "pembentukan klorofil di kloroplas",
+        "E": "pembelahan sel pada jaringan meristem"
+      },
+      "image": "ipa_01.png",
+      "answer": "B",
+      "explanation": "Stomata mengatur pertukaran gas dan transpirasi melalui pengendalian bukaan pori pada permukaan daun."
+    },
+    {
+      "number": 2,
+      "question": "Jantung pada gambar memiliki empat ruang. Urutan yang tepat untuk aliran darah beroksigen setelah meninggalkan paru-paru adalah ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "vena pulmonalis → serambi kiri → bilik kiri → aorta",
+        "B": "arteri pulmonalis → serambi kiri → bilik kiri → aorta",
+        "C": "vena pulmonalis → serambi kanan → bilik kanan → aorta",
+        "D": "vena kava → serambi kiri → bilik kiri → aorta",
+        "E": "vena pulmonalis → bilik kiri → serambi kiri → aorta"
+      },
+      "image": "ipa_02.png",
+      "answer": "A",
+      "explanation": "Darah beroksigen kembali melalui vena pulmonalis menuju serambi kiri, kemudian bilik kiri memompanya ke aorta."
+    },
+    {
+      "number": 3,
+      "question": "Pada rangkaian tertutup seperti gambar, lampu menjadi lebih terang ketika baterai identik kedua dipasang seri. Penjelasan yang paling tepat adalah ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "hambatan rangkaian menjadi nol",
+        "B": "beda potensial pada lampu bertambah",
+        "C": "elektron digantikan partikel yang lebih berat",
+        "D": "lampu menerima energi listrik lebih sedikit tiap detik",
+        "E": "saklar mengubah energi kimia langsung menjadi cahaya"
+      },
+      "image": "ipa_03.png",
+      "answer": "B",
+      "explanation": "Baterai seri menambah beda potensial total sehingga daya pada lampu dapat meningkat jika hambatan tetap."
+    },
+    {
+      "number": 4,
+      "question": "Lensa cembung pada gambar membentuk bayangan terbalik pada layar. Jika benda berada di antara titik fokus dan dua kali jarak fokus, bayangan yang terbentuk adalah ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "maya, tegak, dan diperbesar",
+        "B": "nyata, tegak, dan diperkecil",
+        "C": "nyata, terbalik, dan diperbesar",
+        "D": "maya, terbalik, dan diperkecil",
+        "E": "nyata, terbalik, dan sama besar"
+      },
+      "image": "ipa_04.png",
+      "answer": "C",
+      "explanation": "Benda di antara F dan 2F pada lensa cembung menghasilkan bayangan nyata, terbalik, dan diperbesar di luar 2F."
+    },
+    {
+      "number": 5,
+      "question": "Singkapan batuan pada gambar memiliki lapisan sedimen dan jejak fosil. Kesimpulan yang paling didukung oleh gambar adalah ...",
+      "topic": "Ilmu Bumi",
+      "options": {
+        "A": "lapisan terbentuk seketika dari magma cair",
+        "B": "lapisan yang mengandung fosil pasti paling muda",
+        "C": "sedimen mengendap bertahap lalu mengalami pemadatan",
+        "D": "fosil membuktikan batuan terbentuk di lubang vulkanik",
+        "E": "semua lapisan pasti berumur sama"
+      },
+      "image": "ipa_05.png",
+      "answer": "C",
+      "explanation": "Lapisan sedimen umumnya terbentuk melalui pengendapan, pemadatan, dan sementasi secara bertahap; fosil dapat terawetkan di dalamnya."
+    },
+    {
+      "number": 6,
+      "question": "Dalam jaring-jaring makanan pada gambar, rumput dimakan belalang, belalang dimakan katak, dan katak dimakan ular. Jika populasi belalang menurun tajam, dampak awal yang paling mungkin adalah ...",
+      "topic": "Ekologi",
+      "options": {
+        "A": "rumput menurun dan katak meningkat",
+        "B": "rumput meningkat dan katak menurun",
+        "C": "rumput dan katak sama-sama meningkat",
+        "D": "rumput dan katak sama-sama menurun",
+        "E": "tidak ada populasi yang berubah"
+      },
+      "image": "ipa_06.png",
+      "answer": "B",
+      "explanation": "Penurunan belalang mengurangi pemakanan rumput dan mengurangi makanan katak. Akibat awalnya, rumput cenderung meningkat dan katak menurun."
+    },
+    {
+      "number": 7,
+      "question": "Cahaya masuk ke mata melalui kornea dan pupil, kemudian difokuskan oleh lensa. Struktur yang mengubah rangsangan cahaya menjadi impuls saraf adalah ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "sklera",
+        "B": "iris",
+        "C": "retina",
+        "D": "saraf optik",
+        "E": "otot siliaris"
+      },
+      "image": "ipa_07.png",
+      "answer": "C",
+      "explanation": "Fotoreseptor pada retina mengubah cahaya menjadi sinyal listrik yang diteruskan melalui saraf optik."
+    },
+    {
+      "number": 8,
+      "question": "Sistem katrol majemuk pada gambar digunakan untuk mengangkat beban. Dibandingkan mengangkat beban secara langsung, keuntungan mekanis idealnya memungkinkan pengguna ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "menggunakan gaya lebih kecil melalui jarak lebih jauh",
+        "B": "menggunakan gaya lebih besar melalui jarak lebih pendek",
+        "C": "menghilangkan usaha yang diperlukan",
+        "D": "menambah massa beban tanpa mengubah energi",
+        "E": "menciptakan energi dari tali"
+      },
+      "image": "ipa_08.png",
+      "answer": "A",
+      "explanation": "Katrol mengurangi gaya yang diperlukan, tetapi gaya bekerja melalui jarak yang lebih jauh; usaha ideal tetap sama."
+    },
+    {
+      "number": 9,
+      "question": "Tunas tanaman pada gambar membengkok ke arah jendela. Mekanisme yang paling tepat menjelaskan respons tersebut adalah ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "auksin menumpuk di sisi terang dan menghambat pemanjangan",
+        "B": "auksin menumpuk di sisi teduh dan merangsang pemanjangan",
+        "C": "giberelin menghancurkan sel di sisi teduh",
+        "D": "sitokinin mempercepat pembelahan sel di sisi terang",
+        "E": "asam absisat membuka stomata di sisi teduh"
+      },
+      "image": "ipa_09.png",
+      "answer": "B",
+      "explanation": "Pada tunas, auksin berpindah ke sisi teduh dan merangsang pemanjangan sel sehingga tunas membengkok ke arah cahaya."
+    },
+    {
+      "number": 10,
+      "question": "Kolam pada gambar mengalami ledakan populasi alga setelah terkena limpasan pupuk. Urutan yang paling mungkin menyebabkan kematian ikan adalah ...",
+      "topic": "Ekologi",
+      "options": {
+        "A": "nutrien berkurang → alga mati → oksigen meningkat",
+        "B": "alga bertambah → pembusukan bertambah → oksigen terlarut berkurang",
+        "C": "ikan bertambah → alga berkurang → oksigen berkurang",
+        "D": "pupuk mensterilkan air → fotosintesis langsung berhenti",
+        "E": "alga bertambah → air menjadi dingin → oksigen habis oleh cahaya"
+      },
+      "image": "ipa_10.png",
+      "answer": "B",
+      "explanation": "Nutrien berlebih memicu pertumbuhan alga. Pembusukan alga mati menghabiskan oksigen terlarut sehingga ikan kekurangan oksigen."
+    },
+    {
+      "number": 11,
+      "question": "Seorang pesepeda meningkatkan kelajuan dari 5 m/s menjadi 15 m/s dalam 4 sekon. Percepatan rata-ratanya adalah ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "1,25 m/s²",
+        "B": "2,5 m/s²",
+        "C": "3,75 m/s²",
+        "D": "5 m/s²",
+        "E": "10 m/s²"
+      },
+      "image": null,
+      "answer": "B",
+      "explanation": "Percepatan rata-rata = (15 − 5)/4 = 2,5 m/s²."
+    },
+    {
+      "number": 12,
+      "question": "Hambatan 6 Ω dan 3 Ω dipasang paralel pada sumber 12 V. Arus total yang diberikan sumber adalah ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "2 A",
+        "B": "4 A",
+        "C": "6 A",
+        "D": "9 A",
+        "E": "12 A"
+      },
+      "image": null,
+      "answer": "C",
+      "explanation": "Hambatan pengganti = 2 Ω, sehingga I = V/R = 12/2 = 6 A."
+    },
+    {
+      "number": 13,
+      "question": "Benda bermassa 2 kg diangkat vertikal setinggi 5 m. Jika g = 10 m/s², pertambahan energi potensial gravitasinya adalah ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "10 J",
+        "B": "25 J",
+        "C": "50 J",
+        "D": "100 J",
+        "E": "250 J"
+      },
+      "image": null,
+      "answer": "D",
+      "explanation": "Energi potensial = mgh = 2 × 10 × 5 = 100 J."
+    },
+    {
+      "number": 14,
+      "question": "Larutan memiliki pH 3, sedangkan larutan lain memiliki pH 5. Konsentrasi ion hidrogen larutan pertama dibandingkan larutan kedua adalah ...",
+      "topic": "Kimia",
+      "options": {
+        "A": "2 kali lebih besar",
+        "B": "10 kali lebih besar",
+        "C": "100 kali lebih besar",
+        "D": "1.000 kali lebih besar",
+        "E": "10.000 kali lebih besar"
+      },
+      "image": null,
+      "answer": "C",
+      "explanation": "Perbedaan dua satuan pH menunjukkan perbedaan konsentrasi ion H+ sebesar 10² atau 100 kali."
+    },
+    {
+      "number": 15,
+      "question": "Campuran pasir, garam, dan air akan dipisahkan. Urutan metode yang paling tepat adalah ...",
+      "topic": "Kimia",
+      "options": {
+        "A": "filtrasi, kemudian evaporasi",
+        "B": "evaporasi, kemudian filtrasi",
+        "C": "distilasi saja",
+        "D": "pemisahan magnetik, kemudian filtrasi",
+        "E": "sublimasi, kemudian dekantasi"
+      },
+      "image": null,
+      "answer": "A",
+      "explanation": "Filtrasi memisahkan pasir yang tidak larut, lalu evaporasi memisahkan garam yang terlarut."
+    },
+    {
+      "number": 16,
+      "question": "Perubahan berikut yang menunjukkan reaksi kimia, bukan sekadar perubahan wujud, adalah ...",
+      "topic": "Kimia",
+      "options": {
+        "A": "es mencair",
+        "B": "air mendidih",
+        "C": "gula larut",
+        "D": "besi berkarat",
+        "E": "lilin membeku"
+      },
+      "image": null,
+      "answer": "D",
+      "explanation": "Perkaratan menghasilkan zat baru, yaitu oksida besi, sehingga termasuk perubahan kimia."
+    },
+    {
+      "number": 17,
+      "question": "Tanaman disimpan di tempat gelap selama 48 jam sebelum daunnya diuji dengan lugol. Tujuan perlakuan tersebut adalah ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "meningkatkan produksi klorofil",
+        "B": "menghilangkan pati tersimpan yang dapat mengganggu pengujian",
+        "C": "menghentikan respirasi sel secara permanen",
+        "D": "membuat daun menyerap lebih banyak lugol",
+        "E": "mengubah glukosa langsung menjadi protein"
+      },
+      "image": null,
+      "answer": "B",
+      "explanation": "Destarching menghilangkan pati yang sudah ada sehingga pati yang terdeteksi lebih dapat dikaitkan dengan fotosintesis selama percobaan."
+    },
+    {
+      "number": 18,
+      "question": "Tanaman berbunga merah bergenotipe Rr disilangkan dengan tanaman berbunga putih rr. Jika R dominan, persentase keturunan berbunga putih adalah ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "0%",
+        "B": "25%",
+        "C": "50%",
+        "D": "75%",
+        "E": "100%"
+      },
+      "image": null,
+      "answer": "C",
+      "explanation": "Persilangan Rr × rr menghasilkan 1/2 Rr berbunga merah dan 1/2 rr berbunga putih."
+    },
+    {
+      "number": 19,
+      "question": "Saat berolahraga berat, sel otot dapat menghasilkan asam laktat karena ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "pasokan oksigen tidak mencukupi kebutuhan respirasi aerobik",
+        "B": "mitokondria berhenti memiliki enzim",
+        "C": "glukosa tidak dapat masuk ke darah",
+        "D": "karbon dioksida diubah menjadi oksigen",
+        "E": "ATP tidak dapat digunakan serabut otot"
+      },
+      "image": null,
+      "answer": "A",
+      "explanation": "Jika oksigen tidak mencukupi, respirasi anaerob menghasilkan ATP dalam jumlah terbatas dan asam laktat."
+    },
+    {
+      "number": 20,
+      "question": "Ketika front dingin memasuki suatu wilayah, perubahan cuaca yang paling mungkin terjadi adalah ...",
+      "topic": "Ilmu Bumi",
+      "options": {
+        "A": "hujan lama dan ringan disertai pemanasan bertahap",
+        "B": "awan berkembang cepat, angin menguat, dan hujan dapat deras",
+        "C": "langit cerah tanpa perubahan tekanan",
+        "D": "kekeringan permanen akibat udara dingin",
+        "E": "kelembapan naik tanpa perubahan suhu"
+      },
+      "image": null,
+      "answer": "B",
+      "explanation": "Udara dingin yang rapat memaksa udara hangat naik cepat sehingga dapat membentuk awan tebal, angin kencang, dan hujan deras."
+    },
+    {
+      "number": 21,
+      "question": "Gerak harian Matahari yang tampak dari timur ke barat terutama disebabkan oleh ...",
+      "topic": "Ilmu Bumi",
+      "options": {
+        "A": "Matahari mengelilingi Bumi sekali sehari",
+        "B": "Bumi berotasi pada porosnya dari barat ke timur",
+        "C": "Bumi berevolusi mengelilingi Matahari dari timur ke barat",
+        "D": "pergerakan awan di atmosfer",
+        "E": "Bulan memantulkan cahaya Matahari"
+      },
+      "image": null,
+      "answer": "B",
+      "explanation": "Rotasi Bumi dari barat ke timur membuat Matahari tampak bergerak dari timur ke barat."
+    },
+    {
+      "number": 22,
+      "question": "Gelombang memiliki frekuensi 4 Hz dan panjang gelombang 2,5 m. Kelajuan gelombang tersebut adalah ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "0,625 m/s",
+        "B": "1,6 m/s",
+        "C": "6,5 m/s",
+        "D": "10 m/s",
+        "E": "16 m/s"
+      },
+      "image": null,
+      "answer": "D",
+      "explanation": "Kelajuan gelombang v = fλ = 4 × 2,5 = 10 m/s."
+    },
+    {
+      "number": 23,
+      "question": "Logam bereaksi hebat dengan asam encer dan menghasilkan gas yang menimbulkan bunyi letupan ketika dibakar. Gas itu adalah ...",
+      "topic": "Kimia",
+      "options": {
+        "A": "oksigen",
+        "B": "nitrogen",
+        "C": "hidrogen",
+        "D": "karbon dioksida",
+        "E": "klorin"
+      },
+      "image": null,
+      "answer": "C",
+      "explanation": "Logam reaktif dapat menggantikan hidrogen dari asam. Gas hidrogen menghasilkan bunyi letupan ketika diuji dengan nyala."
+    },
+    {
+      "number": 24,
+      "question": "Pernyataan yang paling tepat membedakan arteri dan vena adalah ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "arteri selalu membawa darah beroksigen dan vena selalu tidak beroksigen",
+        "B": "arteri membawa darah menjauhi jantung dan umumnya berdinding lebih tebal",
+        "C": "vena berdinding lebih tebal karena tekanannya lebih tinggi",
+        "D": "arteri memiliki katup di sepanjang pembuluh",
+        "E": "vena selalu membawa darah menuju paru-paru"
+      },
+      "image": null,
+      "answer": "B",
+      "explanation": "Pembeda utama adalah arah aliran terhadap jantung. Arteri umumnya berdinding lebih tebal karena tekanannya lebih tinggi."
+    },
+    {
+      "number": 25,
+      "question": "Pada piramida energi, energi berkurang pada tingkat trofik yang lebih tinggi terutama karena ...",
+      "topic": "Ekologi",
+      "options": {
+        "A": "konsumen menghasilkan energi dari ketiadaan",
+        "B": "sebagian besar energi hilang sebagai panas saat metabolisme",
+        "C": "tumbuhan tidak melakukan respirasi",
+        "D": "predator tidak membutuhkan energi",
+        "E": "energi dihancurkan oleh pengurai"
+      },
+      "image": null,
+      "answer": "B",
+      "explanation": "Transfer energi tidak efisien; sebagian besar energi dilepaskan sebagai panas selama respirasi dan aktivitas."
+    },
+    {
+      "number": 26,
+      "question": "Indikator universal berwarna hijau ketika ditambahkan ke suatu cairan. Kesimpulan paling aman adalah cairan tersebut ...",
+      "topic": "Kimia",
+      "options": {
+        "A": "sangat asam",
+        "B": "agak asam",
+        "C": "mendekati netral",
+        "D": "sangat basa",
+        "E": "pasti air murni"
+      },
+      "image": null,
+      "answer": "C",
+      "explanation": "Warna hijau umumnya menunjukkan pH mendekati 7, tetapi tidak membuktikan cairan tersebut air murni."
+    },
+    {
+      "number": 27,
+      "question": "Gaya 50 N memindahkan benda sejauh 4 m searah gaya. Usaha yang dilakukan adalah ...",
+      "topic": "Fisika",
+      "options": {
+        "A": "12,5 J",
+        "B": "46 J",
+        "C": "54 J",
+        "D": "200 J",
+        "E": "400 J"
+      },
+      "image": null,
+      "answer": "D",
+      "explanation": "Usaha W = F × s × cos 0° = 50 × 4 = 200 J."
+    },
+    {
+      "number": 28,
+      "question": "Vaksin melindungi seseorang terutama dengan merangsang pembentukan ...",
+      "topic": "Biologi",
+      "options": {
+        "A": "sel darah merah saja",
+        "B": "sel memori dan respons imun spesifik",
+        "C": "enzim pencernaan",
+        "D": "trombosit yang mencerna patogen",
+        "E": "antibiotik di dalam sel tubuh"
+      },
+      "image": null,
+      "answer": "B",
+      "explanation": "Vaksin merangsang sistem imun membentuk sel memori sehingga respons terhadap patogen yang sama menjadi lebih cepat."
+    },
+    {
+      "number": 29,
+      "question": "Daerah pantai sering memiliki rentang suhu harian lebih kecil daripada daerah pedalaman karena ...",
+      "topic": "Ilmu Bumi",
+      "options": {
+        "A": "air memiliki kalor jenis tinggi dan berubah suhu lebih lambat",
+        "B": "daratan memantulkan seluruh radiasi",
+        "C": "air laut tidak dapat menyerap panas",
+        "D": "udara pantai tidak mengandung uap air",
+        "E": "angin menghentikan konveksi di pantai"
+      },
+      "image": null,
+      "answer": "A",
+      "explanation": "Air membutuhkan energi lebih besar untuk berubah suhu sehingga laut memoderasi pemanasan dan pendinginan wilayah pantai."
+    },
+    {
+      "number": 30,
+      "question": "Dalam reaksi tertutup, massa pereaksi 48 g. Jika tidak ada zat yang keluar, massa produk adalah ...",
+      "topic": "Kimia",
+      "options": {
+        "A": "kurang dari 48 g",
+        "B": "tepat 24 g",
+        "C": "tepat 48 g",
+        "D": "lebih dari 48 g hanya jika dipanaskan",
+        "E": "tidak dapat ditentukan"
+      },
+      "image": null,
+      "answer": "C",
+      "explanation": "Hukum kekekalan massa menyatakan massa total tetap dalam sistem tertutup, sehingga massa produk 48 g."
+    }
+  ]
+}
