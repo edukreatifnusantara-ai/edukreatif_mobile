@@ -11,6 +11,23 @@ import 'package:edukreativ_mobile/main.dart';
 import 'package:edukreativ_mobile/tni_academic_data.dart';
 
 void main() {
+  testWidgets('hasil assessment memiliki tombol kembali ke menu assessment', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AssessmentResultPage(questions: [], answers: {}),
+      ),
+    );
+
+    await tester.scrollUntilVisible(
+      find.text('Kembali ke Menu Assessment'),
+      300,
+      scrollable: find.byType(Scrollable),
+    );
+    expect(find.text('Kembali ke Menu Assessment'), findsOneWidget);
+  });
+
   test('batas soal UTBK mengikuti jumlah paket, bukan seluruh bank', () {
     expect(UtbkRealCbtPage.limitFor('PU'), 30);
     expect(UtbkRealCbtPage.limitFor('PPU'), 20);
@@ -132,10 +149,11 @@ void main() {
     expect(find.text('Karya nyata dari ide yang diwujudkan.'), findsOneWidget);
     expect(find.text('Poster Hemat Air'), findsOneWidget);
 
-    await tester.pumpWidget(
-      const MaterialApp(home: CreativeInspirationPage()),
+    await tester.pumpWidget(const MaterialApp(home: CreativeInspirationPage()));
+    expect(
+      find.text('Temukan ide, lalu kembangkan dengan caramu.'),
+      findsOneWidget,
     );
-    expect(find.text('Temukan ide, lalu kembangkan dengan caramu.'), findsOneWidget);
     expect(find.text('Ubah masalah menjadi ide'), findsOneWidget);
 
     LocalAccount.isLoggedIn = true;
@@ -150,9 +168,7 @@ void main() {
     expect(find.text('Hari ini saya menemukan ide baru.'), findsOneWidget);
   });
 
-  testWidgets('materi premium meminta login sebelum paywall', (
-    tester,
-  ) async {
+  testWidgets('materi premium meminta login sebelum paywall', (tester) async {
     LocalAccount.isLoggedIn = false;
     await tester.pumpWidget(
       const MaterialApp(home: Scaffold(body: CatalogPage())),
@@ -471,7 +487,10 @@ void main() {
 
     await tester.tap(find.text('Psikotest'));
     await tester.pumpAndSettle();
-    expect(find.text('Materi dan latihan untuk menu ini sedang disiapkan.'), findsOneWidget);
+    expect(
+      find.text('Materi dan latihan untuk menu ini sedang disiapkan.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('SIAP UTBK menampilkan countdown di beranda', (tester) async {
@@ -496,10 +515,10 @@ void main() {
     expect(find.text('SIAP UTBK'), findsOneWidget);
     expect(find.text('HITUNG MUNDUR UTBK 2027'), findsNothing);
   });
-  testWidgets('layout soal memisahkan area scroll dan tombol tetap', (tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(home: UtbkQuestionPage()),
-    );
+  testWidgets('layout soal memisahkan area scroll dan tombol tetap', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: UtbkQuestionPage()));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.byType(Scrollable), findsOneWidget);
@@ -521,7 +540,9 @@ void main() {
     await tester.tap(find.text('Target UTBK hari ini'));
     await tester.pumpAndSettle();
     expect(
-      find.textContaining('Fokus hari ini: TPS, Literasi, dan Penalaran Matematika.'),
+      find.textContaining(
+        'Fokus hari ini: TPS, Literasi, dan Penalaran Matematika.',
+      ),
       findsOneWidget,
     );
   });
