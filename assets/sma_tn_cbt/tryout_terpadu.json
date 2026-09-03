@@ -1,0 +1,245 @@
+{
+  "title": "tryout_terpadu",
+  "questions": [
+    {
+      "question": "Jika 2x−3=11, nilai x² adalah ...",
+      "options": {
+        "A": "16",
+        "B": "25",
+        "C": "36",
+        "D": "49",
+        "E": "64"
+      },
+      "answer": "D",
+      "explanation": "x=7 sehingga x²=49."
+    },
+    {
+      "question": "Pola 1, 4, 10, 19, 31, ... suku berikutnya ...",
+      "options": {
+        "A": "40",
+        "B": "43",
+        "C": "45",
+        "D": "46",
+        "E": "49"
+      },
+      "answer": "D",
+      "explanation": "Selisih 3,6,9,12; berikutnya 15, jadi 46."
+    },
+    {
+      "question": "Akar-akar persamaan x²−5x+6=0 adalah ...",
+      "options": {
+        "A": "1 dan 6",
+        "B": "2 dan 3",
+        "C": "−2 dan −3",
+        "D": "3 dan 5",
+        "E": "1 dan 5"
+      },
+      "answer": "B",
+      "explanation": "Faktornya (x−2)(x−3)."
+    },
+    {
+      "question": "Jika luas persegi 196 cm², panjang sisinya ...",
+      "options": {
+        "A": "12",
+        "B": "13",
+        "C": "14",
+        "D": "15",
+        "E": "16"
+      },
+      "answer": "C",
+      "explanation": "Sisi=√196=14."
+    },
+    {
+      "question": "Nilai (3/4)÷(9/8) adalah ...",
+      "options": {
+        "A": "1/2",
+        "B": "2/3",
+        "C": "3/4",
+        "D": "4/3",
+        "E": "3/2"
+      },
+      "answer": "B",
+      "explanation": "3/4×8/9=2/3."
+    },
+    {
+      "question": "Organel yang mengatur kegiatan sel adalah ...",
+      "options": {
+        "A": "ribosom",
+        "B": "mitokondria",
+        "C": "nukleus",
+        "D": "vakuola",
+        "E": "dinding sel"
+      },
+      "answer": "C",
+      "explanation": "Nukleus menyimpan materi genetik dan mengatur aktivitas sel."
+    },
+    {
+      "question": "Perubahan wujud gas menjadi cair disebut ...",
+      "options": {
+        "A": "menguap",
+        "B": "membeku",
+        "C": "menyublim",
+        "D": "mengembun",
+        "E": "melebur"
+      },
+      "answer": "D",
+      "explanation": "Gas yang kehilangan kalor dapat mengembun."
+    },
+    {
+      "question": "Gaya 20 N bekerja pada benda bermassa 5 kg. Percepatannya ...",
+      "options": {
+        "A": "2 m/s²",
+        "B": "4 m/s²",
+        "C": "5 m/s²",
+        "D": "10 m/s²",
+        "E": "25 m/s²"
+      },
+      "answer": "B",
+      "explanation": "a=F/m=20/5=4 m/s²."
+    },
+    {
+      "question": "Zat yang memiliki pH kurang dari 7 bersifat ...",
+      "options": {
+        "A": "netral",
+        "B": "asam",
+        "C": "basa",
+        "D": "garam",
+        "E": "logam"
+      },
+      "answer": "B",
+      "explanation": "pH<7 menunjukkan sifat asam."
+    },
+    {
+      "question": "Fotosintesis terutama berlangsung pada ...",
+      "options": {
+        "A": "lisosom",
+        "B": "kloroplas",
+        "C": "sentriol",
+        "D": "nukleus",
+        "E": "membran sel"
+      },
+      "answer": "B",
+      "explanation": "Kloroplas mengandung klorofil."
+    },
+    {
+      "question": "Kalimat yang paling efektif adalah ...",
+      "options": {
+        "A": "Para siswa-siswa segera masuk.",
+        "B": "Siswa segera masuk ke dalam kelas.",
+        "C": "Para siswa segera masuk ke dalam kelas-kelas.",
+        "D": "Siswa-siswa para segera masuk.",
+        "E": "Semua para siswa-siswa masuk."
+      },
+      "answer": "B",
+      "explanation": "Subjek jamak cukup ditulis “siswa”; kalimatnya ringkas dan jelas."
+    },
+    {
+      "question": "Gagasan utama paragraf biasanya memuat ...",
+      "options": {
+        "A": "contoh tambahan",
+        "B": "inti pembahasan",
+        "C": "kata sulit",
+        "D": "data paling kecil",
+        "E": "kalimat penutup saja"
+      },
+      "answer": "B",
+      "explanation": "Gagasan utama adalah inti pembahasan paragraf."
+    },
+    {
+      "question": "Makna kata “konservasi” adalah ...",
+      "options": {
+        "A": "perusakan",
+        "B": "pelestarian",
+        "C": "perdagangan",
+        "D": "perubahan",
+        "E": "perluasan"
+      },
+      "answer": "B",
+      "explanation": "Konservasi berarti perlindungan atau pelestarian."
+    },
+    {
+      "question": "Kata baku yang tepat adalah ...",
+      "options": {
+        "A": "resiko",
+        "B": "ijin",
+        "C": "praktik",
+        "D": "aktifitas",
+        "E": "analisa"
+      },
+      "answer": "C",
+      "explanation": "Bentuk baku yang tepat ialah praktik."
+    },
+    {
+      "question": "Kalimat “Hujan turun, tetapi pertandingan tetap berlangsung” memakai hubungan ...",
+      "options": {
+        "A": "sebab",
+        "B": "tujuan",
+        "C": "pertentangan",
+        "D": "penambahan",
+        "E": "syarat"
+      },
+      "answer": "C",
+      "explanation": "Kata “tetapi” menandai pertentangan."
+    },
+    {
+      "question": "Choose the correct sentence.",
+      "options": {
+        "A": "She go to school every day.",
+        "B": "She goes to school every day.",
+        "C": "She going to school every day.",
+        "D": "She gone to school every day.",
+        "E": "She is go to school every day."
+      },
+      "answer": "B",
+      "explanation": "For third-person singular in simple present, use “goes”."
+    },
+    {
+      "question": "The word “accurate” is closest in meaning to ...",
+      "options": {
+        "A": "late",
+        "B": "precise",
+        "C": "large",
+        "D": "distant",
+        "E": "uncertain"
+      },
+      "answer": "B",
+      "explanation": "Accurate means correct or precise."
+    },
+    {
+      "question": "If they had prepared earlier, they ... the deadline.",
+      "options": {
+        "A": "meet",
+        "B": "will meet",
+        "C": "would have met",
+        "D": "are meeting",
+        "E": "met"
+      },
+      "answer": "C",
+      "explanation": "This is a third conditional: would have + past participle."
+    },
+    {
+      "question": "The passive form of “The team completed the project” is ...",
+      "options": {
+        "A": "The project completes the team.",
+        "B": "The project was completed by the team.",
+        "C": "The team was completed by the project.",
+        "D": "The project is completing the team.",
+        "E": "The project has complete the team."
+      },
+      "answer": "B",
+      "explanation": "Past simple passive uses was/were + past participle."
+    },
+    {
+      "question": "“Although the path was steep, we continued walking.” The word although expresses ...",
+      "options": {
+        "A": "addition",
+        "B": "contrast",
+        "C": "cause",
+        "D": "time",
+        "E": "purpose"
+      },
+      "answer": "B",
+      "explanation": "Although introduces a contrast."
+    }
+  ]
+}

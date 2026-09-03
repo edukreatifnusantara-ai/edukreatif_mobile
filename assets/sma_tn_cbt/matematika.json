@@ -1,0 +1,365 @@
+{
+  "title": "matematika",
+  "questions": [
+    {
+      "question": "Nilai 3(2x−5)=27 adalah ...",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7",
+        "E": "8"
+      },
+      "answer": "D",
+      "explanation": "3(2x−5)=27, jadi 2x−5=9, 2x=14, dan x=7."
+    },
+    {
+      "question": "Sebuah persegi panjang memiliki panjang 14 cm dan lebar 9 cm. Luasnya ...",
+      "options": {
+        "A": "23 cm²",
+        "B": "46 cm²",
+        "C": "126 cm²",
+        "D": "252 cm²",
+        "E": "196 cm²"
+      },
+      "answer": "C",
+      "explanation": "Luas=p×l=14×9=126 cm²."
+    },
+    {
+      "question": "Pola 2, 5, 10, 17, 26, ... dilanjutkan dengan ...",
+      "options": {
+        "A": "35",
+        "B": "36",
+        "C": "37",
+        "D": "38",
+        "E": "39"
+      },
+      "answer": "C",
+      "explanation": "Selisihnya 3,5,7,9; selisih berikutnya 11, sehingga 26+11=37."
+    },
+    {
+      "question": "Nilai 15% dari 240 adalah ...",
+      "options": {
+        "A": "24",
+        "B": "30",
+        "C": "36",
+        "D": "40",
+        "E": "48"
+      },
+      "answer": "C",
+      "explanation": "15%×240=0,15×240=36."
+    },
+    {
+      "question": "Perbandingan kelereng Rani dan Sita adalah 3:5. Jika totalnya 40, kelereng Sita berjumlah ...",
+      "options": {
+        "A": "12",
+        "B": "15",
+        "C": "20",
+        "D": "24",
+        "E": "25"
+      },
+      "answer": "E",
+      "explanation": "Jumlah bagian 8; satu bagian 5, sehingga bagian Sita 5×5=25."
+    },
+    {
+      "question": "Rata-rata 72, 68, 80, dan 76 adalah ...",
+      "options": {
+        "A": "72",
+        "B": "73",
+        "C": "74",
+        "D": "75",
+        "E": "76"
+      },
+      "answer": "C",
+      "explanation": "Jumlah 296 dibagi 4 sama dengan 74."
+    },
+    {
+      "question": "Sebuah bus menempuh 180 km dalam 3 jam. Kecepatan rata-ratanya ...",
+      "options": {
+        "A": "45 km/jam",
+        "B": "50 km/jam",
+        "C": "60 km/jam",
+        "D": "70 km/jam",
+        "E": "90 km/jam"
+      },
+      "answer": "C",
+      "explanation": "Kecepatan=jarak/waktu=180/3=60 km/jam."
+    },
+    {
+      "question": "Bentuk pecahan paling sederhana dari 0,375 adalah ...",
+      "options": {
+        "A": "1/4",
+        "B": "3/8",
+        "C": "2/5",
+        "D": "5/8",
+        "E": "7/16"
+      },
+      "answer": "B",
+      "explanation": "0,375=375/1000=3/8."
+    },
+    {
+      "question": "Jika 4a+7=31, nilai a adalah ...",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7",
+        "E": "8"
+      },
+      "answer": "C",
+      "explanation": "4a=24 sehingga a=6."
+    },
+    {
+      "question": "Volume kubus dengan panjang rusuk 5 cm adalah ...",
+      "options": {
+        "A": "25 cm³",
+        "B": "50 cm³",
+        "C": "75 cm³",
+        "D": "100 cm³",
+        "E": "125 cm³"
+      },
+      "answer": "E",
+      "explanation": "Volume=s³=5³=125 cm³."
+    },
+    {
+      "question": "Suhu 18°C turun 7°C, kemudian naik 12°C. Suhu akhirnya ...",
+      "options": {
+        "A": "5°C",
+        "B": "19°C",
+        "C": "23°C",
+        "D": "25°C",
+        "E": "37°C"
+      },
+      "answer": "C",
+      "explanation": "18−7+12=23°C."
+    },
+    {
+      "question": "Peluang muncul bilangan genap saat sebuah dadu dilempar sekali adalah ...",
+      "options": {
+        "A": "1/6",
+        "B": "1/3",
+        "C": "1/2",
+        "D": "2/3",
+        "E": "5/6"
+      },
+      "answer": "C",
+      "explanation": "Hasil genap 2,4,6 berjumlah 3 dari 6, jadi 1/2."
+    },
+    {
+      "question": "Keliling lingkaran berjari-jari 7 cm dengan π=22/7 adalah ...",
+      "options": {
+        "A": "22 cm",
+        "B": "44 cm",
+        "C": "88 cm",
+        "D": "154 cm",
+        "E": "308 cm"
+      },
+      "answer": "B",
+      "explanation": "Keliling=2πr=2×22/7×7=44 cm."
+    },
+    {
+      "question": "Jika x=−3 dan y=5, nilai 2x+y adalah ...",
+      "options": {
+        "A": "−11",
+        "B": "−6",
+        "C": "−1",
+        "D": "1",
+        "E": "11"
+      },
+      "answer": "C",
+      "explanation": "2(−3)+5=−1."
+    },
+    {
+      "question": "Sebuah harga Rp80.000 mendapat diskon 25%. Harga setelah diskon ...",
+      "options": {
+        "A": "Rp20.000",
+        "B": "Rp55.000",
+        "C": "Rp60.000",
+        "D": "Rp65.000",
+        "E": "Rp75.000"
+      },
+      "answer": "C",
+      "explanation": "Diskon Rp20.000, harga akhir Rp60.000."
+    },
+    {
+      "question": "Suku ke-10 barisan 4, 7, 10, 13, ... adalah ...",
+      "options": {
+        "A": "28",
+        "B": "30",
+        "C": "31",
+        "D": "32",
+        "E": "34"
+      },
+      "answer": "C",
+      "explanation": "Un=4+(10−1)×3=31."
+    },
+    {
+      "question": "Luas segitiga dengan alas 16 cm dan tinggi 9 cm adalah ...",
+      "options": {
+        "A": "36 cm²",
+        "B": "64 cm²",
+        "C": "72 cm²",
+        "D": "144 cm²",
+        "E": "160 cm²"
+      },
+      "answer": "C",
+      "explanation": "Luas=1/2×16×9=72 cm²."
+    },
+    {
+      "question": "Dua jam 35 menit setelah pukul 08.40 adalah ...",
+      "options": {
+        "A": "10.55",
+        "B": "11.05",
+        "C": "11.15",
+        "D": "11.25",
+        "E": "11.35"
+      },
+      "answer": "C",
+      "explanation": "08.40+2.35=11.15."
+    },
+    {
+      "question": "Jika 2/3 dari suatu bilangan adalah 18, bilangan itu ...",
+      "options": {
+        "A": "9",
+        "B": "12",
+        "C": "18",
+        "D": "27",
+        "E": "36"
+      },
+      "answer": "D",
+      "explanation": "Bilangan=18×3/2=27."
+    },
+    {
+      "question": "Data 5, 7, 7, 8, 10 memiliki modus ...",
+      "options": {
+        "A": "5",
+        "B": "7",
+        "C": "8",
+        "D": "9",
+        "E": "10"
+      },
+      "answer": "B",
+      "explanation": "Angka 7 muncul paling sering."
+    },
+    {
+      "question": "Sebuah pekerjaan selesai 12 hari oleh 6 orang. Dengan laju sama, 9 orang memerlukan ...",
+      "options": {
+        "A": "6 hari",
+        "B": "8 hari",
+        "C": "9 hari",
+        "D": "12 hari",
+        "E": "18 hari"
+      },
+      "answer": "B",
+      "explanation": "Beban 6×12=72 orang-hari; 72/9=8 hari."
+    },
+    {
+      "question": "Nilai √196−√81 adalah ...",
+      "options": {
+        "A": "5",
+        "B": "7",
+        "C": "9",
+        "D": "11",
+        "E": "13"
+      },
+      "answer": "A",
+      "explanation": "√196=14 dan √81=9, selisihnya 5."
+    },
+    {
+      "question": "Jika 5 pensil seharga Rp15.000, harga 8 pensil adalah ...",
+      "options": {
+        "A": "Rp18.000",
+        "B": "Rp20.000",
+        "C": "Rp24.000",
+        "D": "Rp25.000",
+        "E": "Rp30.000"
+      },
+      "answer": "C",
+      "explanation": "Harga satu Rp3.000; 8 pensil Rp24.000."
+    },
+    {
+      "question": "Koordinat titik (−2, 4) berada pada kuadran ...",
+      "options": {
+        "A": "I",
+        "B": "II",
+        "C": "III",
+        "D": "IV",
+        "E": "sumbu-Y"
+      },
+      "answer": "B",
+      "explanation": "x negatif dan y positif berarti kuadran II."
+    },
+    {
+      "question": "Sebuah tangki berisi 3/4 dari kapasitas 200 liter. Isinya ...",
+      "options": {
+        "A": "50 L",
+        "B": "100 L",
+        "C": "125 L",
+        "D": "150 L",
+        "E": "175 L"
+      },
+      "answer": "D",
+      "explanation": "3/4×200=150 liter."
+    },
+    {
+      "question": "KPK dari 12 dan 18 adalah ...",
+      "options": {
+        "A": "6",
+        "B": "24",
+        "C": "30",
+        "D": "36",
+        "E": "72"
+      },
+      "answer": "D",
+      "explanation": "Kelipatan persekutuan terkecilnya 36."
+    },
+    {
+      "question": "Jika 30% peserta adalah 12 orang, jumlah seluruh peserta ...",
+      "options": {
+        "A": "30",
+        "B": "36",
+        "C": "40",
+        "D": "42",
+        "E": "48"
+      },
+      "answer": "C",
+      "explanation": "12/0,30=40."
+    },
+    {
+      "question": "Sudut pelurus dari 68° adalah ...",
+      "options": {
+        "A": "22°",
+        "B": "68°",
+        "C": "102°",
+        "D": "112°",
+        "E": "118°"
+      },
+      "answer": "D",
+      "explanation": "Sudut pelurus berjumlah 180°, jadi 180−68=112°."
+    },
+    {
+      "question": "Bentuk persen dari 7/20 adalah ...",
+      "options": {
+        "A": "7%",
+        "B": "20%",
+        "C": "25%",
+        "D": "35%",
+        "E": "70%"
+      },
+      "answer": "D",
+      "explanation": "7/20×100%=35%."
+    },
+    {
+      "question": "Sebuah pola memiliki 1, 4, 9, 16, ... suku berikutnya ...",
+      "options": {
+        "A": "20",
+        "B": "24",
+        "C": "25",
+        "D": "30",
+        "E": "36"
+      },
+      "answer": "C",
+      "explanation": "Pola kuadrat 1²,2²,3²,4²; berikutnya 5²=25."
+    }
+  ]
+}

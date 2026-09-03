@@ -1,0 +1,125 @@
+{
+  "title": "bahasa_inggris_lanjutan",
+  "questions": [
+    {
+      "question": "Choose the correct sentence.",
+      "options": {
+        "A": "She go to school every day.",
+        "B": "She goes to school every day.",
+        "C": "She going to school every day.",
+        "D": "She gone to school every day.",
+        "E": "She is go to school every day."
+      },
+      "answer": "B",
+      "explanation": "For third-person singular in simple present, use “goes”."
+    },
+    {
+      "question": "The word “accurate” is closest in meaning to ...",
+      "options": {
+        "A": "late",
+        "B": "precise",
+        "C": "large",
+        "D": "distant",
+        "E": "uncertain"
+      },
+      "answer": "B",
+      "explanation": "Accurate means correct or precise."
+    },
+    {
+      "question": "If they had prepared earlier, they ... the deadline.",
+      "options": {
+        "A": "meet",
+        "B": "will meet",
+        "C": "would have met",
+        "D": "are meeting",
+        "E": "met"
+      },
+      "answer": "C",
+      "explanation": "This is a third conditional: would have + past participle."
+    },
+    {
+      "question": "The passive form of “The team completed the project” is ...",
+      "options": {
+        "A": "The project completes the team.",
+        "B": "The project was completed by the team.",
+        "C": "The team was completed by the project.",
+        "D": "The project is completing the team.",
+        "E": "The project has complete the team."
+      },
+      "answer": "B",
+      "explanation": "Past simple passive uses was/were + past participle."
+    },
+    {
+      "question": "“Although the path was steep, we continued walking.” The word although expresses ...",
+      "options": {
+        "A": "addition",
+        "B": "contrast",
+        "C": "cause",
+        "D": "time",
+        "E": "purpose"
+      },
+      "answer": "B",
+      "explanation": "Although introduces a contrast."
+    },
+    {
+      "question": "The report must be submitted ... Friday.",
+      "options": {
+        "A": "at",
+        "B": "on",
+        "C": "by",
+        "D": "in",
+        "E": "from"
+      },
+      "answer": "C",
+      "explanation": "“By Friday” means no later than Friday."
+    },
+    {
+      "question": "The main idea of a paragraph is ...",
+      "options": {
+        "A": "a minor detail",
+        "B": "the central point",
+        "C": "a punctuation mark",
+        "D": "the title only",
+        "E": "an unrelated example"
+      },
+      "answer": "B",
+      "explanation": "The main idea is the central point."
+    },
+    {
+      "question": "Which word is a synonym of “maintain”?",
+      "options": {
+        "A": "destroy",
+        "B": "ignore",
+        "C": "preserve",
+        "D": "divide",
+        "E": "borrow"
+      },
+      "answer": "C",
+      "explanation": "Maintain can mean preserve or keep."
+    },
+    {
+      "question": "Neither the teacher nor the students ... absent today.",
+      "options": {
+        "A": "is",
+        "B": "was",
+        "C": "be",
+        "D": "are",
+        "E": "has"
+      },
+      "answer": "D",
+      "explanation": "With “neither...nor”, the verb agrees with the nearer plural subject students."
+    },
+    {
+      "question": "“The meeting was postponed due to heavy rain.” The phrase due to means ...",
+      "options": {
+        "A": "in spite of",
+        "B": "because of",
+        "C": "instead of",
+        "D": "before",
+        "E": "without"
+      },
+      "answer": "B",
+      "explanation": "Due to means because of."
+    }
+  ]
+}

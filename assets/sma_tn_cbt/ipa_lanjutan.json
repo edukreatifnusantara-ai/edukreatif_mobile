@@ -1,0 +1,125 @@
+{
+  "title": "ipa_lanjutan",
+  "questions": [
+    {
+      "question": "Organel yang mengatur kegiatan sel adalah ...",
+      "options": {
+        "A": "ribosom",
+        "B": "mitokondria",
+        "C": "nukleus",
+        "D": "vakuola",
+        "E": "dinding sel"
+      },
+      "answer": "C",
+      "explanation": "Nukleus menyimpan materi genetik dan mengatur aktivitas sel."
+    },
+    {
+      "question": "Perubahan wujud gas menjadi cair disebut ...",
+      "options": {
+        "A": "menguap",
+        "B": "membeku",
+        "C": "menyublim",
+        "D": "mengembun",
+        "E": "melebur"
+      },
+      "answer": "D",
+      "explanation": "Gas yang kehilangan kalor dapat mengembun."
+    },
+    {
+      "question": "Gaya 20 N bekerja pada benda bermassa 5 kg. Percepatannya ...",
+      "options": {
+        "A": "2 m/s²",
+        "B": "4 m/s²",
+        "C": "5 m/s²",
+        "D": "10 m/s²",
+        "E": "25 m/s²"
+      },
+      "answer": "B",
+      "explanation": "a=F/m=20/5=4 m/s²."
+    },
+    {
+      "question": "Zat yang memiliki pH kurang dari 7 bersifat ...",
+      "options": {
+        "A": "netral",
+        "B": "asam",
+        "C": "basa",
+        "D": "garam",
+        "E": "logam"
+      },
+      "answer": "B",
+      "explanation": "pH<7 menunjukkan sifat asam."
+    },
+    {
+      "question": "Fotosintesis terutama berlangsung pada ...",
+      "options": {
+        "A": "lisosom",
+        "B": "kloroplas",
+        "C": "sentriol",
+        "D": "nukleus",
+        "E": "membran sel"
+      },
+      "answer": "B",
+      "explanation": "Kloroplas mengandung klorofil."
+    },
+    {
+      "question": "Lapisan atmosfer tempat sebagian besar cuaca terjadi adalah ...",
+      "options": {
+        "A": "troposfer",
+        "B": "stratosfer",
+        "C": "mesosfer",
+        "D": "termosfer",
+        "E": "eksosfer"
+      },
+      "answer": "A",
+      "explanation": "Awan dan cuaca berada di troposfer."
+    },
+    {
+      "question": "Rangkaian listrik dengan satu jalur arus disebut rangkaian ...",
+      "options": {
+        "A": "paralel",
+        "B": "seri",
+        "C": "campuran",
+        "D": "terbuka",
+        "E": "nirkabel"
+      },
+      "answer": "B",
+      "explanation": "Rangkaian seri hanya memiliki satu jalur."
+    },
+    {
+      "question": "Bunyi dengan frekuensi di atas 20.000 Hz disebut ...",
+      "options": {
+        "A": "infrasonik",
+        "B": "audiosonik",
+        "C": "ultrasonik",
+        "D": "resonansi",
+        "E": "gaung"
+      },
+      "answer": "C",
+      "explanation": "Ultrasonik berada di atas rentang dengar manusia."
+    },
+    {
+      "question": "Contoh sumber energi terbarukan adalah ...",
+      "options": {
+        "A": "batu bara",
+        "B": "minyak bumi",
+        "C": "gas alam",
+        "D": "matahari",
+        "E": "uranium"
+      },
+      "answer": "D",
+      "explanation": "Matahari tersedia secara berkelanjutan."
+    },
+    {
+      "question": "Darah yang kaya oksigen dari paru-paru menuju jantung melalui ...",
+      "options": {
+        "A": "arteri pulmonalis",
+        "B": "vena pulmonalis",
+        "C": "aorta",
+        "D": "vena kava",
+        "E": "kapiler"
+      },
+      "answer": "B",
+      "explanation": "Vena pulmonalis membawa darah beroksigen ke serambi kiri."
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "title": "bahasa_indonesia_lanjutan",
+  "questions": [
+    {
+      "question": "Kalimat yang paling efektif adalah ...",
+      "options": {
+        "A": "Para siswa-siswa segera masuk.",
+        "B": "Siswa segera masuk ke dalam kelas.",
+        "C": "Para siswa segera masuk ke dalam kelas-kelas.",
+        "D": "Siswa-siswa para segera masuk.",
+        "E": "Semua para siswa-siswa masuk."
+      },
+      "answer": "B",
+      "explanation": "Subjek jamak cukup ditulis “siswa”; kalimatnya ringkas dan jelas."
+    },
+    {
+      "question": "Gagasan utama paragraf biasanya memuat ...",
+      "options": {
+        "A": "contoh tambahan",
+        "B": "inti pembahasan",
+        "C": "kata sulit",
+        "D": "data paling kecil",
+        "E": "kalimat penutup saja"
+      },
+      "answer": "B",
+      "explanation": "Gagasan utama adalah inti pembahasan paragraf."
+    },
+    {
+      "question": "Makna kata “konservasi” adalah ...",
+      "options": {
+        "A": "perusakan",
+        "B": "pelestarian",
+        "C": "perdagangan",
+        "D": "perubahan",
+        "E": "perluasan"
+      },
+      "answer": "B",
+      "explanation": "Konservasi berarti perlindungan atau pelestarian."
+    },
+    {
+      "question": "Kata baku yang tepat adalah ...",
+      "options": {
+        "A": "resiko",
+        "B": "ijin",
+        "C": "praktik",
+        "D": "aktifitas",
+        "E": "analisa"
+      },
+      "answer": "C",
+      "explanation": "Bentuk baku yang tepat ialah praktik."
+    },
+    {
+      "question": "Kalimat “Hujan turun, tetapi pertandingan tetap berlangsung” memakai hubungan ...",
+      "options": {
+        "A": "sebab",
+        "B": "tujuan",
+        "C": "pertentangan",
+        "D": "penambahan",
+        "E": "syarat"
+      },
+      "answer": "C",
+      "explanation": "Kata “tetapi” menandai pertentangan."
+    },
+    {
+      "question": "Simpulan yang baik harus ...",
+      "options": {
+        "A": "lebih panjang dari teks",
+        "B": "tidak berkaitan",
+        "C": "merangkum gagasan utama",
+        "D": "memuat opini baru",
+        "E": "mengulang semua kalimat"
+      },
+      "answer": "C",
+      "explanation": "Simpulan merangkum inti informasi secara singkat."
+    },
+    {
+      "question": "Penulisan judul yang tepat adalah ...",
+      "options": {
+        "A": "Petualangan di Pulau Komodo",
+        "B": "Petualangan Di Pulau Komodo",
+        "C": "petualangan di pulau komodo",
+        "D": "Petualangan di pulau komodo",
+        "E": "PETUALANGAN di Pulau Komodo"
+      },
+      "answer": "A",
+      "explanation": "Huruf kapital digunakan pada kata penting dalam judul, sedangkan kata depan “di” tetap kecil."
+    },
+    {
+      "question": "Lawan kata “abstrak” adalah ...",
+      "options": {
+        "A": "samar",
+        "B": "konkret",
+        "C": "khayal",
+        "D": "umum",
+        "E": "teoretis"
+      },
+      "answer": "B",
+      "explanation": "Konkret berarti nyata atau dapat diamati."
+    },
+    {
+      "question": "Kalimat yang menggunakan ejaan tepat adalah ...",
+      "options": {
+        "A": "Ia membeli obat di apotik.",
+        "B": "Mereka berdiskusi tentang risiko.",
+        "C": "Kami menganalisa data.",
+        "D": "Ibu memberi ijin.",
+        "E": "Jadual kegiatan berubah."
+      },
+      "answer": "B",
+      "explanation": "Bentuk baku yang tepat antara lain risiko."
+    },
+    {
+      "question": "Dalam teks argumentasi, alasan dan bukti digunakan untuk ...",
+      "options": {
+        "A": "menghibur pembaca",
+        "B": "memperkuat pendapat",
+        "C": "mengganti judul",
+        "D": "menghapus fakta",
+        "E": "memperpanjang paragraf"
+      },
+      "answer": "B",
+      "explanation": "Alasan dan bukti mendukung pendapat penulis."
+    }
+  ]
+}

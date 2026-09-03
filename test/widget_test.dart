@@ -393,13 +393,20 @@ void main() {
     Navigator.of(tester.element(find.text('Cerita pendek Nusantara'))).pop();
     await tester.pumpAndSettle();
 
-    for (final title in ['Promo Kreativ', 'Camp Kreativ']) {
-      await tester.tap(find.text(title));
-      await tester.pumpAndSettle();
-      expect(find.text(title), findsAtLeastNWidgets(1));
-      await tester.tap(find.text('Tutup'));
-      await tester.pumpAndSettle();
-    }
+    await tester.tap(find.text('Promo Kreativ'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Informasi promo Edukreativ akan tampil di sini.'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Tutup'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Camp Kreativ'));
+    await tester.pumpAndSettle();
+    expect(find.text('Jejak Rimba'), findsOneWidget);
+    expect(find.text('Ruang Tumbuh'), findsOneWidget);
+    expect(find.text('Pulang Lebih Dekat'), findsOneWidget);
   });
 
   testWidgets('pilihan belajar beranda membuka fitur masing-masing', (
@@ -487,10 +494,9 @@ void main() {
 
     await tester.tap(find.text('Psikotest'));
     await tester.pumpAndSettle();
-    expect(
-      find.text('Materi dan latihan untuk menu ini sedang disiapkan.'),
-      findsOneWidget,
-    );
+    expect(find.byType(PsychologyMenuPage), findsOneWidget);
+    expect(find.text('Pilih latihan psikologi'), findsOneWidget);
+    expect(find.text('Psikotest SMA TN'), findsOneWidget);
   });
 
   testWidgets('SIAP UTBK menampilkan countdown di beranda', (tester) async {

@@ -12317,6 +12317,13 @@ class SmaTarunaPracticePage extends StatelessWidget {
     ),
   ];
 
+  static const advancedBankNames = {
+    'Matematika': 'matematika_lanjutan',
+    'IPA': 'ipa_lanjutan',
+    'Bahasa Indonesia': 'bahasa_indonesia_lanjutan',
+    'Bahasa Inggris': 'bahasa_inggris_lanjutan',
+  };
+
   static const psychologyItems = [
     (
       'Logika',
@@ -12996,6 +13003,19 @@ class _SmaPracticeMenuPage extends StatelessWidget {
                               ? SmaPsychologyQuizPage(category: item.$1)
                               : group.title == '1. Latihan Akademik CBT'
                               ? _SmaCbtBankPage(subject: item.$1)
+                              : group.title == '2. Latihan Akademik Lanjutan'
+                              ? _SmaCbtBankPage(
+                                  subject: item.$1,
+                                  bankFileName: SmaTarunaPracticePage
+                                      .advancedBankNames[item.$1]!,
+                                  appBarTitle: 'Latihan Akademik Lanjutan',
+                                )
+                              : group.title == '4. Try Out Terpadu'
+                              ? _SmaCbtBankPage(
+                                  subject: item.$1,
+                                  bankFileName: 'tryout_terpadu',
+                                  appBarTitle: 'Try Out Terpadu',
+                                )
                               : _SmaPracticeDetailPage(
                                   title: '${group.title} · ${item.$1}',
                                   description: item.$2,
@@ -13038,8 +13058,14 @@ class _SmaPracticeMenuPage extends StatelessWidget {
 
 class _SmaCbtBankPage extends StatefulWidget {
   final String subject;
+  final String bankFileName;
+  final String appBarTitle;
 
-  const _SmaCbtBankPage({required this.subject});
+  const _SmaCbtBankPage({
+    required this.subject,
+    this.bankFileName = '',
+    this.appBarTitle = 'CBT SMA TN',
+  });
 
   @override
   State<_SmaCbtBankPage> createState() => _SmaCbtBankPageState();
@@ -13054,7 +13080,7 @@ class _SmaCbtBankPageState extends State<_SmaCbtBankPage> {
 
   String get assetDirectory => 'assets/sma_tn_cbt';
   String get bankAsset =>
-      '$assetDirectory/${widget.subject.toLowerCase().replaceAll(' ', '_')}.json';
+      '$assetDirectory/${widget.bankFileName.isEmpty ? widget.subject.toLowerCase().replaceAll(' ', '_') : widget.bankFileName}.json';
 
   @override
   void initState() {
@@ -13106,7 +13132,7 @@ class _SmaCbtBankPageState extends State<_SmaCbtBankPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text('CBT SMA TN · ${widget.subject}'),
+      title: Text('${widget.appBarTitle} · ${widget.subject}'),
       foregroundColor: navy,
       actions: [
         Padding(
