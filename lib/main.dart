@@ -153,7 +153,7 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final pages = [
       const HomePage(),
-      OfficialBooksPage(onBack: () => setState(() => index = 0)),
+      AcademyKreativPage(onBack: () => setState(() => index = 0)),
       const StorePage(),
       const ProfilePage(),
     ];
@@ -6815,10 +6815,51 @@ class _OfficialPdfReaderPageState extends State<OfficialPdfReaderPage> {
   }
 }
 
+class AcademyKreativPage extends StatelessWidget {
+  final VoidCallback? onBack;
+  const AcademyKreativPage({super.key, this.onBack});
+  void _open(BuildContext context, Widget page) => Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF7F9FC),
+    body: ListView(padding: const EdgeInsets.fromLTRB(20, 24, 20, 28), children: [
+      Row(children: [IconButton(key: const Key('kembali-ke-beranda-academy'), onPressed: onBack ?? () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back)), const Expanded(child: Text('Academy Kreativ', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: navy)))]),
+      const SizedBox(height: 8),
+      const Text('Pilih ruang belajar yang ingin kamu jelajahi.', style: TextStyle(color: Colors.black54, fontSize: 15)),
+      const SizedBox(height: 22),
+      _AcademyMenuCard(key: const Key('perpustakaan-kreativ-card'), title: 'Perpustakaan Kreativ', description: 'Buku resmi untuk menemani perjalanan belajar.', icon: Icons.local_library_outlined, color: const Color(0xFFE8F1FF), accent: blue, onTap: () => _open(context, OfficialBooksPage(onBack: () => Navigator.of(context).pop()))),
+      const SizedBox(height: 16),
+      _AcademyMenuCard(key: const Key('kelas-kreativ-card'), title: 'Kelas Kreativ', description: 'Pilih kelas sesuai jenjang belajar kamu.', icon: Icons.school_outlined, color: const Color(0xFFEAF8F1), accent: const Color(0xFF16845B), onTap: () => _open(context, const AcademyClassLevelsPage())),
+    ]));
+}
+
+class _AcademyMenuCard extends StatelessWidget {
+  final String title, description; final IconData icon; final Color color, accent; final VoidCallback onTap;
+  const _AcademyMenuCard({super.key, required this.title, required this.description, required this.icon, required this.color, required this.accent, required this.onTap});
+  @override
+  Widget build(BuildContext context) => Card(elevation: 0, margin: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)), child: InkWell(onTap: onTap, borderRadius: BorderRadius.circular(22), child: Padding(padding: const EdgeInsets.all(20), child: Row(children: [Container(width: 62, height: 62, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(18)), child: Icon(icon, color: accent, size: 32)), const SizedBox(width: 16), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(color: navy, fontSize: 19, fontWeight: FontWeight.w800)), const SizedBox(height: 6), Text(description, style: const TextStyle(color: Colors.black54, height: 1.35))])), Icon(Icons.chevron_right, color: accent)]))));
+}
+
+class AcademyClassLevelsPage extends StatelessWidget {
+  const AcademyClassLevelsPage({super.key});
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF7F9FC), appBar: AppBar(title: const Text('Kelas Kreativ')),
+    body: ListView(padding: const EdgeInsets.fromLTRB(20, 18, 20, 28), children: [
+      const Text('Pilih jenjang kelas', style: TextStyle(color: navy, fontSize: 22, fontWeight: FontWeight.w800)),
+      const SizedBox(height: 8), const Text('Materi kelas disusun sesuai kebutuhan SMP dan SMA.', style: TextStyle(color: Colors.black54)), const SizedBox(height: 20),
+      _AcademyMenuCard(key: const Key('smp-kreativ-card'), title: 'SMP Kreativ', description: 'Ruang belajar dan materi untuk jenjang SMP.', icon: Icons.auto_stories_outlined, color: const Color(0xFFFFF1DA), accent: const Color(0xFFB56A00), onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CatalogPage(initialLevel: 'SMP')))),
+      const SizedBox(height: 16),
+      _AcademyMenuCard(key: const Key('sma-kreativ-card'), title: 'SMA Kreativ', description: 'Ruang belajar dan materi untuk jenjang SMA.', icon: Icons.menu_book_outlined, color: const Color(0xFFF1EAFE), accent: const Color(0xFF7045B5), onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CatalogPage(initialLevel: 'SMA')))),
+    ]));
+}
+
 class CatalogPage extends StatefulWidget {
   final VoidCallback? onBack;
 
-  const CatalogPage({super.key, this.onBack});
+  final String? initialLevel;
+
+  const CatalogPage({super.key, this.onBack, this.initialLevel});
 
   @override
   State<CatalogPage> createState() => _CatalogPageState();
@@ -6826,8 +6867,14 @@ class CatalogPage extends StatefulWidget {
 
 class _CatalogPageState extends State<CatalogPage> {
   final searchController = TextEditingController();
-  String selectedLevel = 'Semua';
+  late String selectedLevel;
   String query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    selectedLevel = widget.initialLevel ?? 'Semua';
+  }
 
   static const courses = [
     (
