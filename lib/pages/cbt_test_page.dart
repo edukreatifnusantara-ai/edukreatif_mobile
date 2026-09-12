@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/question_rotation_service.dart';
 import '../services/cbt_session_manager.dart';
+import '../services/adaptive_difficulty_service.dart';
 import '../main.dart';
 
 class CBTTestPage extends StatefulWidget {
@@ -35,16 +36,52 @@ class _CBTTestPageState extends State<CBTTestPage> {
 
   Future<List<QuestionItem>> _generateQuestions() async {
     await QuestionRotationService().initialize();
-    return QuestionRotationService().generateCBTPackage(
-      packageName: widget.packageName,
-      customSubjectCounts: widget.customSubjectCounts,
-      difficultyWeights: widget.difficultyWeights ??
-          const {
-            QuestionDifficulty.mudah: 0.4,
-            QuestionDifficulty.sedang: 0.4,
-            QuestionDifficulty.sulit: 0.2,
-          },
-    );
+    await AdaptiveDifficultyService().initialize();
+
+    if (widget.difficultyWeights != null) {
+      return QuestionRotationService().generateCBTPackage(
+        packageName: widget.packageName,
+        customSubjectCounts: widget.customSubjectCounts,
+        difficultyWeights: widget.difficultyWeights,
+      );
+    }
+
+    if (widget.customSubjectCounts != null) {
+      final result = <QuestionItem>[];
+      for (final entry in widget.customSubjectCounts!.entries) {
+        final dynamicWeights = AdaptiveDifficultyService().getDynamicWeights(entry.key);
+        final questions = QuestionRotationService().getRotatedQuestions(
+          subjectCode: entry.key,
+          count: entry.value,
+          difficultyWeights: dynamicWeights,
+        );
+        result.addAll(questions);
+      }
+      result.shuffle();
+      return result;
+    }
+
+    final defaultCounts = {
+      'PU': 30,
+      'PPU': 20,
+      'PBM': 20,
+      'PK': 20,
+      'LBI': 30,
+      'LBE': 20,
+      'PM': 20,
+    };
+    final result = <QuestionItem>[];
+    for (final entry in defaultCounts.entries) {
+      final dynamicWeights = AdaptiveDifficultyService().getDynamicWeights(entry.key);
+      final questions = QuestionRotationService().getRotatedQuestions(
+        subjectCode: entry.key,
+        count: entry.value,
+        difficultyWeights: dynamicWeights,
+      );
+      result.addAll(questions);
+    }
+    result.shuffle();
+    return result;
   }
 
   void _initializeSession(List<QuestionItem> questions) {

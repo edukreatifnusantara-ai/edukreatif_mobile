@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'question_rotation_service.dart';
+import 'adaptive_difficulty_service.dart';
 
 class CBTAnswer {
   final String questionId;
@@ -35,6 +36,7 @@ class CBTResult {
   final double score;
   final Map<String, int> subjectBreakdown;
   final Map<String, double> subjectScores;
+  final Map<String, dynamic> adaptiveAnalytics;
 
   const CBTResult({
     required this.packageName,
@@ -48,6 +50,7 @@ class CBTResult {
     required this.score,
     required this.subjectBreakdown,
     required this.subjectScores,
+    this.adaptiveAnalytics = const {},
   });
 
   Duration get duration => endTime.difference(startTime);
@@ -65,6 +68,7 @@ class CBTResult {
     'score': score,
     'subject_breakdown': subjectBreakdown,
     'subject_scores': subjectScores,
+    'adaptive_analytics': adaptiveAnalytics,
   };
 }
 
@@ -72,6 +76,7 @@ class CBTSessionManager {
   final String packageName;
   final List<QuestionItem> questions;
   final int totalDurationMinutes;
+  final bool enableAdaptive;
 
   Timer? _timer;
   int _currentIndex = 0;
@@ -82,10 +87,17 @@ class CBTSessionManager {
   bool _isPaused = false;
   int _pausedSecondsLeft = 0;
 
+  // Adaptive difficulty tracking
+  final Map<String, int> _subjectCorrectCount = {};
+  final Map<String, int> _subjectTotalCount = {};
+  final Map<String, double> _subjectAvgTime = {};
+  final AdaptiveDifficultyService _adaptiveService = AdaptiveDifficultyService();
+
   CBTSessionManager({
     required this.packageName,
     required this.questions,
     this.totalDurationMinutes = 230,
+    this.enableAdaptive = true,
   }) {
     _secondsLeft = totalDurationMinutes * 60;
     _questionStartTimes.add(DateTime.now().millisecondsSinceEpoch);
@@ -145,6 +157,23 @@ class CBTSessionManager {
       timeSpentSeconds: timeSpent,
     ));
 
+    // Track adaptive difficulty performance
+    if (enableAdaptive) {
+      _subjectTotalCount[question.subjectCode] = (_subjectTotalCount[question.subjectCode] ?? 0) + 1;
+      if (isCorrect) {
+        _subjectCorrectCount[question.subjectCode] = (_subjectCorrectCount[question.subjectCode] ?? 0) + 1;
+      }
+      _subjectAvgTime[question.subjectCode] = 
+          ((_subjectAvgTime[question.subjectCode] ?? 0.0) * (_subjectTotalCount[question.subjectCode]! - 1) + timeSpent) 
+          / _subjectTotalCount[question.subjectCode]!;
+
+      _adaptiveService.recordAnswer(
+        subjectCode: question.subjectCode,
+        isCorrect: isCorrect,
+        timeSpentSeconds: timeSpent,
+      );
+    }
+
     _moveToNext();
   }
 
@@ -159,6 +188,20 @@ class CBTSessionManager {
       isCorrect: false,
       timeSpentSeconds: timeSpent,
     ));
+
+    // Track adaptive difficulty for skipped (counts as wrong)
+    if (enableAdaptive) {
+      _subjectTotalCount[question.subjectCode] = (_subjectTotalCount[question.subjectCode] ?? 0) + 1;
+      _subjectAvgTime[question.subjectCode] = 
+          ((_subjectAvgTime[question.subjectCode] ?? 0.0) * (_subjectTotalCount[question.subjectCode]! - 1) + timeSpent) 
+          / _subjectTotalCount[question.subjectCode]!;
+
+      _adaptiveService.recordAnswer(
+        subjectCode: question.subjectCode,
+        isCorrect: false,
+        timeSpentSeconds: timeSpent,
+      );
+    }
 
     _moveToNext();
   }
@@ -198,6 +241,18 @@ class CBTSessionManager {
     }
   }
 
+  Map<String, dynamic> getAdaptiveAnalytics() {
+    return _adaptiveService.getAnalytics();
+  }
+
+  Map<String, QuestionDifficulty> getRecommendedDifficulties() {
+    final result = <String, QuestionDifficulty>{};
+    for (final subjectCode in _subjectTotalCount.keys) {
+      result[subjectCode] = _adaptiveService.getRecommendedDifficulty(subjectCode);
+    }
+    return result;
+  }
+
   CBTResult finish() {
     _timer?.cancel();
     final endTime = DateTime.now();
@@ -230,11 +285,26 @@ class CBTSessionManager {
     }
 
     final subjectScores = <String, double>{};
+    final adaptiveAnalytics = <String, dynamic>{};
+
     for (final entry in subjectBreakdown.entries) {
       final subject = entry.key;
       final total = entry.value;
       final correctCount = subjectCorrect[subject] ?? 0;
       subjectScores[subject] = total > 0 ? (correctCount / total * 100) : 0.0;
+
+      if (enableAdaptive) {
+        _adaptiveService.applyDifficultyChange(subject);
+        final perf = _adaptiveService.getPerformance(subject);
+        final recommended = _adaptiveService.getRecommendedDifficulty(subject);
+        adaptiveAnalytics[subject] = {
+          'accuracy': perf.accuracy,
+          'current_difficulty': perf.currentDifficulty.name,
+          'recommended_difficulty': recommended.name,
+          'total_answered': perf.totalAnswered,
+          'avg_time': perf.avgTimePerQuestion,
+        };
+      }
     }
 
     final score = totalQuestions > 0 ? (correct / totalQuestions * 100) : 0.0;
@@ -251,6 +321,7 @@ class CBTSessionManager {
       score: score,
       subjectBreakdown: subjectBreakdown,
       subjectScores: subjectScores,
+      adaptiveAnalytics: adaptiveAnalytics,
     );
   }
 
