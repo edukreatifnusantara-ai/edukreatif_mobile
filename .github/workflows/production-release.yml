@@ -1,0 +1,86 @@
+name: Production Android Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build signed Android App Bundle
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Validate protected release inputs
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_STORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD SUPABASE_URL SUPABASE_ANON_KEY; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub Secret: $name"
+              exit 1
+            fi
+          done
+
+      - name: Configure signing without exposing secrets
+        run: |
+          set -euo pipefail
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/release-key.jks
+          printf '%s\n' \
+            'storeFile=release-key.jks' \
+            "storePassword=$ANDROID_STORE_PASSWORD" \
+            "keyAlias=$ANDROID_KEY_ALIAS" \
+            "keyPassword=$ANDROID_KEY_PASSWORD" > android/key.properties
+          test -s android/release-key.jks
+          test -s android/key.properties
+
+      - name: Install dependencies
+        run: flutter pub get --no-offline
+        timeout-minutes: 10
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
+
+      - name: Test
+        run: flutter test
+
+      - name: Build signed App Bundle
+        run: flutter build appbundle --release --dart-define=SUPABASE_URL="$SUPABASE_URL" --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+
+      - name: Verify signed artifact
+        run: |
+          set -euo pipefail
+          test -s build/app/outputs/bundle/release/app-release.aab
+          file build/app/outputs/bundle/release/app-release.aab
+          sha256sum build/app/outputs/bundle/release/app-release.aab
+
+      - name: Upload signed App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: edukreativ-production-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Remove signing material
+        if: always()
+        run: rm -f android/release-key.jks android/key.properties
