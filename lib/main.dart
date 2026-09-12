@@ -18,6 +18,8 @@ import 'kedinasan_tiu_data.dart';
 import 'kedinasan_tkp_data.dart';
 import 'kedinasan_twk_data.dart';
 import 'mental_ideology_data.dart';
+import 'pages/cbt_test_page.dart';
+import 'services/question_rotation_service.dart';
 
 const navy = Color(0xFF152B55);
 const blue = Color(0xFF2E6FE8);
@@ -3212,16 +3214,28 @@ class UtbkTryoutPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FilledButton.icon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => UtbkRealCbtPage()),
-                    ),
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text('Mulai Try Out →'),
-                  ),
-                ),
+Align(
+                   alignment: Alignment.centerRight,
+                   child: FilledButton.icon(
+                     onPressed: () => Navigator.of(context).push(
+                       MaterialPageRoute(builder: (_) => CBTTestPage(
+                         packageName: 'Try Out UTBK Lengkap',
+                         customSubjectCounts: {
+                           'PU': 30,
+                           'PPU': 20,
+                           'PBM': 20,
+                           'PK': 20,
+                           'LBI': 30,
+                           'LBE': 20,
+                           'PM': 20,
+                         },
+                         durationMinutes: 230,
+                       )),
+                     ),
+                     icon: const Icon(Icons.play_arrow_rounded),
+                     label: const Text('Mulai Try Out →'),
+                   ),
+                 ),
               ],
             ),
           ),

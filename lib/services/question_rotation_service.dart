@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
-import '../data/store_backend.dart';
+
+int _fallbackQuestionId = 0;
 
 enum QuestionDifficulty { mudah, sedang, sulit }
 
@@ -43,7 +44,7 @@ class QuestionItem {
     }
 
     return QuestionItem(
-      id: json['id']?.toString() ?? json['source_number']?.toString() ?? UniqueKey().toString(),
+      id: json['id']?.toString() ?? json['source_number']?.toString() ?? 'generated-${_fallbackQuestionId++}',
       subjectCode: json['subject_code'] as String? ?? '',
       subject: json['subject'] as String? ?? '',
       question: json['question'] as String? ?? '',
@@ -78,7 +79,7 @@ class QuestionRotationService {
   final Map<String, List<QuestionItem>> _reservePools = {};
   final Random _random = Random();
 
-  static const Map<String, String> _subjectNames = {
+  static const Map<String, String> subjectNames = {
     'PU': 'Penalaran Umum',
     'PPU': 'Pengetahuan dan Pemahaman Umum',
     'PBM': 'Pemahaman Bacaan dan Menulis',
@@ -112,7 +113,7 @@ class QuestionRotationService {
           .map((item) => QuestionItem.fromJson(Map<String, dynamic>.from(item as Map)))
           .toList();
 
-      for (final code in _subjectNames.keys) {
+      for (final code in subjectNames.keys) {
         _questionBanks[code] = questions
             .where((q) => q.subjectCode == code)
             .toList();
@@ -120,7 +121,7 @@ class QuestionRotationService {
       _questionBanks['SEMUA'] = questions;
     } catch (e) {
       _questionBanks['SEMUA'] = [];
-      for (final code in _subjectNames.keys) {
+      for (final code in subjectNames.keys) {
         _questionBanks[code] = [];
       }
     }
@@ -250,7 +251,7 @@ class QuestionRotationService {
   }
 
   void resetAllRotations() {
-    for (final code in _subjectNames.keys) {
+    for (final code in subjectNames.keys) {
       _resetSubjectRotation(code);
     }
     _resetSubjectRotation('SEMUA');
@@ -268,7 +269,7 @@ class QuestionRotationService {
 
   Map<String, int> getRotationStats() {
     final stats = <String, int>{};
-    for (final code in _subjectNames.keys) {
+    for (final code in subjectNames.keys) {
       stats[code] = getRemainingCount(code);
     }
     stats['SEMUA'] = getRemainingCount('SEMUA');

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'question_rotation_service.dart';
 
 class CBTAnswer {
@@ -95,6 +96,7 @@ class CBTSessionManager {
   int get secondsLeft => _secondsLeft;
   bool get isPaused => _isPaused;
   bool get isFinished => _currentIndex >= questions.length;
+  List<CBTAnswer> get answers => List.unmodifiable(_answers);
   QuestionItem get currentQuestion => questions[_currentIndex];
   double get progress => (_currentIndex + 1) / questions.length;
 
@@ -274,6 +276,19 @@ class CBTSessionManager {
         'status': status,
       };
     });
+  }
+
+  int getRemainingCount(String subjectCode) {
+    // This method requires access to rotation service; call directly on service
+    return QuestionRotationService().getRemainingCount(subjectCode);
+  }
+
+  int getTotalCount(String subjectCode) {
+    return QuestionRotationService().getTotalCount(subjectCode);
+  }
+
+  Map<String, int> getRotationStats() {
+    return QuestionRotationService().getRotationStats();
   }
 
   void dispose() {
