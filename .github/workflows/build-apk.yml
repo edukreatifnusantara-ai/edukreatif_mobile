@@ -34,15 +34,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --no-offline
 
-      - name: Build small arm64 release APK
-        run: flutter build apk --release --target-platform android-arm64
+      - name: Build debug APK
+        run: flutter build apk --debug --split-per-abi
 
-      - name: Upload APK artifact
+- name: Upload APK artifact
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: edukreativ-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: edukreativ-debug-apk
+          path: build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
           retention-days: 14
 
