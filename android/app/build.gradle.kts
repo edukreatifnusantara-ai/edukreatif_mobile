@@ -1,8 +1,19 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+val signingProperties = Properties()
+val signingPropertiesFile = rootProject.file("key.properties")
+if (signingPropertiesFile.exists()) {
+    signingPropertiesFile.inputStream().use(signingProperties::load)
+}
+val releaseStoreFile = signingProperties.getProperty("storeFile")
+    ?.takeIf { it.isNotBlank() }
+    ?.let(::file)
 
 android {
     namespace = "com.edukreativ.edukreativ_mobile"
@@ -31,9 +42,15 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Production signing is opt-in through the gitignored key.properties.
+            // Never fall back to the debug key for a release artifact.
+            if (releaseStoreFile != null) {
+                signingConfig = signingConfigs.create("release")
+                signingConfig?.storeFile = releaseStoreFile
+                signingConfig?.storePassword = signingProperties.getProperty("storePassword")
+                signingConfig?.keyAlias = signingProperties.getProperty("keyAlias")
+                signingConfig?.keyPassword = signingProperties.getProperty("keyPassword")
+            }
         }
     }
 }

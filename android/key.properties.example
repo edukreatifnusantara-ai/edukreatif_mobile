@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties locally. Never commit the copy.
+# Use an absolute path or a path relative to the android/ directory.
+storeFile=/secure/path/edukreativ-release.jks
+storePassword=CHANGE_ME_LOCALLY
+keyAlias=edukreativ
+keyPassword=CHANGE_ME_LOCALLY

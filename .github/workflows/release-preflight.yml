@@ -1,0 +1,26 @@
+name: Release Signing Preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    name: Verify release signing configuration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert release never uses the debug key
+        run: |
+          if grep -n 'signingConfigs.getByName("debug")' android/app/build.gradle.kts; then
+            echo 'Release signing must not use the debug key'
+            exit 1
+          fi
+          grep -n 'Production signing is opt-in' android/app/build.gradle.kts
+      - name: Report required local configuration without exposing secrets
+        run: |
+          test -f android/key.properties.example
+          echo 'Production keystore must be supplied through a local gitignored key.properties or a protected CI secret.'
+          echo 'This workflow intentionally does not print, create, or transmit signing credentials.'
