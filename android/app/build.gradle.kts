@@ -1,3 +1,4 @@
+import java.io.File
 import java.util.Properties
 
 plugins {
@@ -13,7 +14,10 @@ if (signingPropertiesFile.exists()) {
 }
 val releaseStoreFile = signingProperties.getProperty("storeFile")
     ?.takeIf { it.isNotBlank() }
-    ?.let(::file)
+    ?.let { configuredPath ->
+        val path = File(configuredPath)
+        if (path.isAbsolute) path else signingPropertiesFile.parentFile.resolve(configuredPath)
+    }
 
 android {
     namespace = "com.edukreativ.edukreativ_mobile"
