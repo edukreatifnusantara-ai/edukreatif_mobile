@@ -538,7 +538,7 @@ class CBTResultPage extends StatelessWidget {
                 .where((a) => result.subjectBreakdown.containsKey(subject))
                 .length;
             final score = result.subjectScores[subject] ?? 0.0;
-            final subjectName = QuestionRotationService._subjectNames[subject] ?? subject;
+            final subjectName = QuestionRotationService().subjectNames[subject] ?? subject;
             return Card(
               margin: const EdgeInsets.only(bottom: 10),
               child: Padding(
