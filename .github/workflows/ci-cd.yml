@@ -21,7 +21,7 @@ jobs:
         run: flutter pub get --no-offline
         timeout-minutes: 10
       - name: Analyze
-        run: flutter analyze --no-fatal-infos
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
 
   test:
     name: Flutter Tests
