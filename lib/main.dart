@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +25,8 @@ import 'pages/skd_test_page.dart';
 import 'pages/analytics_page.dart';
 import 'pages/question_variation_page.dart';
 import 'services/question_rotation_service.dart';
+import 'services/offline_storage_service.dart';
+import 'services/adaptive_difficulty_service.dart';
 
 const navy = Color(0xFF152B55);
 const blue = Color(0xFF2E6FE8);
@@ -76,7 +80,12 @@ class LearningActivityStore extends ChangeNotifier {
   }
 }
 
-void main() => runApp(const EduKreativApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await OfflineStorageService().initialize();
+  await AdaptiveDifficultyService().initialize();
+  runApp(const EduKreativApp());
+}
 
 class EduKreativApp extends StatelessWidget {
   const EduKreativApp({super.key});

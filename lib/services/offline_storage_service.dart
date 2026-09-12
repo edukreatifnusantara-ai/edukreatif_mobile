@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/offline_models.dart';
@@ -10,28 +9,21 @@ class OfflineStorageService {
   factory OfflineStorageService() => _instance;
   OfflineStorageService._internal();
 
-  static const String _sessionsBox = 'offline_sessions';
-  static const String _progressBox = 'question_progress';
-  static const String _settingsBox = 'offline_settings';
+  static const String _sessionsBoxName = 'offline_sessions';
+  static const String _progressBoxName = 'question_progress';
+  static const String _settingsBoxName = 'offline_settings';
 
-  Box<OfflineSession>? _sessionsBoxInstance;
-  Box<OfflineQuestionProgress>? _progressBoxInstance;
-  Box? _settingsBoxInstance;
+  Box? _sessionsBox;
+  Box? _progressBox;
+  Box? _settingsBox;
   bool _initialized = false;
 
   Future<void> initialize() async {
     if (_initialized) return;
     await Hive.initFlutter();
-
-    Hive.registerAdapter(OfflineSessionAdapter());
-    Hive.registerAdapter(OfflineAnswerAdapter());
-    Hive.registerAdapter(QuestionDifficultyAdapter());
-    Hive.registerAdapter(OfflineQuestionProgressAdapter());
-
-    _sessionsBoxInstance = await Hive.openBox<OfflineSession>(_sessionsBox);
-    _progressBoxInstance = await Hive.openBox<OfflineQuestionProgress>(_progressBox);
-    _settingsBoxInstance = await Hive.openBox(_settingsBox);
-
+    _sessionsBox = await Hive.openBox(_sessionsBoxName);
+    _progressBox = await Hive.openBox(_progressBoxName);
+    _settingsBox = await Hive.openBox(_settingsBoxName);
     _initialized = true;
   }
 
@@ -44,7 +36,7 @@ class OfflineStorageService {
       result: result,
     );
 
-    await _sessionsBoxInstance!.put(session.id, session);
+    await _sessionsBox!.put(session.id, session.toJson());
 
     for (final answer in result.answers) {
       await _updateQuestionProgress(answer);
@@ -54,12 +46,14 @@ class OfflineStorageService {
   }
 
   Future<void> _updateQuestionProgress(CBTAnswer answer) async {
-    final progress = _progressBoxInstance!.get(answer.questionId) ??
-        OfflineQuestionProgress(
-          questionId: answer.questionId,
-          subjectCode: '',
-          lastAttempted: DateTime.now(),
-        );
+    final raw = _progressBox!.get(answer.questionId);
+    final progress = raw == null
+        ? OfflineQuestionProgress(
+            questionId: answer.questionId,
+            subjectCode: '',
+            lastAttempted: DateTime.now(),
+          )
+        : OfflineQuestionProgress.fromJson(Map<String, dynamic>.from(raw as Map));
 
     final updatedProgress = OfflineQuestionProgress(
       questionId: progress.questionId,
@@ -70,16 +64,16 @@ class OfflineStorageService {
       lastAttempted: DateTime.now(),
     );
 
-    await _progressBoxInstance!.put(answer.questionId, updatedProgress);
+    await _progressBox!.put(answer.questionId, updatedProgress.toJson());
   }
 
   Future<void> _updateAdaptivePerformance(CBTResult result) async {
     for (final entry in result.adaptiveAnalytics.entries) {
       final subjectCode = entry.key;
       final analytics = entry.value as Map<String, dynamic>;
-      await AdaptiveDifficultyService().recordAnswer(
+      AdaptiveDifficultyService().recordAnswer(
         subjectCode: subjectCode,
-        isCorrect: analytics['accuracy'] >= 0.7,
+        isCorrect: (analytics['accuracy'] as num? ?? 0) >= 0.7,
         timeSpentSeconds: (analytics['avg_time'] as num?)?.toInt() ?? 60,
       );
     }
@@ -87,81 +81,71 @@ class OfflineStorageService {
 
   Future<List<OfflineSession>> getAllSessions() async {
     if (!_initialized) await initialize();
-    return _sessionsBoxInstance!.values.toList()
-      ..sort((a, b) => b.endTime.compareTo(a.endTime));
+    final sessions = _sessionsBox!.values
+        .map((value) => OfflineSession.fromJson(Map<String, dynamic>.from(value as Map)))
+        .toList();
+    sessions.sort((a, b) => b.endTime.compareTo(a.endTime));
+    return sessions;
   }
 
   Future<List<OfflineSession>> getSessionsByCategory(String category) async {
-    if (!_initialized) await initialize();
-    return _sessionsBoxInstance!.values
-        .where((s) => s.category == category)
-        .toList()
-      ..sort((a, b) => b.endTime.compareTo(a.endTime));
+    final sessions = await getAllSessions();
+    return sessions.where((s) => s.category == category).toList();
   }
 
   Future<OfflineSession?> getSession(String id) async {
     if (!_initialized) await initialize();
-    return _sessionsBoxInstance!.get(id);
+    final raw = _sessionsBox!.get(id);
+    if (raw == null) return null;
+    return OfflineSession.fromJson(Map<String, dynamic>.from(raw as Map));
   }
 
   Future<void> markSessionSynced(String id) async {
     if (!_initialized) await initialize();
-    final session = _sessionsBoxInstance!.get(id);
-    if (session != null) {
-      final updated = OfflineSession(
-        id: session.id,
-        packageName: session.packageName,
-        category: session.category,
-        startTime: session.startTime,
-        endTime: session.endTime,
-        totalQuestions: session.totalQuestions,
-        correctAnswers: session.correctAnswers,
-        wrongAnswers: session.wrongAnswers,
-        unansweredCount: session.unansweredCount,
-        score: session.score,
-        durationSeconds: session.durationSeconds,
-        answers: session.answers,
-        adaptiveAnalytics: session.adaptiveAnalytics,
-        syncedToCloud: true,
-      );
-      await _sessionsBoxInstance!.put(id, updated);
-    }
+    final session = await getSession(id);
+    if (session == null) return;
+    await _sessionsBox!.put(id, session.copyWith(syncedToCloud: true).toJson());
   }
 
   Future<void> deleteSession(String id) async {
     if (!_initialized) await initialize();
-    await _sessionsBoxInstance!.delete(id);
+    await _sessionsBox!.delete(id);
   }
 
   Future<void> clearAllSessions() async {
     if (!_initialized) await initialize();
-    await _sessionsBoxInstance!.clear();
+    await _sessionsBox!.clear();
   }
 
   Future<Map<String, OfflineQuestionProgress>> getQuestionProgress() async {
     if (!_initialized) await initialize();
-    return Map.from(_progressBoxInstance!.toMap());
+    return _progressBox!.toMap().map(
+      (key, value) => MapEntry(
+        key.toString(),
+        OfflineQuestionProgress.fromJson(Map<String, dynamic>.from(value as Map)),
+      ),
+    );
   }
 
   Future<void> clearQuestionProgress() async {
     if (!_initialized) await initialize();
-    await _progressBoxInstance!.clear();
+    await _progressBox!.clear();
   }
 
   Future<void> setSetting(String key, dynamic value) async {
     if (!_initialized) await initialize();
-    await _settingsBoxInstance!.put(key, value);
+    await _settingsBox!.put(key, value);
   }
 
   dynamic getSetting(String key, {dynamic defaultValue}) {
     if (!_initialized) return defaultValue;
-    return _settingsBoxInstance!.get(key, defaultValue: defaultValue);
+    return _settingsBox!.get(key, defaultValue: defaultValue);
   }
 
   Future<void> close() async {
-    await _sessionsBoxInstance?.close();
-    await _progressBoxInstance?.close();
-    await _settingsBoxInstance?.close();
+    await _sessionsBox?.close();
+    await _progressBox?.close();
+    await _settingsBox?.close();
     _initialized = false;
   }
 }
