@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
+
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,14 @@ import 'kedinasan_tiu_data.dart';
 import 'kedinasan_tkp_data.dart';
 import 'kedinasan_twk_data.dart';
 import 'mental_ideology_data.dart';
+import 'pages/cbt_test_page.dart';
+import 'pages/skd_test_page.dart';
+import 'pages/analytics_page.dart';
+import 'pages/question_variation_page.dart';
+import 'pages/social_hub_page.dart';
+import 'services/question_rotation_service.dart';
+import 'services/offline_storage_service.dart';
+import 'services/adaptive_difficulty_service.dart';
 
 const navy = Color(0xFF152B55);
 const blue = Color(0xFF2E6FE8);
@@ -29,16 +38,8 @@ class LocalAccount {
   static String? email;
   static String? password;
   static bool isPremium = false;
-  static bool isLoggedIn = false;
 
   static bool get isRegistered => email != null && password != null;
-}
-
-Future<bool> ensureLoggedIn(BuildContext context) async {
-  if (LocalAccount.isLoggedIn) return true;
-  final result = await Navigator.of(context)
-      .push<bool>(MaterialPageRoute(builder: (_) => const LoginPage()));
-  return result == true || LocalAccount.isLoggedIn;
 }
 
 class LearningActivityStore extends ChangeNotifier {
@@ -80,7 +81,12 @@ class LearningActivityStore extends ChangeNotifier {
   }
 }
 
-void main() => runApp(const EduKreativApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await OfflineStorageService().initialize();
+  await AdaptiveDifficultyService().initialize();
+  runApp(const EduKreativApp());
+}
 
 class EduKreativApp extends StatelessWidget {
   const EduKreativApp({super.key});
@@ -153,7 +159,8 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final pages = [
       const HomePage(),
-      AcademyKreativPage(onBack: () => setState(() => index = 0)),
+      const SocialHubPage(),
+      OfficialBooksPage(onBack: () => setState(() => index = 0)),
       const StorePage(),
       const ProfilePage(),
     ];
@@ -167,6 +174,11 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Beranda',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.group_outlined),
+            selectedIcon: Icon(Icons.group),
+            label: 'Komunitas',
           ),
           NavigationDestination(
             icon: Icon(Icons.menu_book_outlined),
@@ -1715,8 +1727,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 .push(MaterialPageRoute(builder: (_) => const ProgressPage())),
           ),
           const SizedBox(height: 16),
-          const _DailyTargetCard(),
-          const SizedBox(height: 24),
+          _ProfileMenuTile(
+            icon: Icons.analytics_outlined,
+            title: 'Analytics',
+            subtitle: 'Lihat analisis performa & soal sering salah',
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const AnalyticsPage())),
+          ),
+          const SizedBox(height: 16),
           Row(
             children: const [
               Expanded(
@@ -1774,6 +1792,14 @@ class _ProfilePageState extends State<ProfilePage> {
               'Pusat bantuan',
               'Kamu dapat menghubungi tim Edukreativ melalui menu bantuan.',
             ),
+          ),
+          const SizedBox(height: 10),
+          _ProfileMenuTile(
+            icon: Icons.auto_awesome,
+            title: 'AI Question Generator',
+            subtitle: 'Buat variasi soal otomatis (dev tool)',
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const QuestionVariationPage())),
           ),
           const SizedBox(height: 10),
           _ProfileMenuTile(
@@ -1956,7 +1982,6 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
-    LocalAccount.isLoggedIn = true;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Berhasil masuk ke akun Kreativ.')),
     );
@@ -2122,7 +2147,6 @@ class _RegisterPageState extends State<RegisterPage> {
     LocalAccount.name = name;
     LocalAccount.email = email.toLowerCase();
     LocalAccount.password = password;
-    LocalAccount.isLoggedIn = true;
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -2556,14 +2580,8 @@ class HomePage extends StatelessWidget {
                                                   method.icon,
                                                   color: orange,
                                                 ),
-                                                onTap: () async {
+                                                onTap: () {
                                                   Navigator.pop(sheetContext);
-                                                  if (!await ensureLoggedIn(
-                                                        context,
-                                                      ) ||
-                                                      !context.mounted) {
-                                                    return;
-                                                  }
                                                   if (index >= 3) {
                                                     Navigator.push(
                                                       context,
@@ -2796,121 +2814,92 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _HomeAnimatedSection(
-            index: 0,
-            child: _CreativeMenuCards(
-              onTap: (title) {
-                if (title == 'Cerita Kreativ') {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const StoryCreativePage(),
-                    ),
-                  );
-                  return;
-                }
-                if (title == 'GURU KREATIV JOIN US') {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const CreativeTeacherJoinPage(),
-                    ),
-                  );
-                  return;
-                }
-                _showCreativeMenuDialog(context, title);
-              },
+          _CreativeMenuCards(
+            onTap: (title) {
+              if (title == 'Cerita Kreativ') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const StoryCreativePage()),
+                );
+                return;
+              }
+              _showCreativeMenuDialog(context, title);
+            },
+          ),
+          const SizedBox(height: 14),
+          _UtbkFeatureCard(
+            category: 'KELAS ONLINE RUTIN',
+            title: 'LiveClass',
+            description:
+                'Belajar online bersama pengajar profesional dan berpengalaman.',
+            tags: 'Live · Profesional · Rutin',
+            actionLabel: 'Lihat jadwal',
+            icon: Icons.ondemand_video_outlined,
+            color: const Color(0xFFD84B78),
+            backgroundColor: const Color(0xFFFFE8F0),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const UtbkLiveClassPage()),
             ),
           ),
           const SizedBox(height: 14),
-          _HomeAnimatedSection(
-            index: 1,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _UtbkFeatureCard(
-                        category: 'KELAS ONLINE RUTIN',
-                        title: 'LiveClass',
-                        description: 'Belajar online bersama pengajar profesional dan berpengalaman.',
-                        tags: 'Live · Profesional · Rutin',
-                        actionLabel: 'Lihat jadwal',
-                        icon: Icons.ondemand_video_outlined,
-                        color: const Color(0xFFD84B78),
-                        backgroundColor: const Color(0xFFFFE8F0),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const UtbkLiveClassPage(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _TeacherJoinCard(
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const CreativeTeacherJoinPage(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
+          _KedinasanMenuCard(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const KedinasanPage())),
           ),
           const SizedBox(height: 14),
-          _HomeAnimatedSection(
-            index: 2,
-            child: _KedinasanMenuCard(
-              onTap: () => Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const KedinasanPage())),
-            ),
-          ),
-          const SizedBox(height: 14),
-          const _HomeAnimatedSection(index: 2, child: _PreparationMenuRow()),
+          const _DailyTargetCard(),
           const SizedBox(height: 25),
-          _HomeAnimatedSection(
-            index: 3,
-            child: _SiapUtbkHomeCard(
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => const UtbkPage())),
-            ),
+          _RecommendationCard(
+            onTap: () =>
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => const UtbkPage())),
           ),
           const SizedBox(height: 14),
-          _HomeAnimatedSection(
-            index: 5,
-            child: _UtbkFeatureCard(
-              category: 'SMART PLAYBOOK',
-              title: 'Strategi Lolos UTBK',
-              description: 'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
-              tags: 'Taktik · Roadmap · Target',
-              actionLabel: 'Pilih strategi',
-              icon: Icons.track_changes_outlined,
-              color: const Color(0xFFE38A2D),
-              backgroundColor: const Color(0xFFFFF2DF),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const UtbkStrategyPage()),
-              ),
+          _UtbkFeatureCard(
+            category: 'SMART PLAYBOOK',
+            title: 'Strategi UTBK Terarah (PREMIUM MEMBER)',
+            description:
+                'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
+            tags: 'Taktik · Roadmap · Target',
+            actionLabel: 'Pilih strategi',
+            icon: Icons.track_changes_outlined,
+            color: const Color(0xFFE38A2D),
+            backgroundColor: const Color(0xFFFFF2DF),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const UtbkStrategyPage()),
             ),
           ),
           const SizedBox(height: 25),
-          _HomeAnimatedSection(
-            index: 6,
-            child: _CreativeRoomCard(
-              onOpenKarya: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CreativeWorksPage()),
-              ),
-              onOpenInspirasi: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const CreativeInspirationPage(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Materi pilihan',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: navy,
                 ),
               ),
-              onOpenJurnal: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CreativeJournalPage()),
+              TextButton(
+                onPressed: () => Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const CatalogPage())),
+                child: const Text('Lihat semua'),
               ),
-            ),
+            ],
+          ),
+          const _CourseCard(
+            title: 'Matematika Dasar',
+            subtitle: 'SD · Bilangan dan Operasi',
+            free: true,
+            icon: Icons.calculate,
+          ),
+          const SizedBox(height: 12),
+          const _CourseCard(
+            title: 'Sains di Sekitar Kita',
+            subtitle: 'SMP · Makhluk Hidup',
+            free: false,
+            icon: Icons.science,
           ),
         ],
       ),
@@ -2918,340 +2907,12 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _HomeAnimatedSection extends StatefulWidget {
-  final int index;
-  final Widget child;
-
-  const _HomeAnimatedSection({required this.index, required this.child});
-
-  @override
-  State<_HomeAnimatedSection> createState() => _HomeAnimatedSectionState();
-}
-
-class _HomeAnimatedSectionState extends State<_HomeAnimatedSection>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 520),
-  );
-  Timer? _startTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    _startTimer = Timer(Duration(milliseconds: 80 * widget.index), () {
-      if (mounted) _controller.forward();
-    });
-  }
-
-  @override
-  void dispose() {
-    _startTimer?.cancel();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: _controller,
-    child: widget.child,
-    builder: (context, child) {
-      final value = Curves.easeOutCubic.transform(_controller.value);
-      return Opacity(
-        opacity: value,
-        child: Transform.translate(
-          offset: Offset(0, 18 * (1 - value)),
-          child: child,
-        ),
-      );
-    },
-  );
-}
-
-class _SiapUtbkHomeCard extends StatefulWidget {
-  final VoidCallback onTap;
-
-  const _SiapUtbkHomeCard({required this.onTap});
-
-  @override
-  State<_SiapUtbkHomeCard> createState() => _SiapUtbkHomeCardState();
-}
-
-class _SiapUtbkHomeCardState extends State<_SiapUtbkHomeCard> {
-  static final examDate = DateTime(2027, 3, 1);
-  late final Timer _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  int get daysLeft => (examDate.difference(DateTime.now()).inSeconds / 86400)
-      .ceil()
-      .clamp(0, 99999)
-      .toInt();
-
-  int get weeksLeft => (daysLeft / 7).ceil();
-
-  int get monthsLeft {
-    final now = DateTime.now();
-    final value = (examDate.year - now.year) * 12 + examDate.month - now.month;
-    final dayFraction = (examDate.day - now.day) / 31;
-    return (value + dayFraction).ceil().clamp(0, 999).toInt();
-  }
-
-  Widget _countdown({required bool compact}) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'HITUNG MUNDUR UTBK 2027',
-        style: TextStyle(
-          color: Colors.white70,
-          fontSize: compact ? 10 : 11,
-          fontWeight: FontWeight.w800,
-          letterSpacing: compact ? .5 : .8,
-        ),
-      ),
-      SizedBox(height: compact ? 3 : 4),
-      Text(
-        'Senin, 1 Maret 2027',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: compact ? 14 : 16,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-      SizedBox(height: compact ? 7 : 10),
-      Row(
-        children: [
-          _CountdownValue(value: daysLeft, label: 'hari', compact: compact),
-          SizedBox(width: compact ? 5 : 6),
-          _CountdownValue(value: weeksLeft, label: 'minggu', compact: compact),
-          SizedBox(width: compact ? 5 : 6),
-          _CountdownValue(value: monthsLeft, label: 'bulan', compact: compact),
-        ],
-      ),
-    ],
-  );
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final compact = constraints.maxWidth < 620;
-      final recommendation = InkWell(
-        onTap: widget.onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: const Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Rekomendasi untukmu',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'SIAP UTBK',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'TPS · Literasi · Latihan soal',
-                style: TextStyle(color: Colors.white70, fontSize: 11),
-              ),
-            ],
-          ),
-        ),
-      );
-      final countdown = Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          compact ? 12 : 16,
-          16,
-          compact ? 12 : 16,
-        ),
-        child: _countdown(compact: compact),
-      );
-      return Container(
-        padding: const EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-          color: navy,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: constraints.maxWidth >= 620
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(child: recommendation),
-                  const SizedBox(width: 8),
-                  Expanded(child: countdown),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [recommendation, countdown],
-              ),
-      );
-    },
-  );
-}
-
-class _SiapUtbkCountdownCard extends StatefulWidget {
-  const _SiapUtbkCountdownCard();
-
-  @override
-  State<_SiapUtbkCountdownCard> createState() => _SiapUtbkCountdownCardState();
-}
-
-class _SiapUtbkCountdownCardState extends State<_SiapUtbkCountdownCard> {
-  static final examDate = DateTime(2027, 3, 1);
-  late Timer timer;
-
-  @override
-  void initState() {
-    super.initState();
-    timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
-
-  int get daysLeft => (examDate.difference(DateTime.now()).inSeconds / 86400)
-      .ceil()
-      .clamp(0, 99999)
-      .toInt();
-
-  int get weeksLeft => (daysLeft / 7).ceil();
-
-  int get monthsLeft {
-    final now = DateTime.now();
-    final value = (examDate.year - now.year) * 12 + examDate.month - now.month;
-    final dayFraction = (examDate.day - now.day) / 31;
-    return (value + dayFraction).ceil().clamp(0, 999).toInt();
-  }
-
-  @override
-  Widget build(BuildContext context) => Card(
-    elevation: 0,
-    color: const Color(0xFFE9F1FF),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-      side: BorderSide(color: blue.withValues(alpha: .16)),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'HITUNG MUNDUR UTBK 2027',
-            style: TextStyle(
-              color: blue,
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              letterSpacing: .8,
-            ),
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            'Senin, 1 Maret 2027',
-            style: TextStyle(
-              color: navy,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              _CountdownValue(value: daysLeft, label: 'hari'),
-              const SizedBox(width: 8),
-              _CountdownValue(value: weeksLeft, label: 'minggu'),
-              const SizedBox(width: 8),
-              _CountdownValue(value: monthsLeft, label: 'bulan'),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-class _CountdownValue extends StatelessWidget {
-  final int value;
-  final String label;
-  final bool compact;
-
-  const _CountdownValue({
-    required this.value,
-    required this.label,
-    this.compact = false,
-  });
-
-  @override
-  Widget build(BuildContext context) => Expanded(
-    child: Container(
-      padding: EdgeInsets.symmetric(
-        vertical: compact ? 8 : 12,
-        horizontal: compact ? 3 : 6,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(compact ? 11 : 14),
-      ),
-      child: Column(
-        children: [
-          Text(
-            '$value',
-            style: TextStyle(
-              color: navy,
-              fontSize: compact ? 18 : 22,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          SizedBox(height: compact ? 1 : 2),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.black54,
-              fontSize: compact ? 11 : 14,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 class UtbkPage extends StatelessWidget {
   const UtbkPage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('SIAP UTBK'), foregroundColor: navy),
+    appBar: AppBar(title: const Text('Lolos UTBK 800'), foregroundColor: navy),
     body: ListView(
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
       children: [
@@ -3313,7 +2974,7 @@ class UtbkPage extends StatelessWidget {
         const SizedBox(height: 12),
         _UtbkFeatureCard(
           category: 'SMART PLAYBOOK',
-          title: 'Strategi Lolos UTBK',
+          title: 'Strategi UTBK Terarah',
           description: 'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
           tags: 'Taktik · Roadmap · Target',
           actionLabel: 'Pilih strategi',
@@ -3588,20 +3249,28 @@ class UtbkTryoutPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FilledButton.icon(
-                    onPressed: () async {
-                      if (!await ensureLoggedIn(context) || !context.mounted)
-                        return;
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => UtbkRealCbtPage()),
-                      );
-                    },
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text('Mulai Try Out →'),
-                  ),
-                ),
+Align(
+                   alignment: Alignment.centerRight,
+                   child: FilledButton.icon(
+                     onPressed: () => Navigator.of(context).push(
+                       MaterialPageRoute(builder: (_) => CBTTestPage(
+                         packageName: 'Try Out UTBK Lengkap',
+                         customSubjectCounts: {
+                           'PU': 30,
+                           'PPU': 20,
+                           'PBM': 20,
+                           'PK': 20,
+                           'LBI': 30,
+                           'LBE': 20,
+                           'PM': 20,
+                         },
+                         durationMinutes: 230,
+                       )),
+                     ),
+                     icon: const Icon(Icons.play_arrow_rounded),
+                     label: const Text('Mulai Try Out →'),
+                   ),
+                 ),
               ],
             ),
           ),
@@ -3646,14 +3315,8 @@ class UtbkTryoutPage extends StatelessWidget {
               ),
               subtitle: Text(pack.$3),
               trailing: const Icon(Icons.chevron_right, color: blue),
-              onTap: () async {
-                if (!await ensureLoggedIn(context) || !context.mounted) return;
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => UtbkRealCbtPage(initialSubject: pack.$2),
-                  ),
-                );
-              },
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => UtbkRealCbtPage(initialSubject: pack.$2))),
             ),
           ),
         ),
@@ -4551,14 +4214,9 @@ class UtbkPracticeModePage extends StatelessWidget {
           description:
               'Latihan pilihan ganda · 36 soal · Fokus satu soal sekali waktu.',
           actionLabel: 'Mulai latihan',
-          onTap: () async {
-            if (!await ensureLoggedIn(context) || !context.mounted) return;
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => UtbkRealCbtPage(initialSubject: title),
-              ),
-            );
-          },
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => UtbkRealCbtPage(initialSubject: title))),
         ),
         _UtbkContentSection(
           title: 'Pilih topik lainnya',
@@ -4612,9 +4270,8 @@ class _UtbkBankPageState extends State<UtbkBankPage> {
   }
 
   Future<List<Map<String, dynamic>>> _loadQuestions() async {
-    final raw = jsonDecode(
-      await rootBundle.loadString('assets/utbk_questions.json'),
-    ) as Map<String, dynamic>;
+    final raw = jsonDecode(await rootBundle.loadString('assets/utbk_questions.json'))
+        as Map<String, dynamic>;
     return (raw['questions'] as List<dynamic>)
         .map((item) => Map<String, dynamic>.from(item as Map))
         .toList();
@@ -4630,43 +4287,24 @@ class _UtbkBankPageState extends State<UtbkBankPage> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return Center(
-            child: Text('Bank soal gagal dimuat: ${snapshot.error}'),
-          );
+          return Center(child: Text('Bank soal gagal dimuat: ${snapshot.error}'));
         }
         final all = snapshot.data ?? const <Map<String, dynamic>>[];
         final visible = all.where((item) {
-          final matchesSubject =
-              selectedCode == 'SEMUA' || item['subject_code'] == selectedCode;
-          final haystack = '${item['question']} ${item['subject']}'
-              .toLowerCase();
-          return matchesSubject &&
-              (query.isEmpty || haystack.contains(query.toLowerCase()));
+          final matchesSubject = selectedCode == 'SEMUA' || item['subject_code'] == selectedCode;
+          final haystack = '${item['question']} ${item['subject']}'.toLowerCase();
+          return matchesSubject && (query.isEmpty || haystack.contains(query.toLowerCase()));
         }).toList();
         return ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
           children: [
-            const Text(
-              'Bank Soal UTBK',
-              style: TextStyle(
-                color: navy,
-                fontSize: 25,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
+            const Text('Bank Soal UTBK', style: TextStyle(color: navy, fontSize: 25, fontWeight: FontWeight.w800)),
             const SizedBox(height: 6),
-            Text(
-              '${all.length} soal lengkap · soal, opsi, kunci, dan pembahasan',
-              style: const TextStyle(color: Colors.black54),
-            ),
+            Text('${all.length} soal lengkap · soal, opsi, kunci, dan pembahasan', style: const TextStyle(color: Colors.black54)),
             const SizedBox(height: 14),
             TextField(
               onChanged: (value) => setState(() => query = value),
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: 'Cari soal atau mata pelajaran...',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'Cari soal atau mata pelajaran...', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 12),
             SizedBox(
@@ -4675,59 +4313,25 @@ class _UtbkBankPageState extends State<UtbkBankPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   _subjectChip('SEMUA', 'Semua'),
-                  ...subjects.entries.map(
-                    (entry) => _subjectChip(entry.key, entry.key),
-                  ),
+                  ...subjects.entries.map((entry) => _subjectChip(entry.key, entry.key)),
                 ],
               ),
             ),
             const SizedBox(height: 14),
-            Text(
-              '${visible.length} soal ditampilkan',
-              style: const TextStyle(color: navy, fontWeight: FontWeight.w800),
-            ),
+            Text('${visible.length} soal ditampilkan', style: const TextStyle(color: navy, fontWeight: FontWeight.w800)),
             const SizedBox(height: 8),
-            ...visible.map(
-              (item) => Card(
-                elevation: 0,
-                margin: const EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 6,
-                  ),
-                  leading: CircleAvatar(
-                    backgroundColor: const Color(0xFFEAF1FF),
-                    child: Text(
-                      '${item['source_number']}',
-                      style: const TextStyle(
-                        color: blue,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    item['question'] as String,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: navy,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  subtitle: Text(
-                    '${item['subject_code']} · Kunci ${item['answer']}',
-                  ),
-                  trailing: const Icon(Icons.chevron_right, color: blue),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => UtbkQuestionDetailPage(question: item),
-                    ),
-                  ),
-                ),
+            ...visible.map((item) => Card(
+              elevation: 0,
+              margin: const EdgeInsets.only(bottom: 10),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                leading: CircleAvatar(backgroundColor: const Color(0xFFEAF1FF), child: Text('${item['source_number']}', style: const TextStyle(color: blue, fontSize: 11, fontWeight: FontWeight.w800))),
+                title: Text(item['question'] as String, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(color: navy, fontWeight: FontWeight.w700)),
+                subtitle: Text('${item['subject_code']} · Kunci ${item['answer']}'),
+                trailing: const Icon(Icons.chevron_right, color: blue),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => UtbkQuestionDetailPage(question: item))),
               ),
-            ),
+            )),
           ],
         );
       },
@@ -4740,10 +4344,7 @@ class _UtbkBankPageState extends State<UtbkBankPage> {
       label: Text(label),
       selected: selectedCode == code,
       selectedColor: blue,
-      labelStyle: TextStyle(
-        color: selectedCode == code ? Colors.white : navy,
-        fontWeight: FontWeight.w800,
-      ),
+      labelStyle: TextStyle(color: selectedCode == code ? Colors.white : navy, fontWeight: FontWeight.w800),
       onSelected: (_) => setState(() => selectedCode = code),
     ),
   );
@@ -4757,73 +4358,19 @@ class UtbkQuestionDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final options = Map<String, dynamic>.from(question['options'] as Map);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '${question['subject_code']} · Soal ${question['source_number']}',
-        ),
-        foregroundColor: navy,
-      ),
+      appBar: AppBar(title: Text('${question['subject_code']} · Soal ${question['source_number']}'), foregroundColor: navy),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 28),
         children: [
           Chip(label: Text(question['subject'] as String)),
           const SizedBox(height: 8),
-          Text(
-            question['question'] as String,
-            style: const TextStyle(
-              color: navy,
-              fontSize: 17,
-              height: 1.45,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          Text(question['question'] as String, style: const TextStyle(color: navy, fontSize: 17, height: 1.45, fontWeight: FontWeight.w700)),
           const SizedBox(height: 16),
-          ...['A', 'B', 'C', 'D', 'E']
-              .where(options.containsKey)
-              .map(
-                (key) => Card(
-                  elevation: 0,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text('$key. ${options[key]}'),
-                  ),
-                ),
-              ),
+          ...['A', 'B', 'C', 'D', 'E'].where(options.containsKey).map((key) => Card(elevation: 0, color: Colors.white, child: Padding(padding: const EdgeInsets.all(12), child: Text('$key. ${options[key]}')))),
           const SizedBox(height: 12),
-          Card(
-            color: const Color(0xFFE8F7EE),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Text(
-                'Kunci jawaban: ${question['answer']}',
-                style: const TextStyle(
-                  color: Color(0xFF216B49),
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-          ),
+          Card(color: const Color(0xFFE8F7EE), elevation: 0, child: Padding(padding: const EdgeInsets.all(14), child: Text('Kunci jawaban: ${question['answer']}', style: const TextStyle(color: Color(0xFF216B49), fontWeight: FontWeight.w800)))),
           const SizedBox(height: 10),
-          Card(
-            color: const Color(0xFFEAF1FF),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Pembahasan',
-                    style: TextStyle(color: navy, fontWeight: FontWeight.w800),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(question['explanation'] as String),
-                ],
-              ),
-            ),
-          ),
+          Card(color: const Color(0xFFEAF1FF), elevation: 0, child: Padding(padding: const EdgeInsets.all(14), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('Pembahasan', style: TextStyle(color: navy, fontWeight: FontWeight.w800)), const SizedBox(height: 6), Text(question['explanation'] as String)]))),
         ],
       ),
     );
@@ -4906,154 +4453,138 @@ class _UtbkQuestionPageState extends State<UtbkQuestionPage> {
         title: const Text('Lolos UTBK 800'),
         foregroundColor: navy,
       ),
-      body: Column(
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
         children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          TextButton.icon(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back),
+            label: const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Ganti Topik'),
+            ),
+          ),
+          const Text(
+            'Simpulan Logis',
+            style: TextStyle(
+              color: navy,
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            '1 / 36',
+            style: TextStyle(
+              color: Colors.black54,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+            decoration: BoxDecoration(
+              color: blue,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
               children: [
-                TextButton.icon(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('Ganti Topik'),
-                  ),
-                ),
-                const Text(
-                  'Simpulan Logis',
-                  style: TextStyle(
-                    color: navy,
-                    fontSize: 24,
+                const Icon(Icons.timer_outlined, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  '$minutes:$seconds',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
                     fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                const Text(
-                  '1 / 36',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 13,
-                  ),
-                  decoration: BoxDecoration(
-                    color: blue,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.timer_outlined, color: Colors.white),
-                      const SizedBox(width: 8),
-                      Text(
-                        '$minutes:$seconds',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Card(
-                  elevation: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Wrap(
-                          spacing: 8,
-                          children: const [
-                            Chip(label: Text('Pilihan Ganda')),
-                            Chip(label: Text('Mudah')),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        const Text(
-                          'Di awal semester baru, X akan mendaftar sebagai pengurus olahraga atau pramuka di sekolah. Kakak kelasnya menyarankan X bergabung sebagai pengurus fotografi. Karena pengurus fotografi sering bepergian ke luar kota, orang tuanya tidak mengizinkannya bergabung. Apa yang PALING MUNGKIN dilakukan X pada awal semester?',
-                          style: TextStyle(
-                            color: navy,
-                            fontSize: 16,
-                            height: 1.45,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ...options.entries.map((option) {
-                          final isSelected = selected == option.key;
-                          return InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () => setState(() => selected = option.key),
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 8),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? blue.withValues(alpha: .08)
-                                    : Colors.transparent,
-                                border: Border.all(
-                                  color: isSelected ? blue : Colors.black12,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 15,
-                                    backgroundColor: isSelected
-                                        ? blue
-                                        : Colors.black12,
-                                    child: Text(
-                                      option.key,
-                                      style: TextStyle(
-                                        color: isSelected ? Colors.white : navy,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(child: Text(option.value)),
-                                  Icon(
-                                    isSelected
-                                        ? Icons.radio_button_checked
-                                        : Icons.radio_button_unchecked,
-                                    color: isSelected ? blue : Colors.black38,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
                   ),
                 ),
               ],
             ),
           ),
-          SafeArea(
-            top: false,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
-              color: Colors.white,
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: selected == null ? null : finish,
-                  child: const Text('Selesai'),
-                ),
+          const SizedBox(height: 14),
+          Card(
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    spacing: 8,
+                    children: const [
+                      Chip(label: Text('Pilihan Ganda')),
+                      Chip(label: Text('Mudah')),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Di awal semester baru, X akan mendaftar sebagai pengurus olahraga atau pramuka di sekolah. Kakak kelasnya menyarankan X bergabung sebagai pengurus fotografi. Karena pengurus fotografi sering bepergian ke luar kota, orang tuanya tidak mengizinkannya bergabung. Apa yang PALING MUNGKIN dilakukan X pada awal semester?',
+                    style: TextStyle(
+                      color: navy,
+                      fontSize: 16,
+                      height: 1.45,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ...options.entries.map((option) {
+                    final isSelected = selected == option.key;
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => setState(() => selected = option.key),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? blue.withValues(alpha: .08)
+                              : Colors.transparent,
+                          border: Border.all(
+                            color: isSelected ? blue : Colors.black12,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: isSelected
+                                  ? blue
+                                  : Colors.black12,
+                              child: Text(
+                                option.key,
+                                style: TextStyle(
+                                  color: isSelected ? Colors.white : navy,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(child: Text(option.value)),
+                            Icon(
+                              isSelected
+                                  ? Icons.radio_button_checked
+                                  : Icons.radio_button_unchecked,
+                              color: isSelected ? blue : Colors.black38,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FilledButton(
+                      onPressed: selected == null ? null : finish,
+                      child: const Text('Selesai'),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -5065,19 +4596,6 @@ class _UtbkQuestionPageState extends State<UtbkQuestionPage> {
 
 class UtbkRealCbtPage extends StatefulWidget {
   final String? initialSubject;
-
-  static const questionLimits = <String, int>{
-    'PU': 30,
-    'PPU': 20,
-    'PBM': 20,
-    'PK': 20,
-    'LBI': 30,
-    'LBE': 20,
-    'PM': 20,
-  };
-
-  static int limitFor(String code) => questionLimits[code] ?? 0;
-
   const UtbkRealCbtPage({super.key, this.initialSubject});
 
   @override
@@ -5108,8 +4626,7 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
   void initState() {
     super.initState();
     for (final entry in subtests.entries) {
-      if (widget.initialSubject?.contains(entry.value) == true)
-        activeCode = entry.key;
+      if (widget.initialSubject?.contains(entry.value) == true) activeCode = entry.key;
     }
     questionsFuture = _loadQuestions();
     timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -5124,12 +4641,8 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
   }
 
   Future<List<Map<String, dynamic>>> _loadQuestions() async {
-    final root = jsonDecode(
-      await rootBundle.loadString('assets/utbk_questions.json'),
-    ) as Map<String, dynamic>;
-    return (root['questions'] as List<dynamic>)
-        .map((item) => Map<String, dynamic>.from(item as Map))
-        .toList();
+    final root = jsonDecode(await rootBundle.loadString('assets/utbk_questions.json')) as Map<String, dynamic>;
+    return (root['questions'] as List<dynamic>).map((item) => Map<String, dynamic>.from(item as Map)).toList();
   }
 
   @override
@@ -5138,45 +4651,27 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
     super.dispose();
   }
 
-  String get timeLabel =>
-      '${(remainingSeconds ~/ 60).toString().padLeft(2, '0')}:${(remainingSeconds % 60).toString().padLeft(2, '0')}';
+  String get timeLabel => '${(remainingSeconds ~/ 60).toString().padLeft(2, '0')}:${(remainingSeconds % 60).toString().padLeft(2, '0')}';
 
   void _finish({bool auto = false}) {
     timer?.cancel();
     final correct = activeQuestions.asMap().entries.where((entry) {
       final answer = answers[entry.key];
       final key = entry.value['answer'] as String? ?? '';
-      return answer != null &&
-          key.split(',').map((item) => item.trim()).contains(answer);
+      return answer != null && key.split(',').map((item) => item.trim()).contains(answer);
     }).length;
     showDialog<void>(
       context: context,
       barrierDismissible: !auto,
       builder: (dialogContext) => AlertDialog(
         title: Text(auto ? 'Waktu habis' : 'Selesaikan latihan?'),
-        content: Text(
-          '${answers.length} dari ${activeQuestions.length} soal dijawab.\nSkor sementara: $correct benar.',
-        ),
+        content: Text('${answers.length} dari ${activeQuestions.length} soal dijawab.\nSkor sementara: $correct benar.'),
         actions: [
-          if (!auto)
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Kembali'),
-            ),
+          if (!auto) TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Kembali')),
           FilledButton(
             onPressed: () {
               Navigator.pop(dialogContext);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => UtbkCbtResultPage(
-                    subject: subtests[activeCode]!,
-                    correct: correct,
-                    answered: answers.length,
-                    total: activeQuestions.length,
-                  ),
-                ),
-              );
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => UtbkCbtResultPage(subject: subtests[activeCode]!, correct: correct, answered: answers.length, total: activeQuestions.length)));
             },
             child: const Text('Lihat Skor'),
           ),
@@ -5192,220 +4687,52 @@ class _UtbkRealCbtPageState extends State<UtbkRealCbtPage> {
       backgroundColor: navy,
       foregroundColor: Colors.white,
       title: const Text('Try Out CBT · UTBK'),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Text(
-            timeLabel,
-            style: const TextStyle(fontWeight: FontWeight.w800),
-          ),
-        ),
-      ],
+      actions: [Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14), child: Text(timeLabel, style: const TextStyle(fontWeight: FontWeight.w800)))],
     ),
     body: FutureBuilder<List<Map<String, dynamic>>>(
       future: questionsFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting)
-          return const Center(child: CircularProgressIndicator());
-        if (snapshot.hasError)
-          return Center(child: Text('Soal gagal dimuat: ${snapshot.error}'));
+        if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
+        if (snapshot.hasError) return Center(child: Text('Soal gagal dimuat: ${snapshot.error}'));
         final all = snapshot.data ?? const <Map<String, dynamic>>[];
-        final questions = all
-            .where((q) => q['subject_code'] == activeCode)
-            .take(UtbkRealCbtPage.limitFor(activeCode))
-            .toList();
+        final questions = all.where((q) => q['subject_code'] == activeCode).toList();
         activeQuestions = questions;
-        if (questions.isEmpty)
-          return Center(
-            child: Text('Belum ada soal untuk ${subtests[activeCode]}.'),
-          );
+        if (questions.isEmpty) return Center(child: Text('Belum ada soal untuk ${subtests[activeCode]}.'));
         final current = questions[questionIndex.clamp(0, questions.length - 1)];
         final options = Map<String, dynamic>.from(current['options'] as Map);
-        return Column(
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 28),
           children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 20),
+            if (widget.initialSubject == null)
+              SizedBox(height: 44, child: ListView(scrollDirection: Axis.horizontal, children: subtests.entries.map((entry) => Padding(padding: const EdgeInsets.only(right: 8), child: ChoiceChip(label: Text(entry.key), selected: activeCode == entry.key, selectedColor: blue, labelStyle: TextStyle(color: activeCode == entry.key ? Colors.white : navy, fontWeight: FontWeight.w800), onSelected: (_) => setState(() { activeCode = entry.key; questionIndex = 0; })))).toList())),
+            Card(color: const Color(0xFFEAF1FF), elevation: 0, child: ListTile(leading: const Icon(Icons.info_outline, color: blue), title: Text('${subtests[activeCode]} · Soal ${questionIndex + 1} dari ${questions.length}', style: const TextStyle(fontWeight: FontWeight.w800)), subtitle: const Text('Jawaban tersimpan otomatis · Tandai ragu-ragu bila perlu'))),
+            Card(elevation: 0, child: Padding(padding: const EdgeInsets.all(18), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Wrap(spacing: 8, children: [Chip(label: Text(activeCode)), const Chip(label: Text('Pilihan Ganda'))]),
+              const SizedBox(height: 12),
+              Text(current['question'] as String, style: const TextStyle(color: navy, fontSize: 17, height: 1.45, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 16),
+              ...['A', 'B', 'C', 'D', 'E'].where(options.containsKey).map((key) { final chosen = answers[questionIndex] == key; return InkWell(onTap: () => setState(() => answers[questionIndex] = key), child: Container(margin: const EdgeInsets.only(bottom: 9), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: chosen ? const Color(0xFFEAF1FF) : Colors.transparent, border: Border.all(color: chosen ? blue : Colors.black12), borderRadius: BorderRadius.circular(12)), child: Row(children: [CircleAvatar(radius: 15, backgroundColor: chosen ? blue : Colors.black12, child: Text(key, style: TextStyle(color: chosen ? Colors.white : navy, fontWeight: FontWeight.w800))), const SizedBox(width: 10), Expanded(child: Text('${options[key]}')), Icon(chosen ? Icons.radio_button_checked : Icons.radio_button_unchecked, color: chosen ? blue : Colors.black38)]))); }),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.spaceBetween,
                 children: [
-                  if (widget.initialSubject == null)
-                    SizedBox(
-                      height: 44,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: subtests.entries
-                            .map(
-                              (entry) => Padding(
-                                padding: const EdgeInsets.only(right: 8),
-                                child: ChoiceChip(
-                                  label: Text(entry.key),
-                                  selected: activeCode == entry.key,
-                                  selectedColor: blue,
-                                  labelStyle: TextStyle(
-                                    color: activeCode == entry.key
-                                        ? Colors.white
-                                        : navy,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                  onSelected: (_) => setState(() {
-                                    activeCode = entry.key;
-                                    questionIndex = 0;
-                                  }),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  Card(
-                    color: const Color(0xFFEAF1FF),
-                    elevation: 0,
-                    child: ListTile(
-                      leading: const Icon(Icons.info_outline, color: blue),
-                      title: Text(
-                        '${subtests[activeCode]} · Soal ${questionIndex + 1} dari ${questions.length}',
-                        style: const TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      subtitle: const Text(
-                        'Jawaban tersimpan otomatis · Tandai ragu-ragu bila perlu',
-                      ),
-                    ),
+                  OutlinedButton(
+                    onPressed: questionIndex == 0 ? null : () => setState(() => questionIndex--),
+                    child: const Text('<< Sebelumnya'),
                   ),
-                  Card(
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Wrap(
-                            spacing: 8,
-                            children: [
-                              Chip(label: Text(activeCode)),
-                              const Chip(label: Text('Pilihan Ganda')),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            current['question'] as String,
-                            style: const TextStyle(
-                              color: navy,
-                              fontSize: 17,
-                              height: 1.45,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          ...[
-                            'A',
-                            'B',
-                            'C',
-                            'D',
-                            'E',
-                          ].where(options.containsKey).map((key) {
-                            final chosen = answers[questionIndex] == key;
-                            return InkWell(
-                              onTap: () =>
-                                  setState(() => answers[questionIndex] = key),
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 9),
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: chosen
-                                      ? const Color(0xFFEAF1FF)
-                                      : Colors.transparent,
-                                  border: Border.all(
-                                    color: chosen ? blue : Colors.black12,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 15,
-                                      backgroundColor: chosen
-                                          ? blue
-                                          : Colors.black12,
-                                      child: Text(
-                                        key,
-                                        style: TextStyle(
-                                          color: chosen ? Colors.white : navy,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(child: Text('${options[key]}')),
-                                    Icon(
-                                      chosen
-                                          ? Icons.radio_button_checked
-                                          : Icons.radio_button_unchecked,
-                                      color: chosen ? blue : Colors.black38,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                    ),
+                  OutlinedButton(
+                    onPressed: () => setState(() => doubtful.contains(questionIndex) ? doubtful.remove(questionIndex) : doubtful.add(questionIndex)),
+                    child: Text(doubtful.contains(questionIndex) ? 'Ragu-ragu ✓' : 'Ragu-ragu'),
+                  ),
+                  FilledButton(
+                    onPressed: questionIndex == questions.length - 1 ? () => _finish() : () => setState(() => questionIndex++),
+                    child: Text(questionIndex == questions.length - 1 ? 'Selesai' : 'Selanjutnya >>'),
                   ),
                 ],
               ),
-            ),
-            SafeArea(
-              top: false,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, -2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: questionIndex == 0
-                            ? null
-                            : () => setState(() => questionIndex--),
-                        child: const Text('Sebelumnya'),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    OutlinedButton(
-                      onPressed: () => setState(
-                        () => doubtful.contains(questionIndex)
-                            ? doubtful.remove(questionIndex)
-                            : doubtful.add(questionIndex),
-                      ),
-                      child: Text(
-                        doubtful.contains(questionIndex) ? 'Ragu ✓' : 'Ragu',
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: questionIndex == questions.length - 1
-                            ? () => _finish()
-                            : () => setState(() => questionIndex++),
-                        child: Text(
-                          questionIndex == questions.length - 1
-                              ? 'Selesai'
-                              : 'Selanjutnya',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ]))),
           ],
         );
       },
@@ -5419,13 +4746,7 @@ class UtbkCbtResultPage extends StatelessWidget {
   final int answered;
   final int total;
 
-  const UtbkCbtResultPage({
-    super.key,
-    required this.subject,
-    required this.correct,
-    required this.answered,
-    required this.total,
-  });
+  const UtbkCbtResultPage({super.key, required this.subject, required this.correct, required this.answered, required this.total});
 
   @override
   Widget build(BuildContext context) {
@@ -5437,92 +4758,21 @@ class UtbkCbtResultPage extends StatelessWidget {
         children: [
           const Icon(Icons.emoji_events_outlined, color: orange, size: 72),
           const SizedBox(height: 12),
-          const Text(
-            'Try Out selesai!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: navy,
-              fontSize: 25,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
+          const Text('Try Out selesai!', textAlign: TextAlign.center, style: TextStyle(color: navy, fontSize: 25, fontWeight: FontWeight.w800)),
           const SizedBox(height: 6),
-          Text(
-            subject,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black54),
-          ),
+          Text(subject, textAlign: TextAlign.center, style: const TextStyle(color: Colors.black54)),
           const SizedBox(height: 22),
-          Card(
-            color: const Color(0xFFEAF1FF),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const Text(
-                    'Skor kamu',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '$percent',
-                    style: const TextStyle(
-                      color: navy,
-                      fontSize: 52,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const Text('persen', style: TextStyle(color: Colors.black54)),
-                ],
-              ),
-            ),
-          ),
+          Card(color: const Color(0xFFEAF1FF), elevation: 0, child: Padding(padding: const EdgeInsets.all(24), child: Column(children: [const Text('Skor kamu', style: TextStyle(color: Colors.black54)), const SizedBox(height: 8), Text('$percent', style: const TextStyle(color: navy, fontSize: 52, fontWeight: FontWeight.w800)), const Text('persen', style: TextStyle(color: Colors.black54))]))),
           const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(child: _scoreStat('$correct', 'Benar')),
-              const SizedBox(width: 10),
-              Expanded(child: _scoreStat('${total - correct}', 'Salah/kosong')),
-              const SizedBox(width: 10),
-              Expanded(child: _scoreStat('$answered/$total', 'Dijawab')),
-            ],
-          ),
+          Row(children: [Expanded(child: _scoreStat('$correct', 'Benar')), const SizedBox(width: 10), Expanded(child: _scoreStat('${total - correct}', 'Salah/kosong')), const SizedBox(width: 10), Expanded(child: _scoreStat('$answered/$total', 'Dijawab'))]),
           const SizedBox(height: 22),
-          FilledButton(
-            onPressed: () =>
-                Navigator.popUntil(context, (route) => route.isFirst),
-            child: const Text('Kembali ke UTBK'),
-          ),
+          FilledButton(onPressed: () => Navigator.popUntil(context, (route) => route.isFirst), child: const Text('Kembali ke UTBK')),
         ],
       ),
     );
   }
 
-  Widget _scoreStat(String value, String label) => Card(
-    elevation: 0,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              color: blue,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black54, fontSize: 10),
-          ),
-        ],
-      ),
-    ),
-  );
+  Widget _scoreStat(String value, String label) => Card(elevation: 0, child: Padding(padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4), child: Column(children: [Text(value, style: const TextStyle(color: blue, fontSize: 18, fontWeight: FontWeight.w800)), const SizedBox(height: 4), Text(label, textAlign: TextAlign.center, style: const TextStyle(color: Colors.black54, fontSize: 10))])));
 }
 
 class UtbkCbtPage extends StatefulWidget {
@@ -5971,7 +5221,12 @@ class _UtbkCbtPageState extends State<UtbkCbtPage> {
   );
 
   @override
-  Widget build(BuildContext context) => const UtbkRealCbtPage(); /* Scaffold(
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFFF6F8FC),
+    appBar: AppBar(
+      backgroundColor: navy,
+      foregroundColor: Colors.white,
+      title: const Text('Lolos UTBK 800'),
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
@@ -6067,7 +5322,7 @@ class _UtbkCbtPageState extends State<UtbkCbtPage> {
         ),
       ],
     ),
-  ); */
+  );
 }
 
 class UtbkResultPage extends StatelessWidget {
@@ -6203,7 +5458,7 @@ class UtbkStrategyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _UtbkContentPage(
-    title: 'Strategi Lolos UTBK',
+    title: 'Strategi UTBK Terarah',
     subtitle:
         'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
     icon: Icons.track_changes_outlined,
@@ -6384,20 +5639,16 @@ class _UtbkContentPage extends StatelessWidget {
 }
 
 class OfficialBook {
-  final String id;
   final String title;
   final String level;
   final String subject;
-  final String coverUrl;
-  final String sourceUrl;
+  final String pdfUrl;
 
   const OfficialBook({
-    required this.id,
     required this.title,
     required this.level,
     required this.subject,
-    required this.coverUrl,
-    required this.sourceUrl,
+    required this.pdfUrl,
   });
 }
 
@@ -6413,7 +5664,7 @@ class OfficialBooksPage extends StatefulWidget {
 class _OfficialBooksPageState extends State<OfficialBooksPage> {
   final searchController = TextEditingController();
   String query = '';
-  String selectedLevel = 'SMP';
+  String selectedLevel = 'SD';
   late Future<List<OfficialBook>> booksFuture;
 
   @override
@@ -6424,29 +5675,26 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
 
   Future<List<OfficialBook>> _loadOfficialBooks() async {
     final books = <OfficialBook>[];
-    for (var page = 1; page <= 21; page++) {
+    for (var page = 1; page <= 2; page++) {
       final uri = Uri.parse(
-        'https://api.buku.kemendikdasmen.go.id/btucatalogue/book'
-        '?code=GuruSejahtera2025&page=$page&limit=100',
+        'https://api.buku.cloudapp.web.id/api/catalogue/getBooksByTag'
+        '?tag=STEM&page=$page&limit=100&type=pelajaran',
       );
       final response = await http.get(uri);
       if (response.statusCode != 200) continue;
       final payload = jsonDecode(response.body) as Map<String, dynamic>;
-      final results = payload['data'] as List<dynamic>? ?? const [];
+      final results = payload['results'] as List<dynamic>? ?? const [];
       for (final raw in results) {
-        final item = Map<String, dynamic>.from(raw as Map);
-        final id = item['id'] as String? ?? '';
+        final item = raw as Map<String, dynamic>;
+        final attachment = item['attachment'] as String? ?? '';
         final title = item['title'] as String? ?? '';
-        final cover = item['cover_image'] as String? ?? '';
-        if (id.isEmpty || title.isEmpty || cover.isEmpty) continue;
+        if (attachment.isEmpty || title.isEmpty) continue;
         books.add(
           OfficialBook(
-            id: id,
             title: title,
             level: item['level'] as String? ?? 'Umum',
             subject: item['subject'] as String? ?? 'Buku pelajaran',
-            coverUrl: cover,
-            sourceUrl: 'https://buku.kemendikdasmen.go.id/katalog/$id',
+            pdfUrl: attachment,
           ),
         );
       }
@@ -6499,40 +5747,14 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
               );
             }
             final allBooks = snapshot.data ?? const <OfficialBook>[];
-            final excludedSubjects = RegExp(
-              r'\b(musik|seni\s+rupa|sejarah|agama)\b',
-              caseSensitive: false,
-            );
             final filtered = allBooks.where((book) {
               final haystack = '${book.title} ${book.subject} ${book.level}'
                   .toLowerCase();
-              return !book.level.toUpperCase().contains('SD') &&
-                  !excludedSubjects.hasMatch(haystack) &&
-                  (query.isEmpty || haystack.contains(query.toLowerCase())) &&
+              return (query.isEmpty ||
+                      haystack.contains(query.toLowerCase())) &&
                   (selectedLevel == 'Semua' ||
                       book.level.toUpperCase().contains(selectedLevel));
             }).toList();
-            final grouped = <String, List<OfficialBook>>{};
-            for (final book in filtered) {
-              final subject = book.subject
-                  .replaceFirst(
-                    RegExp(
-                      r'\s+(SD|SMP|SMA|SMK)(?:/\w+)?\s+\d+.*',
-                      caseSensitive: false,
-                    ),
-                    '',
-                  )
-                  .trim();
-              final key = subject.isEmpty ? 'Buku pelajaran' : subject;
-              (grouped[key] ??= []).add(book);
-            }
-            final phoneWidth = MediaQuery.sizeOf(context).width;
-            final bookCardWidth = phoneWidth < 360
-                ? 128.0
-                : phoneWidth < 600
-                ? 142.0
-                : 154.0;
-            final shelfHeight = bookCardWidth * 1.62;
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
               children: [
@@ -6584,7 +5806,7 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
                   height: 40,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: ['SMP', 'SMA', 'SMK', 'Semua'].map((level) {
+                    children: ['SD', 'SMP', 'SMA', 'SMK', 'Semua'].map((level) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: ChoiceChip(
@@ -6620,38 +5842,7 @@ class _OfficialBooksPageState extends State<OfficialBooksPage> {
                     ),
                   )
                 else
-                  ...grouped.entries.map(
-                    (entry) => Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            entry.key,
-                            style: const TextStyle(
-                              color: navy,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            height: shelfHeight,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: entry.value.length,
-                              separatorBuilder: (_, _) =>
-                                  const SizedBox(width: 12),
-                              itemBuilder: (_, index) => _OfficialBookCard(
-                                book: entry.value[index],
-                                width: bookCardWidth,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  ...filtered.map((book) => _OfficialBookCard(book: book)),
               ],
             );
           },
@@ -6680,60 +5871,27 @@ class _OfficialBooksError extends StatelessWidget {
 
 class _OfficialBookCard extends StatelessWidget {
   final OfficialBook book;
-  final double width;
-
-  const _OfficialBookCard({required this.book, required this.width});
+  const _OfficialBookCard({required this.book});
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: width,
-    child: Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => launchUrl(
-          Uri.parse(book.sourceUrl),
-          mode: LaunchMode.externalApplication,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              height: width * 1.08,
-              child: Image.network(
-                book.coverUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => const ColoredBox(
-                  color: Color(0xFFEAF0FF),
-                  child: Icon(Icons.menu_book_outlined, color: blue, size: 42),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 9, 10, 4),
-              child: Text(
-                book.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: navy,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: Text(
-                book.level,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: Colors.black54, fontSize: 11),
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => Card(
+    margin: const EdgeInsets.only(bottom: 10),
+    elevation: 0,
+    child: ListTile(
+      leading: const CircleAvatar(
+        backgroundColor: Color(0xFFEAF0FF),
+        child: Icon(Icons.menu_book_outlined, color: blue),
+      ),
+      title: Text(
+        book.title,
+        style: const TextStyle(fontWeight: FontWeight.w700),
+      ),
+      subtitle: Text(
+        '${book.level} · ${book.subject.isEmpty ? 'Buku siswa' : book.subject}',
+      ),
+      trailing: const Icon(Icons.chevron_right, color: blue),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => OfficialPdfReaderPage(book: book)),
       ),
     ),
   );
@@ -6766,7 +5924,7 @@ class _OfficialPdfReaderPageState extends State<OfficialPdfReaderPage> {
       );
       final file = File('${directory.path}/official_books_$safeName.pdf');
       if (!await file.exists()) {
-        final response = await http.get(Uri.parse(widget.book.sourceUrl));
+        final response = await http.get(Uri.parse(widget.book.pdfUrl));
         if (response.statusCode != 200) {
           throw Exception('HTTP ${response.statusCode}');
         }
@@ -6784,7 +5942,7 @@ class _OfficialPdfReaderPageState extends State<OfficialPdfReaderPage> {
 
   Future<void> _openOfficialDownload() async {
     await launchUrl(
-      Uri.parse(widget.book.sourceUrl),
+      Uri.parse(widget.book.pdfUrl),
       mode: LaunchMode.externalApplication,
     );
   }
@@ -6815,51 +5973,10 @@ class _OfficialPdfReaderPageState extends State<OfficialPdfReaderPage> {
   }
 }
 
-class AcademyKreativPage extends StatelessWidget {
-  final VoidCallback? onBack;
-  const AcademyKreativPage({super.key, this.onBack});
-  void _open(BuildContext context, Widget page) => Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(padding: const EdgeInsets.fromLTRB(20, 24, 20, 28), children: [
-      Row(children: [IconButton(key: const Key('kembali-ke-beranda-academy'), onPressed: onBack ?? () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back)), const Expanded(child: Text('Academy Kreativ', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: navy)))]),
-      const SizedBox(height: 8),
-      const Text('Pilih ruang belajar yang ingin kamu jelajahi.', style: TextStyle(color: Colors.black54, fontSize: 15)),
-      const SizedBox(height: 22),
-      _AcademyMenuCard(key: const Key('perpustakaan-kreativ-card'), title: 'Perpustakaan Kreativ', description: 'Buku resmi untuk menemani perjalanan belajar.', icon: Icons.local_library_outlined, color: const Color(0xFFE8F1FF), accent: blue, onTap: () => _open(context, OfficialBooksPage(onBack: () => Navigator.of(context).pop()))),
-      const SizedBox(height: 16),
-      _AcademyMenuCard(key: const Key('kelas-kreativ-card'), title: 'Kelas Kreativ', description: 'Pilih kelas sesuai jenjang belajar kamu.', icon: Icons.school_outlined, color: const Color(0xFFEAF8F1), accent: const Color(0xFF16845B), onTap: () => _open(context, const AcademyClassLevelsPage())),
-    ]));
-}
-
-class _AcademyMenuCard extends StatelessWidget {
-  final String title, description; final IconData icon; final Color color, accent; final VoidCallback onTap;
-  const _AcademyMenuCard({super.key, required this.title, required this.description, required this.icon, required this.color, required this.accent, required this.onTap});
-  @override
-  Widget build(BuildContext context) => Card(elevation: 0, margin: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)), child: InkWell(onTap: onTap, borderRadius: BorderRadius.circular(22), child: Padding(padding: const EdgeInsets.all(20), child: Row(children: [Container(width: 62, height: 62, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(18)), child: Icon(icon, color: accent, size: 32)), const SizedBox(width: 16), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(color: navy, fontSize: 19, fontWeight: FontWeight.w800)), const SizedBox(height: 6), Text(description, style: const TextStyle(color: Colors.black54, height: 1.35))])), Icon(Icons.chevron_right, color: accent)]))));
-}
-
-class AcademyClassLevelsPage extends StatelessWidget {
-  const AcademyClassLevelsPage({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF7F9FC), appBar: AppBar(title: const Text('Kelas Kreativ')),
-    body: ListView(padding: const EdgeInsets.fromLTRB(20, 18, 20, 28), children: [
-      const Text('Pilih jenjang kelas', style: TextStyle(color: navy, fontSize: 22, fontWeight: FontWeight.w800)),
-      const SizedBox(height: 8), const Text('Materi kelas disusun sesuai kebutuhan SMP dan SMA.', style: TextStyle(color: Colors.black54)), const SizedBox(height: 20),
-      _AcademyMenuCard(key: const Key('smp-kreativ-card'), title: 'SMP Kreativ', description: 'Ruang belajar dan materi untuk jenjang SMP.', icon: Icons.auto_stories_outlined, color: const Color(0xFFFFF1DA), accent: const Color(0xFFB56A00), onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CatalogPage(initialLevel: 'SMP')))),
-      const SizedBox(height: 16),
-      _AcademyMenuCard(key: const Key('sma-kreativ-card'), title: 'SMA Kreativ', description: 'Ruang belajar dan materi untuk jenjang SMA.', icon: Icons.menu_book_outlined, color: const Color(0xFFF1EAFE), accent: const Color(0xFF7045B5), onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CatalogPage(initialLevel: 'SMA')))),
-    ]));
-}
-
 class CatalogPage extends StatefulWidget {
   final VoidCallback? onBack;
 
-  final String? initialLevel;
-
-  const CatalogPage({super.key, this.onBack, this.initialLevel});
+  const CatalogPage({super.key, this.onBack});
 
   @override
   State<CatalogPage> createState() => _CatalogPageState();
@@ -6867,14 +5984,8 @@ class CatalogPage extends StatefulWidget {
 
 class _CatalogPageState extends State<CatalogPage> {
   final searchController = TextEditingController();
-  late String selectedLevel;
+  String selectedLevel = 'Semua';
   String query = '';
-
-  @override
-  void initState() {
-    super.initState();
-    selectedLevel = widget.initialLevel ?? 'Semua';
-  }
 
   static const courses = [
     (
@@ -7259,8 +6370,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 
   int get completedCount => completed.where((item) => item).length;
 
-  Future<void> openMaterial() async {
-    if (!await ensureLoggedIn(context) || !mounted) return;
+  void openMaterial() {
     if (!widget.free) {
       showModalBottomSheet(
         context: context,
@@ -7482,6 +6592,44 @@ class _Logo extends StatelessWidget {
   );
 }
 
+class _Feature extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+  const _Feature({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundColor: color.withValues(alpha: .13),
+              child: Icon(icon, color: color, size: 28),
+            ),
+            const SizedBox(height: 7),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class _KedinasanMenuCard extends StatelessWidget {
   final VoidCallback onTap;
 
@@ -7586,413 +6734,8 @@ class KedinasanPage extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 24),
-        _KedinasanOfflineCard(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const KedinasanOfflinePage()),
-          ),
-        ),
       ],
     ),
-  );
-}
-
-class _KedinasanOfflineCard extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _KedinasanOfflineCard({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => Card(
-    margin: EdgeInsets.zero,
-    elevation: 0,
-    color: const Color(0xFF102A43),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(22),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(
-                Icons.location_city,
-                color: Colors.white,
-                size: 28,
-              ),
-            ),
-            const SizedBox(width: 16),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'BIMBEL KEDINASAN OFFLINE',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Pilihan lokasi bimbingan tatap muka.',
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 18),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-class KedinasanOfflinePage extends StatelessWidget {
-  const KedinasanOfflinePage({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('BIMBEL KEDINASAN OFFLINE'),
-      foregroundColor: navy,
-    ),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
-      children: [
-        const Text(
-          'Pilih lokasi',
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Informasi bimbingan tatap muka berdasarkan lokasi pilihanmu.',
-          style: TextStyle(color: Colors.black54),
-        ),
-        const SizedBox(height: 20),
-        _OfflineLocationCard(
-          location: 'JAKARTA',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) =>
-                  const KedinasanOfflineLocationPage(location: 'JAKARTA'),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        _OfflineLocationCard(
-          location: 'SEMARANG',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) =>
-                  const KedinasanOfflineLocationPage(location: 'SEMARANG'),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _OfflineLocationCard extends StatelessWidget {
-  final String location;
-  final VoidCallback onTap;
-
-  const _OfflineLocationCard({required this.location, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => Card(
-    elevation: 0,
-    margin: EdgeInsets.zero,
-    color: const Color(0xFFF0F7FF),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18),
-      side: const BorderSide(color: Color(0xFFD7E7F7)),
-    ),
-    child: ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-      leading: const CircleAvatar(
-        backgroundColor: Colors.white,
-        child: Icon(Icons.place_outlined, color: Color(0xFF1769AA)),
-      ),
-      title: Text(
-        location,
-        style: const TextStyle(color: navy, fontWeight: FontWeight.w800),
-      ),
-      subtitle: const Text('Lihat informasi lokasi'),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: navy),
-    ),
-  );
-}
-
-class KedinasanOfflineLocationPage extends StatelessWidget {
-  final String location;
-
-  const KedinasanOfflineLocationPage({required this.location, super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(location), foregroundColor: navy),
-    body: location == 'SEMARANG'
-        ? const _SemarangOfflineContent()
-        : location == 'JAKARTA'
-        ? const _JakartaOfflineContent()
-        : Padding(
-            padding: const EdgeInsets.all(20),
-            child: Card(
-              elevation: 0,
-              color: const Color(0xFFF7F9FC),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'BIMBEL KEDINASAN OFFLINE - $location',
-                      style: const TextStyle(
-                        color: navy,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Informasi program dan jadwal untuk lokasi ini akan ditambahkan setelah tersedia.',
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-  );
-}
-
-class _JakartaOfflineContent extends StatelessWidget {
-  const _JakartaOfflineContent();
-
-  @override
-  Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-    children: [
-      Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF123B63), Color(0xFF1769AA)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(26),
-        ),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.construction_outlined, color: Colors.white, size: 42),
-            SizedBox(height: 18),
-            Text(
-              'BIMBEL KEDINASAN OFFLINE',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Jabodetabek',
-              style: TextStyle(color: Colors.white70, fontSize: 15),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 16),
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF7E6),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFF2D28B)),
-        ),
-        child: const Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.info_outline, color: Color(0xFFB7791F), size: 28),
-            SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                'Bimbel kedinasan offline Jabodetabek sedang dipersiapkan.',
-                style: TextStyle(
-                  color: Color(0xFF6B4B16),
-                  fontSize: 16,
-                  height: 1.45,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
-}
-
-class _SemarangOfflineContent extends StatelessWidget {
-  const _SemarangOfflineContent();
-
-  @override
-  Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-    children: [
-      Container(
-        padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF123B63), Color(0xFF1769AA)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(26),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x241769AA),
-              blurRadius: 18,
-              offset: Offset(0, 8),
-            ),
-          ],
-        ),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.school_outlined, color: Colors.white, size: 42),
-            SizedBox(height: 18),
-            Text(
-              'BIMBEL KEDINASAN\nEDUKREATIV NUSANTARA',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 23,
-                height: 1.12,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            SizedBox(height: 12),
-            Text(
-              'Persiapan kedinasan dengan pendampingan langsung dari pengalaman terbaik.',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 14,
-                height: 1.4,
-              ),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 16),
-      Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF7E6),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFF2D28B)),
-        ),
-        child: const Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.military_tech_outlined,
-              color: Color(0xFFB7791F),
-              size: 28,
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                'Bimbel Kedinasan di pegang langsung Alumni Akademi TNI.',
-                style: TextStyle(
-                  color: Color(0xFF6B4B16),
-                  fontSize: 15,
-                  height: 1.4,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 16),
-      Card(
-        elevation: 0,
-        color: const Color(0xFFF7F9FC),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE2F0FF),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(
-                  Icons.location_on_outlined,
-                  color: Color(0xFF1769AA),
-                ),
-              ),
-              const SizedBox(width: 14),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'LOKASI BIMBEL',
-                      style: TextStyle(
-                        color: Color(0xFF1769AA),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                    SizedBox(height: 6),
-                    Text(
-                      'taman belimbing no 11 Peterongan, Semarang Selatan.',
-                      style: TextStyle(
-                        color: navy,
-                        fontSize: 17,
-                        height: 1.35,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      const SizedBox(height: 16),
-      const Text(
-        'Bangun persiapanmu bersama pendamping yang memahami proses seleksi kedinasan.',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.black54, height: 1.4),
-      ),
-    ],
   );
 }
 
@@ -8823,6 +7566,7 @@ class SkdSchoolTryoutPage extends StatelessWidget {
               '${school.twkQuestions.length} soal TWK khusus ${school.name}',
           icon: Icons.flag_outlined,
           questions: _twkQuestions(),
+          category: 'TWK',
         ),
         const SizedBox(height: 12),
         _tryoutTile(
@@ -8833,6 +7577,7 @@ class SkdSchoolTryoutPage extends StatelessWidget {
               '${school.tiuQuestions.length} soal TIU khusus ${school.name}',
           icon: Icons.calculate_outlined,
           questions: _tiuQuestions(),
+          category: 'TIU',
         ),
         const SizedBox(height: 12),
         Card(
@@ -8844,17 +7589,14 @@ class SkdSchoolTryoutPage extends StatelessWidget {
               '${school.tkpQuestions.length} soal TKP khusus ${school.name}',
             ),
             trailing: const Icon(Icons.chevron_right, color: navy),
-            onTap: () async {
-              if (!await ensureLoggedIn(context) || !context.mounted) return;
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => TkpPracticePage(
-                    title: 'Try Out TKP ${school.name}',
-                    questions: school.tkpQuestions,
-                  ),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => TkpPracticePage(
+                  title: 'Try Out TKP ${school.name}',
+                  questions: school.tkpQuestions,
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
       ],
@@ -8868,6 +7610,7 @@ class SkdSchoolTryoutPage extends StatelessWidget {
     required String subtitle,
     required IconData icon,
     required List<TniBankQuestion> questions,
+    required String category,
   }) => Card(
     child: ListTile(
       key: Key(key),
@@ -8875,19 +7618,41 @@ class SkdSchoolTryoutPage extends StatelessWidget {
       title: Text(title),
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.chevron_right, color: navy),
-      onTap: () async {
-        if (!await ensureLoggedIn(context) || !context.mounted) return;
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => TniBankPracticePage(
-              title: 'Try Out $title ${school.name}',
-              questions: questions,
-            ),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => SKDTestPage(
+            category: category,
+            questions: _convertToSKDQuestions(questions, category),
+            title: 'Try Out $title ${school.name}',
+            durationMinutes: 100,
           ),
-        );
-      },
+        ),
+      ),
     ),
   );
+
+  List<Map<String, dynamic>> _convertToSKDQuestions(
+      List<TniBankQuestion> questions, String category) {
+    return questions.map((q) => {
+      'number': q.number,
+      'category': category,
+      'question': q.question,
+      'options': q.options,
+      'answer': q.answer,
+      'explanation': q.explanation,
+    }).toList();
+  }
+}
+
+List<Map<String, dynamic>> _convertTniToSKD(List<TniBankQuestion> questions) {
+  return questions.map((q) => {
+    'number': q.number,
+    'category': q.category,
+    'question': q.question,
+    'options': q.options,
+    'answer': q.answer,
+    'explanation': q.explanation,
+  }).toList();
 }
 
 class SkdPracticePage extends StatefulWidget {
@@ -9777,17 +8542,16 @@ class AkpolTryoutMenuPage extends StatelessWidget {
           key: const Key('akpol-tryout-akademik-cat'),
           title: 'Tes Akademik CAT',
           subtitle: 'Pengetahuan umum, wawasan, bahasa, matematika, dan logika',
-          onTap: () async {
-            if (!await ensureLoggedIn(context) || !context.mounted) return;
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => TniBankPracticePage(
-                  title: 'Try Out Tes Akademik CAT AKPOL',
-                  questions: _akpolCatTryoutItems,
-                ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SKDTestPage(
+                category: 'TIU',
+                questions: _convertTniToSKD(_akpolCatTryoutItems),
+                title: 'Try Out Tes Akademik CAT AKPOL',
+                durationMinutes: 120,
               ),
-            );
-          },
+            ),
+          ),
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
@@ -9851,12 +8615,8 @@ class TniTryoutMenuPage extends StatelessWidget {
           key: const Key('tryout-tka-akademi-tni'),
           title: 'TKA Akademi TNI',
           subtitle: '50 soal · Matematika, bahasa, IPA, wawasan, dan logika',
-          onTap: () async {
-            if (!await ensureLoggedIn(context) || !context.mounted) return;
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const TniPracticePage()));
-          },
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const TniPracticePage())),
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
@@ -9864,34 +8624,32 @@ class TniTryoutMenuPage extends StatelessWidget {
           title: 'Mental Ideologi',
           subtitle:
               'Latihan nilai kebangsaan, NKRI, integritas, dan tanggung jawab',
-          onTap: () async {
-            if (!await ensureLoggedIn(context) || !context.mounted) return;
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => TniBankPracticePage(
-                  title: 'Try Out Mental Ideologi',
-                  questions: _mentalIdeologyTryoutItems,
-                ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SKDTestPage(
+                category: 'TWK',
+                questions: _convertTniToSKD(_mentalIdeologyTryoutItems),
+                title: 'Try Out Mental Ideologi',
+                durationMinutes: 90,
               ),
-            );
-          },
+            ),
+          ),
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
           key: const Key('tryout-akademik-siber'),
           title: 'Akademik dan Siber',
           subtitle: 'Latihan akademik dasar dan keamanan siber',
-          onTap: () async {
-            if (!await ensureLoggedIn(context) || !context.mounted) return;
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => TniBankPracticePage(
-                  title: 'Try Out Akademik dan Siber',
-                  questions: _tniAcademicTryoutItems,
-                ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SKDTestPage(
+                category: 'TIU',
+                questions: _convertTniToSKD(_tniAcademicTryoutItems),
+                title: 'Try Out Akademik dan Siber',
+                durationMinutes: 90,
               ),
-            );
-          },
+            ),
+          ),
         ),
         const SizedBox(height: 12),
         _TryoutMenuOption(
@@ -10629,59 +9387,6 @@ void _showComingSoon(BuildContext context, String title) {
   );
 }
 
-class _TeacherJoinCard extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _TeacherJoinCard({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(18),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFD8F3E6),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: const Color(0xFF168C87).withValues(alpha: .28),
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0C152B55),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'GURU KREATIV',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF126B4B),
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'JOIN US',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF126B4B),
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 class _CreativeMenuCards extends StatelessWidget {
   final ValueChanged<String> onTap;
 
@@ -10705,76 +9410,80 @@ class _CreativeMenuCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 122,
+      height: 170,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final width = ((constraints.maxWidth - 36) / 4)
-              .clamp(68.0, 110.0)
-              .toDouble();
-          return Row(
-            children: [
-              for (var index = 0; index < items.length; index++) ...[
-                SizedBox(
-                  width: width,
-                  child: InkWell(
-                    onTap: () => onTap(items[index].title),
-                    borderRadius: BorderRadius.circular(18),
-                    child: Container(
-                      height: 122,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: items[index].color.withValues(alpha: .18),
+          final cardWidth = (constraints.maxWidth - 36) / 4;
+          final width = cardWidth.clamp(82.0, 150.0);
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (var index = 0; index < items.length; index++) ...[
+                  SizedBox(
+                    width: width,
+                    child: InkWell(
+                      onTap: () => onTap(items[index].title),
+                      borderRadius: BorderRadius.circular(18),
+                      child: Container(
+                        height: 170,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 14,
                         ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x0C152B55),
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: items[index].color.withValues(alpha: .18),
                           ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: items[index].color.withValues(alpha: .15),
-                              borderRadius: BorderRadius.circular(15),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0C152B55),
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
                             ),
-                            child: Icon(
-                              items[index].icon,
-                              color: items[index].color,
-                              size: 24,
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: items[index].color.withValues(
+                                  alpha: .15,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Icon(
+                                items[index].icon,
+                                color: items[index].color,
+                                size: 27,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            items[index].title,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: navy,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w800,
+                            const SizedBox(height: 14),
+                            Text(
+                              items[index].title,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: navy,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                if (index < items.length - 1) const SizedBox(width: 12),
+                  if (index < items.length - 1) const SizedBox(width: 12),
+                ],
               ],
-            ],
+            ),
           );
         },
       ),
@@ -11124,798 +9833,12 @@ class _StoryReaderPageState extends State<StoryReaderPage> {
   }
 }
 
-class CreativeWorksPage extends StatelessWidget {
-  const CreativeWorksPage({super.key});
-
-  static const works = [
-    (
-      title: 'Poster Hemat Air',
-      creator: 'Alya · Kelas 8',
-      description: 'Poster kampanye sederhana untuk menjaga air di rumah.',
-      icon: Icons.water_drop_outlined,
-      color: blue,
-    ),
-    (
-      title: 'Kebun Mini dari Botol Bekas',
-      creator: 'Raka · Kelas 6',
-      description: 'Proyek sains dan lingkungan yang bisa dicoba di rumah.',
-      icon: Icons.eco_outlined,
-      color: Color(0xFF238B62),
-    ),
-    (
-      title: 'Cerita tentang Kejujuran',
-      creator: 'Naya · Kelas 5',
-      description: 'Cerita pendek dengan pesan untuk berani berkata jujur.',
-      icon: Icons.auto_stories_outlined,
-      color: orange,
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF7F9FC),
-    appBar: AppBar(title: const Text('Karya Kreativ'), foregroundColor: navy),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        const Text(
-          'Karya nyata dari ide yang diwujudkan.',
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Lihat karya pilihan dan temukan inspirasi untuk membuat karyamu sendiri.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-        const SizedBox(height: 20),
-        ...works.map(
-          (work) => Card(
-            elevation: 0,
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(14),
-              leading: CircleAvatar(
-                backgroundColor: work.color.withValues(alpha: .14),
-                foregroundColor: work.color,
-                child: Icon(work.icon),
-              ),
-              title: Text(
-                work.title,
-                style: const TextStyle(fontWeight: FontWeight.w800),
-              ),
-              subtitle: Text('${work.creator}\\n${work.description}'),
-              isThreeLine: true,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class CreativeInspirationPage extends StatelessWidget {
-  const CreativeInspirationPage({super.key});
-
-  static const ideas = [
-    (
-      title: 'Mulai dari benda di sekitarmu',
-      description:
-          'Pilih satu benda dan tuliskan tiga kegunaan atau cerita tentangnya.',
-      icon: Icons.lightbulb_outline,
-    ),
-    (
-      title: 'Ubah masalah menjadi ide',
-      description: 'Pikirkan masalah kecil di rumah atau sekolah, lalu cari solusi sederhana.',
-      icon: Icons.auto_awesome_outlined,
-    ),
-    (
-      title: 'Cerita dari budaya Nusantara',
-      description: 'Cari satu tradisi daerah dan ceritakan kembali dengan caramu sendiri.',
-      icon: Icons.public,
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF7F9FC),
-    appBar: AppBar(
-      title: const Text('Inspirasi Kreativ'),
-      foregroundColor: navy,
-    ),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        const Text(
-          'Temukan ide, lalu kembangkan dengan caramu.',
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Inspirasi bukan untuk disalin, tetapi untuk memulai sesuatu yang baru.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-        const SizedBox(height: 20),
-        ...ideas.map(
-          (idea) => Card(
-            elevation: 0,
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(14),
-              leading: CircleAvatar(
-                backgroundColor: const Color(0xFFFFE8D4),
-                foregroundColor: orange,
-                child: Icon(idea.icon, color: orange),
-              ),
-              title: Text(
-                idea.title,
-                style: const TextStyle(fontWeight: FontWeight.w800),
-              ),
-              subtitle: Text(idea.description),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class CreativeTeacherJoinPage extends StatelessWidget {
-  const CreativeTeacherJoinPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF7F9FC),
-    appBar: AppBar(
-      title: const Text('GURU KREATIV JOIN US'),
-      foregroundColor: navy,
-    ),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        Card(
-          elevation: 0,
-          color: const Color(0xFFE5F7F4),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(22),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 28,
-                  backgroundColor: Color(0xFF168C87),
-                  child: Icon(Icons.school_outlined, color: Colors.white),
-                ),
-                SizedBox(height: 18),
-                Text(
-                  'Mari tumbuh dan mengajar bersama EduKreativ.',
-                  style: TextStyle(
-                    color: navy,
-                    fontSize: 24,
-                    height: 1.15,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Bagikan ilmu, pengalaman, dan cara belajar yang bermakna untuk lebih banyak pelajar.',
-                  style: TextStyle(color: Colors.black54, height: 1.45),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 18),
-        const Text(
-          'Mengapa bergabung?',
-          style: TextStyle(
-            color: navy,
-            fontSize: 19,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 10),
-        const _TeacherJoinBenefit(
-          icon: Icons.menu_book_outlined,
-          title: 'Bagikan keahlian',
-          description: 'Bantu pelajar memahami materi dengan pendekatanmu.',
-        ),
-        const _TeacherJoinBenefit(
-          icon: Icons.groups_outlined,
-          title: 'Jangkau lebih banyak pelajar',
-          description: 'Bangun kelas dan pengalaman belajar yang berdampak.',
-        ),
-        const _TeacherJoinBenefit(
-          icon: Icons.auto_awesome_outlined,
-          title: 'Tumbuh bersama komunitas',
-          description: 'Kembangkan ide pembelajaran bersama EduKreativ.',
-        ),
-        const SizedBox(height: 16),
-        Card(
-          elevation: 0,
-          color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'Kami terbuka untuk guru, tutor, praktisi, dan orang-orang yang memiliki pengalaman belajar untuk dibagikan.',
-              style: TextStyle(color: Colors.black54, height: 1.45),
-            ),
-          ),
-        ),
-        const SizedBox(height: 18),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-            onPressed: () => showDialog<void>(
-              context: context,
-              builder: (dialogContext) => AlertDialog(
-                title: const Text('Minat bergabung'),
-                content: const Text(
-                  'Pendaftaran guru akan dihubungkan ke sistem EduKreativ pada tahap berikutnya. Terima kasih sudah tertarik bergabung.',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(dialogContext),
-                    child: const Text('Tutup'),
-                  ),
-                ],
-              ),
-            ),
-            icon: const Icon(Icons.arrow_forward),
-            label: const Text('Saya tertarik bergabung'),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _TeacherJoinBenefit extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-
-  const _TeacherJoinBenefit({
-    required this.icon,
-    required this.title,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-    contentPadding: EdgeInsets.zero,
-    leading: CircleAvatar(
-      backgroundColor: const Color(0xFFE5F7F4),
-      foregroundColor: const Color(0xFF168C87),
-      child: Icon(icon),
-    ),
-    title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-    subtitle: Text(description),
-  );
-}
-
-class CreativeJournalPage extends StatefulWidget {
-  const CreativeJournalPage({super.key});
-
-  @override
-  State<CreativeJournalPage> createState() => _CreativeJournalPageState();
-}
-
-class _CreativeJournalPageState extends State<CreativeJournalPage> {
-  final controller = TextEditingController();
-  final entries = <String>[];
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> saveEntry() async {
-    if (!await ensureLoggedIn(context) || !mounted) return;
-    final text = controller.text.trim();
-    if (text.isEmpty) return;
-    setState(() {
-      entries.insert(0, text);
-      controller.clear();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF7F9FC),
-    appBar: AppBar(title: const Text('Jurnal Kreativ'), foregroundColor: navy),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        const Text(
-          'Catat proses, ide, dan perkembanganmu.',
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Jurnal ini menjadi tempat untuk berhenti sejenak, mengingat, dan merencanakan langkah berikutnya.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-        const SizedBox(height: 18),
-        TextField(
-          controller: controller,
-          maxLines: 4,
-          decoration: const InputDecoration(
-            labelText: 'Catatan hari ini',
-            hintText: 'Apa yang kamu pelajari atau ingin coba?',
-            alignLabelWithHint: true,
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-              borderSide: BorderSide.none,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-            onPressed: saveEntry,
-            icon: const Icon(Icons.save_outlined),
-            label: const Text('Simpan jurnal'),
-          ),
-        ),
-        const SizedBox(height: 24),
-        const Text(
-          'Catatan terbaru',
-          style: TextStyle(
-            color: navy,
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 10),
-        if (entries.isEmpty)
-          const Card(
-            elevation: 0,
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Belum ada catatan. Tulis satu ide untuk memulai.'),
-            ),
-          )
-        else
-          ...entries.map(
-            (entry) => Card(
-              elevation: 0,
-              margin: const EdgeInsets.only(bottom: 10),
-              child: ListTile(
-                leading: const Icon(Icons.edit_note, color: blue),
-                title: Text(entry),
-              ),
-            ),
-          ),
-      ],
-    ),
-  );
-}
-
-class _CreativeRoomCard extends StatelessWidget {
-  final VoidCallback onOpenKarya;
-  final VoidCallback onOpenInspirasi;
-  final VoidCallback onOpenJurnal;
-
-  const _CreativeRoomCard({
-    required this.onOpenKarya,
-    required this.onOpenInspirasi,
-    required this.onOpenJurnal,
-  });
-
-  void _openMenu(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) => SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const ListTile(
-                title: Text(
-                  'Ruang Kreativ',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-                ),
-                subtitle: Text('Pilih cara untuk belajar dan berkarya.'),
-              ),
-              ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Color(0xFFFFE8D4),
-                  child: Icon(Icons.palette_outlined, color: orange),
-                ),
-                title: const Text('Karya Kreativ'),
-                subtitle: const Text(
-                  'Baca, lihat, dan nikmati karya edukatif.',
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  onOpenKarya();
-                },
-              ),
-              ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Color(0xFFE3EDFF),
-                  child: Icon(Icons.quiz_outlined, color: blue),
-                ),
-                title: const Text('Inspirasi Kreativ'),
-                subtitle: const Text(
-                  'Temukan ide dan cerita yang menginspirasi.',
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  onOpenInspirasi();
-                },
-              ),
-              ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Color(0xFFE5F7EF),
-                  child: Icon(Icons.flag_outlined, color: Color(0xFF238B62)),
-                ),
-                title: const Text('Jurnal Kreativ'),
-                subtitle: const Text(
-                  'Catat ide, proses, dan refleksi belajarmu.',
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  onOpenJurnal();
-                },
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) => Card(
-    elevation: 0,
-    color: navy,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    child: InkWell(
-      key: const Key('ruang-kreativ'),
-      borderRadius: BorderRadius.circular(20),
-      onTap: () => _openMenu(context),
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: orange,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(Icons.auto_awesome, color: navy, size: 28),
-            ),
-            const SizedBox(width: 14),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Ruang Kreativ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Karya, inspirasi, dan jurnal dalam satu ruang.',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.white),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-class CampKreativItem {
-  final String title;
-  final String subtitle;
-  final String target;
-  final String focus;
-  final IconData icon;
-  final Color color;
-  final List<String> activities;
-
-  const CampKreativItem({
-    required this.title,
-    required this.subtitle,
-    required this.target,
-    required this.focus,
-    required this.icon,
-    required this.color,
-    required this.activities,
-  });
-}
-
-class CampKreativPage extends StatelessWidget {
-  const CampKreativPage({super.key});
-
-  static const items = [
-    CampKreativItem(
-      title: 'Jejak Rimba',
-      subtitle: 'Camp petualangan dan kemandirian untuk anak-anak.',
-      target: 'Siswa SMP',
-      focus: 'Keberanian, eksplorasi alam, kemandirian, dan kerja sama.',
-      icon: Icons.park_outlined,
-      color: Color(0xFF2E8B57),
-      activities: [
-        'Jelajah alam',
-        'Permainan kerja sama',
-        'Membangun tempat berteduh',
-      ],
-    ),
-    CampKreativItem(
-      title: 'Ruang Tumbuh',
-      subtitle: 'Camp pengenalan diri dan kepemimpinan remaja.',
-      target: 'Siswa SMA',
-      focus: 'Pengenalan diri, komunikasi, kepemimpinan, dan arah masa depan.',
-      icon: Icons.self_improvement_outlined,
-      color: Color(0xFF3F72AF),
-      activities: [
-        'Refleksi diri',
-        'Leadership challenge',
-        'Presentasi kelompok',
-      ],
-    ),
-    CampKreativItem(
-      title: 'Pulang Lebih Dekat',
-      subtitle: 'Camp keluarga untuk membangun komunikasi tanpa gadget.',
-      target: 'Keluarga',
-      focus: 'Kebersamaan, komunikasi, dan pengalaman alam lintas generasi.',
-      icon: Icons.family_restroom_outlined,
-      color: Color(0xFFE28A2B),
-      activities: [
-        'Permainan keluarga',
-        'Masak bersama',
-        'Malam berbagi cerita',
-      ],
-    ),
-    CampKreativItem(
-      title: 'Sinergi Alam',
-      subtitle:
-          'Pengalaman team building untuk membangun tim yang lebih solid.',
-      target: 'Corporate dan organisasi',
-      focus: 'Kepercayaan, komunikasi, kepemimpinan, dan pemecahan masalah.',
-      icon: Icons.handshake_outlined,
-      color: Color(0xFF8B6FE8),
-      activities: [
-        'Team challenge',
-        'Simulasi kepemimpinan',
-        'Evaluasi kekompakan tim',
-      ],
-    ),
-    CampKreativItem(
-      title: 'Gerakan Sekolah Bertumbuh',
-      subtitle: 'Program pendidikan alam untuk sekolah dan komunitas.',
-      target: 'Sekolah, komunitas, dan organisasi siswa',
-      focus: 'Karakter, kepedulian lingkungan, kolaborasi, dan kreativitas.',
-      icon: Icons.school_outlined,
-      color: Color(0xFF168C87),
-      activities: [
-        'Proyek lingkungan',
-        'Kegiatan lintas kelompok',
-        'Pentas karya peserta',
-      ],
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Camp Kreativ'), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        const Text(
-          'Belajar dekat dengan alam',
-          style: TextStyle(
-            color: navy,
-            fontSize: 25,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Pengalaman tiga hari untuk mengenal alam, mengenal diri, dan membangun hubungan nyata tanpa ketergantungan pada gadget.',
-          style: TextStyle(color: Colors.black54, height: 1.45),
-        ),
-        const SizedBox(height: 22),
-        ...items.map(
-          (item) => Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => CampKreativDetailPage(item: item),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 54,
-                        height: 54,
-                        decoration: BoxDecoration(
-                          color: item.color.withValues(alpha: .14),
-                          borderRadius: BorderRadius.circular(17),
-                        ),
-                        child: Icon(item.icon, color: item.color, size: 29),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item.title,
-                              style: const TextStyle(
-                                color: navy,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              item.subtitle,
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                height: 1.35,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.chevron_right, color: item.color),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class CampKreativDetailPage extends StatelessWidget {
-  final CampKreativItem item;
-  const CampKreativDetailPage({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(item.title), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        Text(
-          item.subtitle,
-          style: const TextStyle(
-            color: navy,
-            fontSize: 23,
-            fontWeight: FontWeight.w900,
-            height: 1.25,
-          ),
-        ),
-        const SizedBox(height: 18),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Sasaran peserta',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item.target,
-                  style: const TextStyle(
-                    color: navy,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Fokus pembelajaran',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(item.focus, style: const TextStyle(height: 1.4)),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 18),
-        const Text(
-          'Contoh pengalaman 3 hari',
-          style: TextStyle(
-            color: navy,
-            fontSize: 19,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 10),
-        ...item.activities.asMap().entries.map(
-          (entry) => Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: item.color,
-                child: Text(
-                  '${entry.key + 1}',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-              title: Text(entry.value),
-            ),
-          ),
-        ),
-        const SizedBox(height: 18),
-        const Text(
-          'Rangkaian kegiatan dapat disesuaikan dengan usia peserta, kondisi lokasi, dan tujuan sekolah atau organisasi.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-      ],
-    ),
-  );
-}
-
 void _showCreativeMenuDialog(BuildContext context, String title) {
-  if (title == 'Camp Kreativ') {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const CampKreativPage()));
-    return;
-  }
   final messages = {
     'Game Kreativ': 'Kumpulan game edukasi Kreativ sedang disiapkan.',
     'Cerita Kreativ': 'Cerita pendek edukatif Kreativ sedang disiapkan.',
     'Promo Kreativ': 'Informasi promo Edukreativ akan tampil di sini.',
+    'Camp Kreativ': 'Program camp kemandirian dan persiapan sekolah kedinasan akan tampil di sini.',
   };
   showDialog<void>(
     context: context,
@@ -11932,2266 +9855,63 @@ void _showCreativeMenuDialog(BuildContext context, String title) {
   );
 }
 
-class _PreparationMenuRow extends StatelessWidget {
-  const _PreparationMenuRow();
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 190,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: _PreparationMenuButton(
-            title: 'Psikotest',
-            icon: Icons.psychology_outlined,
-            color: blue,
-            assetPath: 'assets/logo_emblem.png',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const PsychologyMenuPage()),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _PreparationMenuButton(
-            title: 'SMA Taruna Nusantara',
-            icon: Icons.school_outlined,
-            color: const Color(0xFF238B62),
-            assetPath: 'assets/satu_nusa_emblem.jpg',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SmaTarunaNusantaraPage()),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _PreparationMenuButton(
-            title: 'Universitas Pertahanan',
-            icon: Icons.account_balance_outlined,
-            color: const Color(0xFFE38A2D),
-            assetPath: 'assets/unhan_emblem.jpg',
-            onTap: () =>
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => const UnhanPage())),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _PreparationMenuButton extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color color;
-  final String? assetPath;
+class _RecommendationCard extends StatelessWidget {
   final VoidCallback onTap;
-
-  const _PreparationMenuButton({
-    required this.title,
-    required this.icon,
-    required this.color,
-    this.assetPath,
-    required this.onTap,
-  });
+  const _RecommendationCard({required this.onTap});
 
   @override
-  Widget build(BuildContext context) => Card(
-    elevation: 0,
-    margin: EdgeInsets.zero,
-    color: color.withValues(alpha: .1),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18),
-      side: BorderSide(color: color.withValues(alpha: .2)),
-    ),
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (assetPath == null)
-              CircleAvatar(
-                radius: 25,
-                backgroundColor: color.withValues(alpha: .16),
-                foregroundColor: color,
-                child: Icon(icon, size: 27),
-              )
-            else
-              ClipOval(
-                child: Image.asset(
-                  assetPath!,
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, error, stackTrace) => CircleAvatar(
-                    radius: 25,
-                    backgroundColor: color.withValues(alpha: .16),
-                    foregroundColor: color,
-                    child: Icon(icon, size: 27),
-                  ),
-                ),
-              ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: navy,
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                height: 1.2,
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: navy,
+        borderRadius: BorderRadius.circular(18),
       ),
-    ),
-  );
-}
-
-class UnhanPage extends StatelessWidget {
-  const UnhanPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Universitas Pertahanan RI'),
-      foregroundColor: navy,
-    ),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        const Text(
-          'Persiapan Universitas Pertahanan RI',
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Pilih jalur belajar berdasarkan jenjang pendidikan, program studi, dan proses penerimaan resmi Unhan RI.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-        const SizedBox(height: 20),
-        _KedinasanStatusCard(
-          icon: Icons.menu_book_outlined,
-          title: 'Materi persiapan',
-          subtitle: 'Kenali jenjang, fakultas, program studi, dan fondasi belajar bidang pertahanan.',
-          onTap: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const UnhanMaterialsPage())),
-        ),
-        const SizedBox(height: 12),
-        _KedinasanStatusCard(
-          icon: Icons.fact_check_outlined,
-          title: 'Latihan dan try out',
-          subtitle: 'Latihan akademik, wawasan pertahanan, psikologi, dan try out soal.',
-          onTap: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const UnhanPracticePage())),
-        ),
-        const SizedBox(height: 12),
-        _KedinasanStatusCard(
-          icon: Icons.info_outline,
-          title: 'Informasi seleksi',
-          subtitle: 'Jalur D-3, S-1, S-2, S-3, persyaratan, jadwal, dan petunjuk resmi.',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const UnhanSelectionInfoPage()),
-          ),
-        ),
-        const SizedBox(height: 18),
-        const Card(
-          color: Color(0xFFFFF7E8),
-          child: Padding(
-            padding: EdgeInsets.all(14),
-            child: Text(
-              'Penerimaan mahasiswa Unhan RI dapat memberikan beasiswa dan tidak memungut biaya pendaftaran/seleksi. Pastikan membaca pengumuman resmi periode berjalan.',
-              style: TextStyle(color: Color(0xFF704214), height: 1.4),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class UnhanMaterialsPage extends StatelessWidget {
-  const UnhanMaterialsPage({super.key});
-
-  static const items = [
-    (
-      'Jenjang pendidikan',
-      'Portal PMB Unhan RI menyediakan jalur Vokasi/D-3, Sarjana/S-1, Magister/S-2, dan Doktoral/S-3. Pilih materi sesuai jenjang yang dituju.',
-    ),
-    (
-      'Program studi dan fakultas',
-      'Kenali pilihan program studi pada portal resmi, termasuk rumpun Kedokteran Militer, Farmasi Militer, MIPA Militer, Teknik, Teknologi Pertahanan, Strategi Pertahanan, Manajemen Pertahanan, Keamanan Nasional, dan Ilmu Pertahanan sesuai jenjangnya.',
-    ),
-    (
-      'Fondasi akademik',
-      'Perkuat kemampuan sesuai persyaratan program studi yang dipilih, kemampuan membaca informasi akademik, penalaran, numerik, sains, dan literasi Bahasa Indonesia.',
-    ),
-    (
-      'Wawasan pertahanan',
-      'Pelajari isu pertahanan dan keamanan secara bertanggung jawab dari sumber resmi. Materi persiapan bukan kisi-kisi dan tidak menjamin kelulusan.',
-    ),
-    (
-      'Kesiapan kadet/mahasiswa',
-      'Bangun disiplin, integritas, kebugaran, komunikasi, manajemen waktu, dan kesiapan mengikuti pendidikan sesuai ketentuan Unhan RI.',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => _SmaSectionPage(
-    title: 'Materi Persiapan Unhan RI',
-    intro: 'Ringkasan ini mengikuti struktur jenjang dan program yang ditampilkan portal resmi PMB Unhan RI. Detail program dapat berubah.',
-    items: items,
-    source: 'Sumber resmi: https://penerimaan.idu.ac.id/ dan https://www.idu.ac.id/',
-  );
-}
-
-class UnhanPracticePage extends StatelessWidget {
-  const UnhanPracticePage({super.key});
-
-  static const items = [
-    (
-      'Latihan Akademik',
-      'Latihan soal sesuai jenjang dan program studi, termasuk kemampuan numerik, verbal, sains, dan literasi Bahasa Indonesia. Gunakan try out untuk melatih ketelitian dan pengelolaan waktu.',
-    ),
-    (
-      'Latihan Wawasan Pertahanan',
-      'Baca sumber resmi lalu jawab pertanyaan tentang wawasan kebangsaan, pertahanan dan keamanan, integritas, serta motivasi memilih Unhan RI. Hindari menganggapnya sebagai kisi-kisi resmi.',
-    ),
-    (
-      'Latihan Psikologi',
-      'Latihan logika, pola, kemampuan verbal, numerik, konsistensi, ketelitian, dan pengenalan diri dalam bentuk soal psikologi.',
-    ),
-    (
-      'Try Out Terpadu',
-      'Simulasikan soal akademik, wawasan pertahanan, dan psikologi dalam satu sesi dengan batas waktu. Hasilnya hanya untuk evaluasi belajar.',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => _SmaSectionPage(
-    title: 'Latihan dan Try Out Unhan RI',
-    intro: 'Tahapan latihan dibuat mengikuti alur umum portal penerimaan. Urutan dan bentuk seleksi wajib mengikuti pengumuman resmi terbaru.',
-    items: items,
-    source: 'Sumber resmi: https://penerimaan.idu.ac.id/',
-  );
-}
-
-class UnhanSelectionInfoPage extends StatelessWidget {
-  const UnhanSelectionInfoPage({super.key});
-
-  static const items = [
-    (
-      'Jalur penerimaan',
-      'Portal resmi menampilkan menu penerimaan untuk Vokasi/D-3, Sarjana/S-1, Magister/S-2, dan Doktoral/S-3. Persyaratan dan jadwal dibuka pada menu masing-masing jenjang.',
-    ),
-    (
-      'Jadwal contoh yang dipublikasikan',
-      'Pengumuman portal pada 16 Maret 2026 mencantumkan pendaftaran D-3 pada 1 April–22 Mei 2026 serta S-2 dan S-3 pada 1 April–5 Juni 2026. Jadwal ini harus dicek ulang karena berlaku untuk pengumuman periode tersebut.',
-    ),
-    (
-      'Biaya dan beasiswa',
-      'Portal PMB menyatakan calon tidak dipungut biaya apa pun dan Unhan RI memberikan beasiswa kepada putra-putri terbaik bangsa. Ikuti hanya instruksi dari kanal resmi.',
-    ),
-    (
-      'Cara memperoleh informasi',
-      'Buat akun/login hanya melalui portal resmi penerimaan.idu.ac.id dan baca menu Program Studi, Persyaratan, Jadwal, serta Petunjuk Pendaftaran pada jenjang yang dipilih.',
-    ),
-    (
-      'Peringatan keamanan',
-      'Institusi menyatakan tidak melibatkan pihak lain untuk menghubungi peserta. Jangan menyerahkan data atau uang kepada pihak yang mengatasnamakan panitia di luar kanal resmi.',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => _SmaSectionPage(
-    title: 'Informasi Seleksi Unhan RI',
-    intro: 'Informasi di bawah diringkas dari portal resmi PMB Unhan RI dan harus diverifikasi kembali pada periode pendaftaran berjalan.',
-    items: items,
-    source: 'Portal resmi: https://penerimaan.idu.ac.id/\nSitus Unhan RI: https://www.idu.ac.id/',
-  );
-}
-
-class SmaTarunaNusantaraPage extends StatelessWidget {
-  const SmaTarunaNusantaraPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('SMA Taruna Nusantara'),
-      foregroundColor: navy,
-    ),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        const Text(
-          'Persiapan SMA Taruna Nusantara',
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Belajar bertahap berdasarkan kurikulum, tahapan seleksi, dan informasi resmi SMA Taruna Nusantara.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-        const SizedBox(height: 20),
-        _KedinasanStatusCard(
-          icon: Icons.menu_book_outlined,
-          title: 'Materi persiapan',
-          subtitle:
-              'Kurikulum umum, kurikulum khusus, dan wawasan pembinaan SMA TN.',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SmaTarunaMaterialsPage()),
-          ),
-        ),
-        const SizedBox(height: 12),
-        _KedinasanStatusCard(
-          icon: Icons.fact_check_outlined,
-          title: 'Latihan dan try out',
-          subtitle:
-              'Latihan akademik dan simulasi mengikuti urutan seleksi resmi.',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SmaTarunaPracticePage()),
-          ),
-        ),
-        const SizedBox(height: 12),
-        _KedinasanStatusCard(
-          icon: Icons.info_outline,
-          title: 'Informasi seleksi',
-          subtitle:
-              'Persyaratan, jalur, tahapan, dan portal resmi pendaftaran.',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const SmaTarunaSelectionInfoPage(),
-            ),
-          ),
-        ),
-        const SizedBox(height: 18),
-        const _SmaOfficialNote(),
-      ],
-    ),
-  );
-}
-
-class SmaTarunaMaterialsPage extends StatelessWidget {
-  const SmaTarunaMaterialsPage({super.key});
-
-  static const items = [
-    (
-      'Kurikulum umum',
-      'Kurikulum Merdeka dan K-13 dengan Bahasa Indonesia, Matematika, IPA, IPS, Bahasa Inggris, PJOK, Informatika, Seni Musik, Kewirausahaan, Bahasa Jawa, Kenusantaraan, Kepemimpinan, dan Bela Negara.',
-    ),
-    (
-      'Kenusantaraan dan Kepemimpinan',
-      'Pahami nilai moral, keagamaan, kenegaraan, kejuangan, kesusilaan, kemasyarakatan, wawasan Nusantara, disiplin nasional, serta dasar-dasar kepemimpinan dan manajemen.',
-    ),
-    (
-      'Bela Negara',
-      'Pelajari Peraturan Baris-berbaris, Peraturan Penghormatan, Tata Upacara, pembinaan jasmani, ketangkasan, pengetahuan medan, keterampilan lapangan, dan praktik lapangan.',
-    ),
-    (
-      'Kegiatan pembinaan',
-      'Kenali pola kegiatan rutin terjadwal, terprogram, terproyek, dan kreatif mandiri sebagai bagian dari pembentukan mental spiritual, ideologi, kejuangan, dan kepemimpinan.',
-    ),
-    (
-      'Prioritas belajar calon siswa',
-      'Bangun fondasi Matematika, IPA, Bahasa Indonesia, dan Bahasa Inggris. Latih disiplin belajar, kebugaran bertahap, komunikasi, motivasi, dan pengenalan diri.',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => _SmaSectionPage(
-    title: 'Materi Persiapan SMA TN',
-    intro: 'Materi ini merangkum struktur kurikulum resmi dan area persiapan calon siswa. Jangan menganggapnya sebagai kisi-kisi ujian.',
-    items: items,
-    source: 'Sumber: https://magelang.tarunanusantara.sch.id/kurikulum/ dan https://magelang.tarunanusantara.sch.id/kurikulum-khusus/',
-  );
-}
-
-class SmaTarunaPracticePage extends StatelessWidget {
-  const SmaTarunaPracticePage({super.key});
-
-  static const cbtItems = [
-    (
-      'Matematika',
-      'Latihan soal Matematika dengan format CBT untuk menguji pemahaman konsep, penalaran, ketelitian, dan kecepatan mengerjakan.',
-    ),
-    (
-      'IPA',
-      'Latihan soal IPA yang mencakup konsep dasar, penerapan, analisis, dan penalaran ilmiah.',
-    ),
-    (
-      'Bahasa Indonesia',
-      'Latihan pemahaman bacaan, ide pokok, simpulan, makna kata, ejaan, dan penalaran Bahasa Indonesia.',
-    ),
-    (
-      'Bahasa Inggris',
-      'Latihan reading comprehension, vocabulary, grammar, main idea, inference, dan informasi tersurat maupun tersirat.',
-    ),
-  ];
-
-  static const advancedItems = [
-    (
-      'Matematika',
-      'Latihan soal Matematika bertingkat untuk memperdalam konsep, strategi penyelesaian, dan soal penalaran.',
-    ),
-    (
-      'IPA',
-      'Latihan soal IPA lanjutan dengan penerapan konsep, interpretasi data, dan analisis masalah.',
-    ),
-    (
-      'Bahasa Indonesia',
-      'Latihan lanjutan tentang analisis bacaan, hubungan antaride, keefektifan kalimat, dan penalaran bahasa.',
-    ),
-    (
-      'Bahasa Inggris',
-      'Latihan lanjutan tentang bacaan kompleks, vocabulary in context, grammar, inference, dan evaluasi informasi.',
-    ),
-  ];
-
-  static const advancedBankNames = {
-    'Matematika': 'matematika_lanjutan',
-    'IPA': 'ipa_lanjutan',
-    'Bahasa Indonesia': 'bahasa_indonesia_lanjutan',
-    'Bahasa Inggris': 'bahasa_inggris_lanjutan',
-  };
-
-  static const psychologyItems = [
-    (
-      'Logika',
-      'Latihan penalaran logis, hubungan sebab-akibat, pengelompokan, dan penyelesaian masalah.',
-    ),
-    (
-      'Pola',
-      'Latihan mengenali pola angka, bentuk, urutan, perubahan, dan hubungan antarunsur.',
-    ),
-    (
-      'Verbal',
-      'Latihan sinonim, antonim, analogi, klasifikasi kata, dan pemahaman hubungan makna.',
-    ),
-    (
-      'Numerik',
-      'Latihan operasi hitung, deret angka, perbandingan, aritmetika, dan interpretasi data sederhana.',
-    ),
-    (
-      'Konsistensi dan Ketelitian',
-      'Latihan mencocokkan informasi, menemukan perbedaan, mengikuti aturan, dan menjaga konsistensi jawaban.',
-    ),
-    (
-      'Pengenalan Diri',
-      'Latihan refleksi tertulis tentang kebiasaan belajar, kekuatan, tantangan, motivasi, dan cara menghadapi situasi.',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => _SmaPracticeMenuPage(
-    groups: [
-      (title: '1. Latihan Akademik CBT', items: cbtItems),
-      (title: '2. Latihan Akademik Lanjutan', items: advancedItems),
-      (
-        title: '4. Try Out Terpadu',
-        items: const [
-          (
-            'Simulasi Try Out',
-            'Simulasikan soal Matematika, IPA, Bahasa Indonesia, Bahasa Inggris, dan psikologi dalam satu sesi dengan batas waktu. Hasilnya hanya untuk evaluasi belajar.',
-          ),
-        ],
-      ),
-    ],
-  );
-}
-
-class _PsychologyQuestion {
-  final String question;
-  final List<String> options;
-  final int answer;
-  const _PsychologyQuestion(this.question, this.options, this.answer);
-}
-
-class _SmaPsychologyBank {
-  static const Map<String, List<_PsychologyQuestion>> questions = {
-    'Logika': [
-      _PsychologyQuestion(
-        'Semua kadet disiplin. Raka adalah kadet. Kesimpulan yang tepat adalah ...',
-        [
-          'Raka disiplin',
-          'Raka tidak disiplin',
-          'Semua yang disiplin adalah kadet',
-          'Tidak dapat disimpulkan',
-        ],
-        0,
-      ),
-      _PsychologyQuestion(
-        'Jika lampu menyala maka ruangan terang. Ruangan tidak terang. Kesimpulannya ...',
-        [
-          'Lampu menyala',
-          'Lampu tidak menyala',
-          'Ruangan pasti kosong',
-          'Lampu rusak',
-        ],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Dina lebih tinggi dari Eko. Eko lebih tinggi dari Fajar. Siapa yang paling pendek?',
-        ['Dina', 'Eko', 'Fajar', 'Tidak dapat ditentukan'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Semua A adalah B. Sebagian B adalah C. Pernyataan yang pasti benar ...',
-        [
-          'Semua A adalah C',
-          'Sebagian A pasti C',
-          'A termasuk B',
-          'Semua C adalah A',
-        ],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Andi datang sebelum Budi, dan Citra datang setelah Budi. Urutan yang benar ...',
-        [
-          'Andi-Budi-Citra',
-          'Budi-Andi-Citra',
-          'Citra-Budi-Andi',
-          'Andi-Citra-Budi',
-        ],
-        0,
-      ),
-      _PsychologyQuestion(
-        'Jika hari ini bukan Senin dan bukan Selasa, tetapi besok Jumat, hari ini adalah ...',
-        ['Rabu', 'Kamis', 'Jumat', 'Sabtu'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Sebuah aturan menyatakan: peserta membawa kartu atau surat izin. Sinta tidak membawa kartu. Agar memenuhi aturan, Sinta harus membawa ...',
-        ['Buku', 'Surat izin', 'Seragam baru', 'Tidak ada'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Semua anggota tim A hadir tepat waktu. Nia terlambat. Kesimpulan paling aman ...',
-        [
-          'Nia anggota tim A',
-          'Nia bukan anggota tim A',
-          'Nia pasti sakit',
-          'Tim A bubar',
-        ],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Jika P lebih besar dari Q, dan Q lebih besar dari R, maka ...',
-        ['R terbesar', 'P terbesar', 'P sama dengan R', 'Q terkecil'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Lima kursi berurutan. Tono duduk di kiri Sari. Posisi yang mungkin ...',
-        [
-          'Sari-Tono',
-          'Tono-Sari',
-          'Tono di kursi terakhir',
-          'Tidak ada hubungan',
-        ],
-        1,
-      ),
-    ],
-    'Pola': [
-      _PsychologyQuestion(
-        'Urutan 2, 4, 8, 16, ... angka berikutnya adalah ...',
-        ['20', '24', '32', '36'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Urutan 3, 6, 9, 12, ... angka berikutnya adalah ...',
-        ['14', '15', '16', '18'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Urutan 1, 4, 9, 16, ... angka berikutnya adalah ...',
-        ['20', '24', '25', '36'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Urutan 20, 18, 15, 11, ... angka berikutnya adalah ...',
-        ['8', '7', '6', '5'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Urutan A, C, F, J, ... huruf berikutnya adalah ...',
-        ['M', 'N', 'O', 'P'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Urutan 5, 10, 20, 40, ... angka berikutnya adalah ...',
-        ['60', '70', '80', '90'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Urutan 2, 5, 10, 17, ... angka berikutnya adalah ...',
-        ['24', '25', '26', '27'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Urutan 81, 27, 9, 3, ... angka berikutnya adalah ...',
-        ['0', '1', '2', '6'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Pola pasangan: AB, DE, GH, JK, ... pasangan berikutnya ...',
-        ['LM', 'MN', 'NO', 'OP'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Urutan 1, 2, 6, 24, ... angka berikutnya adalah ...',
-        ['48', '96', '120', '144'],
-        2,
-      ),
-    ],
-    'Verbal': [
-      _PsychologyQuestion('Sinonim kata “cermat” adalah ...', [
-        'Lalai',
-        'Teliti',
-        'Cepat',
-        'Keras',
-      ], 1),
-      _PsychologyQuestion('Antonim kata “optimistis” adalah ...', [
-        'Percaya diri',
-        'Pesimistis',
-        'Semangat',
-        'Realistis',
-      ], 1),
-      _PsychologyQuestion('Dokter : Pasien = Guru : ...', [
-        'Kelas',
-        'Buku',
-        'Murid',
-        'Papan',
-      ], 2),
-      _PsychologyQuestion('Sinonim kata “valid” adalah ...', [
-        'Sah',
-        'Lemah',
-        'Sementara',
-        'Berubah',
-      ], 0),
-      _PsychologyQuestion('Antonim kata “konkret” adalah ...', [
-        'Nyata',
-        'Jelas',
-        'Abstrak',
-        'Padat',
-      ], 2),
-      _PsychologyQuestion('Buku : Membaca = Gitar : ...', [
-        'Menulis',
-        'Memetik',
-        'Menggambar',
-        'Mengukur',
-      ], 1),
-      _PsychologyQuestion('Kata yang berbeda kelompok adalah ...', [
-        'Jujur',
-        'Amanah',
-        'Integritas',
-        'Ceroboh',
-      ], 3),
-      _PsychologyQuestion('Sinonim kata “prioritas” adalah ...', [
-        'Dahuluan',
-        'Tambahan',
-        'Hiasan',
-        'Penundaan',
-      ], 0),
-      _PsychologyQuestion('Antonim kata “fleksibel” adalah ...', [
-        'Lentur',
-        'Luwes',
-        'Kaku',
-        'Ringan',
-      ], 2),
-      _PsychologyQuestion('Kompas : Arah = Jam : ...', [
-        'Jarak',
-        'Waktu',
-        'Cuaca',
-        'Kecepatan',
-      ], 1),
-    ],
-    'Numerik': [
-      _PsychologyQuestion('48 + 37 = ...', ['75', '85', '95', '105'], 1),
-      _PsychologyQuestion('125 - 68 = ...', ['47', '57', '67', '77'], 1),
-      _PsychologyQuestion('12 x 7 = ...', ['72', '84', '96', '108'], 1),
-      _PsychologyQuestion('144 : 12 = ...', ['10', '11', '12', '14'], 2),
-      _PsychologyQuestion('25% dari 200 adalah ...', [
-        '25',
-        '40',
-        '50',
-        '75',
-      ], 2),
-      _PsychologyQuestion(
-        'Perbandingan 2 : 3. Jika bagian pertama 18, bagian kedua ...',
-        ['24', '27', '30', '36'],
-        1,
-      ),
-      _PsychologyQuestion('Rata-rata 6, 8, dan 10 adalah ...', [
-        '7',
-        '8',
-        '9',
-        '10',
-      ], 1),
-      _PsychologyQuestion(
-        'Sebuah barang Rp80.000 mendapat diskon 10%. Harga akhirnya ...',
-        ['Rp70.000', 'Rp72.000', 'Rp74.000', 'Rp78.000'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Jarak 120 km ditempuh 3 jam. Kecepatan rata-ratanya ...',
-        ['30 km/jam', '40 km/jam', '50 km/jam', '60 km/jam'],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Jika 4 buku seharga Rp36.000, harga 7 buku adalah ...',
-        ['Rp54.000', 'Rp63.000', 'Rp72.000', 'Rp81.000'],
-        1,
-      ),
-    ],
-    'Konsistensi dan Ketelitian': [
-      _PsychologyQuestion('Pilih kode yang sama persis dengan: TN-27-KP-904', [
-        'TN-27-KP-904',
-        'TN-27-PK-904',
-        'TN-72-KP-904',
-        'TN-27-KP-940',
-      ], 0),
-      _PsychologyQuestion(
-        'Pilih angka yang berbeda dari deret: 4821, 4821, 4281, 4821',
-        ['Pertama', 'Kedua', 'Ketiga', 'Keempat'],
-        2,
-      ),
-      _PsychologyQuestion(
-        'Jika aturan urutan adalah merah-biru-hijau, setelah biru harus ...',
-        ['Merah', 'Biru', 'Hijau', 'Kuning'],
-        2,
-      ),
-      _PsychologyQuestion('Manakah pasangan yang identik?', [
-        'A7B9C2 / A7B9C2',
-        'K4M1P8 / K4N1P8',
-        'R2S5T6 / R2S5T9',
-        'L8Q3D1 / L8Q8D1',
-      ], 0),
-      _PsychologyQuestion(
-        'Dalam daftar, nama yang harus berada di posisi kedua setelah Aldi dan sebelum Citra adalah ...',
-        ['Bima', 'Deni', 'Eka', 'Fajar'],
-        0,
-      ),
-      _PsychologyQuestion(
-        'Pola tanda: +, +, -, +, +, -, ... tanda berikutnya ...',
-        ['+', '-', 'x', '/'],
-        0,
-      ),
-      _PsychologyQuestion(
-        'Jika setiap berkas harus diberi label tanggal dan kode, label yang lengkap adalah ...',
-        ['Tanggal saja', 'Kode saja', 'Tanggal dan kode', 'Nama petugas saja'],
-        2,
-      ),
-      _PsychologyQuestion('Manakah waktu yang paling awal?', [
-        '07.45',
-        '07.54',
-        '07.05',
-        '07.50',
-      ], 2),
-      _PsychologyQuestion(
-        'Hitung jumlah huruf A pada “AKADEMIK DAN KARAKTER”',
-        ['3', '4', '5', '6'],
-        2,
-      ),
-      _PsychologyQuestion('Pilih urutan nomor yang menaik dengan benar ...', [
-        '12, 9, 15',
-        '9, 12, 15',
-        '15, 12, 9',
-        '12, 15, 9',
-      ], 1),
-    ],
-    'Pengenalan Diri': [
-      _PsychologyQuestion(
-        'Saat mendapat tugas sulit, tindakan yang paling membantu adalah ...',
-        [
-          'Menunda tanpa batas',
-          'Membagi tugas menjadi langkah kecil',
-          'Menyalahkan keadaan',
-          'Menghindari tugas',
-        ],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Jika hasil latihan belum baik, respons yang paling konstruktif ...',
-        [
-          'Berhenti mencoba',
-          'Mengevaluasi kesalahan dan berlatih lagi',
-          'Menyembunyikan hasil',
-          'Menyalahkan teman',
-        ],
-        1,
-      ),
-      _PsychologyQuestion('Ketika berbeda pendapat dalam tim, sebaiknya ...', [
-        'Memaksakan pendapat',
-        'Mendengarkan alasan dan mencari jalan tengah',
-        'Diam lalu pergi',
-        'Menyebarkan konflik',
-      ], 1),
-      _PsychologyQuestion(
-        'Kebiasaan belajar yang paling mendukung konsistensi ...',
-        [
-          'Jadwal realistis dan ditinjau berkala',
-          'Belajar hanya saat panik',
-          'Mengandalkan hafalan terakhir',
-          'Mengabaikan istirahat',
-        ],
-        0,
-      ),
-      _PsychologyQuestion(
-        'Jika melakukan kesalahan, sikap yang menunjukkan tanggung jawab ...',
-        [
-          'Mengakui dan memperbaiki',
-          'Menutupi kesalahan',
-          'Menuduh orang lain',
-          'Meninggalkan tugas',
-        ],
-        0,
-      ),
-      _PsychologyQuestion(
-        'Saat menghadapi tekanan waktu, langkah awal yang baik ...',
-        [
-          'Panik',
-          'Menentukan prioritas dan batas waktu',
-          'Menghentikan semua pekerjaan',
-          'Menunggu orang lain',
-        ],
-        1,
-      ),
-      _PsychologyQuestion('Kekuatan diri paling baik dikenali melalui ...', [
-        'Pujian saja',
-        'Refleksi dan umpan balik yang jujur',
-        'Perbandingan terus-menerus',
-        'Tebakan teman',
-      ], 1),
-      _PsychologyQuestion(
-        'Jika teman meminta jawaban saat ujian latihan, pilihan yang tepat ...',
-        [
-          'Memberikan jawaban',
-          'Menjelaskan konsep setelah latihan selesai',
-          'Membiarkannya menyalin',
-          'Menghapus jawabannya',
-        ],
-        1,
-      ),
-      _PsychologyQuestion(
-        'Untuk menjaga kebugaran dan fokus belajar, sebaiknya ...',
-        [
-          'Mengatur tidur, makan, dan aktivitas secara seimbang',
-          'Begadang setiap hari',
-          'Mengabaikan kondisi tubuh',
-          'Berlatih tanpa jeda',
-        ],
-        0,
-      ),
-      _PsychologyQuestion('Target belajar yang baik seharusnya ...', [
-        'Spesifik, terukur, dan memiliki batas waktu',
-        'Sangat umum tanpa ukuran',
-        'Mustahil dicapai',
-        'Tidak perlu ditinjau',
-      ], 0),
-    ],
-  };
-}
-
-class SmaPsychologyQuizPage extends StatefulWidget {
-  final String category;
-  const SmaPsychologyQuizPage({super.key, required this.category});
-  @override
-  State<SmaPsychologyQuizPage> createState() => _SmaPsychologyQuizPageState();
-}
-
-class _SmaPsychologyQuizPageState extends State<SmaPsychologyQuizPage> {
-  late final List<_PsychologyQuestion> questions;
-  final Map<int, int> answers = {};
-  int index = 0;
-  @override
-  void initState() {
-    super.initState();
-    questions = List.of(_SmaPsychologyBank.questions[widget.category]!);
-  }
-
-  void _finish() {
-    final score = answers.entries
-        .where((entry) => questions[entry.key].answer == entry.value)
-        .length;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => SmaPsychologyResultPage(
-          category: widget.category,
-          score: score,
-          total: questions.length,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final question = questions[index];
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.category), foregroundColor: navy),
-      backgroundColor: const Color(0xFFF7F9FC),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+      child: Row(
         children: [
-          Text(
-            'Soal ${index + 1} dari ${questions.length}',
-            style: const TextStyle(color: Colors.black54),
-          ),
-          const SizedBox(height: 12),
-          LinearProgressIndicator(value: (index + 1) / questions.length),
-          const SizedBox(height: 20),
-          Text(
-            question.question,
-            style: const TextStyle(
-              color: navy,
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              height: 1.35,
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: orange,
+              borderRadius: BorderRadius.circular(14),
             ),
+            child: const Icon(Icons.auto_awesome, color: navy),
           ),
-          const SizedBox(height: 18),
-          ...List.generate(
-            question.options.length,
-            (optionIndex) => Card(
-              child: RadioListTile<int>(
-                value: optionIndex,
-                groupValue: answers[index],
-                onChanged: (value) => setState(() => answers[index] = value!),
-                title: Text(question.options[optionIndex]),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: answers.containsKey(index)
-                  ? () {
-                      if (index == questions.length - 1) {
-                        _finish();
-                      } else {
-                        setState(() => index++);
-                      }
-                    }
-                  : null,
-              child: Text(
-                index == questions.length - 1
-                    ? 'Selesai dan Lihat Skor'
-                    : 'Soal Berikutnya',
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SmaPsychologyResultPage extends StatelessWidget {
-  final String category;
-  final int score;
-  final int total;
-  const SmaPsychologyResultPage({
-    super.key,
-    required this.category,
-    required this.score,
-    required this.total,
-  });
-  @override
-  Widget build(BuildContext context) {
-    final percentage = (score / total * 100).round();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hasil Psikotest SMA TN'),
-        foregroundColor: navy,
-      ),
-      backgroundColor: const Color(0xFFF7F9FC),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(22),
-              child: Column(
-                children: [
-                  Text(
-                    category,
-                    style: const TextStyle(
-                      color: navy,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '$percentage%',
-                    style: const TextStyle(
-                      color: blue,
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  Text(
-                    '$score dari $total jawaban benar',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Hasil ini merupakan evaluasi latihan, bukan hasil psikotes resmi atau diagnosis psikologis.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black54, height: 1.4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back),
-              label: const Text('Kembali ke Menu Psikotest SMA TN'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SmaTarunaPsychologyPage extends StatelessWidget {
-  const SmaTarunaPsychologyPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => _SmaPracticeMenuPage(
-    pageTitle: 'Psikotest SMA TN',
-    groups: [
-      (
-        title: 'Latihan Psikologi SMA TN',
-        items: SmaTarunaPracticePage.psychologyItems,
-      ),
-    ],
-  );
-}
-
-class _SmaPracticeMenuPage extends StatelessWidget {
-  final List<({String title, List<(String, String)> items})> groups;
-  final String pageTitle;
-
-  const _SmaPracticeMenuPage({
-    required this.groups,
-    this.pageTitle = 'Latihan dan Try Out SMA TN',
-  });
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(pageTitle), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        Text(
-          pageTitle,
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Pilih pelajaran atau aspek yang ingin dilatih. Semua menu di halaman ini berisi latihan soal dan pengembangan kemampuan akademik atau psikologi.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-        const SizedBox(height: 18),
-        ...groups.expand(
-          (group) => [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Text(
-                group.title,
-                style: const TextStyle(
-                  color: navy,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            ...group.items.map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Card(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () async {
-                      if (!await ensureLoggedIn(context) || !context.mounted) {
-                        return;
-                      }
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => pageTitle == 'Psikotest SMA TN'
-                              ? SmaPsychologyQuizPage(category: item.$1)
-                              : group.title == '1. Latihan Akademik CBT'
-                              ? _SmaCbtBankPage(subject: item.$1)
-                              : group.title == '2. Latihan Akademik Lanjutan'
-                              ? _SmaCbtBankPage(
-                                  subject: item.$1,
-                                  bankFileName: SmaTarunaPracticePage
-                                      .advancedBankNames[item.$1]!,
-                                  appBarTitle: 'Latihan Akademik Lanjutan',
-                                )
-                              : group.title == '4. Try Out Terpadu'
-                              ? _SmaCbtBankPage(
-                                  subject: item.$1,
-                                  bankFileName: 'tryout_terpadu',
-                                  appBarTitle: 'Try Out Terpadu',
-                                )
-                              : _SmaPracticeDetailPage(
-                                  title: '${group.title} · ${item.$1}',
-                                  description: item.$2,
-                                ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              item.$1,
-                              style: const TextStyle(
-                                color: navy,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                          const Icon(Icons.chevron_right, color: blue),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-        const Text(
-          'Sumber: https://cimahi.tarunanusantara.sch.id/siswa-baru/',
-          style: TextStyle(color: Colors.black54, fontSize: 12, height: 1.4),
-        ),
-      ],
-    ),
-  );
-}
-
-class _SmaCbtBankPage extends StatefulWidget {
-  final String subject;
-  final String bankFileName;
-  final String appBarTitle;
-
-  const _SmaCbtBankPage({
-    required this.subject,
-    this.bankFileName = '',
-    this.appBarTitle = 'CBT SMA TN',
-  });
-
-  @override
-  State<_SmaCbtBankPage> createState() => _SmaCbtBankPageState();
-}
-
-class _SmaCbtBankPageState extends State<_SmaCbtBankPage> {
-  late Future<Map<String, dynamic>> bankFuture;
-  int index = 0;
-  int remainingSeconds = 60 * 60;
-  Timer? timer;
-  final answers = <int, String>{};
-
-  String get assetDirectory => 'assets/sma_tn_cbt';
-  String get bankAsset =>
-      '$assetDirectory/${widget.bankFileName.isEmpty ? widget.subject.toLowerCase().replaceAll(' ', '_') : widget.bankFileName}.json';
-
-  @override
-  void initState() {
-    super.initState();
-    bankFuture = _loadBank();
-    timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-      if (remainingSeconds <= 1) {
-        timer?.cancel();
-        _finish();
-      } else {
-        setState(() => remainingSeconds--);
-      }
-    });
-  }
-
-  Future<Map<String, dynamic>> _loadBank() async =>
-      jsonDecode(await rootBundle.loadString(bankAsset))
-          as Map<String, dynamic>;
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  void _finish() {
-    timer?.cancel();
-    final questions = _loadedQuestions;
-    final correct = questions.asMap().entries.where((entry) {
-      final selected = answers[entry.key];
-      final key = entry.value['answer'] as String?;
-      return selected != null && key != null && selected == key;
-    }).length;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => SmaCbtResultPage(
-          subject: widget.subject,
-          correct: correct,
-          answered: answers.length,
-          total: questions.length,
-        ),
-      ),
-    );
-  }
-
-  List<Map<String, dynamic>> _loadedQuestions = [];
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: Text('${widget.appBarTitle} · ${widget.subject}'),
-      foregroundColor: navy,
-      actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Text(
-            '${(remainingSeconds ~/ 60).toString().padLeft(2, '0')}:${(remainingSeconds % 60).toString().padLeft(2, '0')}',
-            style: const TextStyle(fontWeight: FontWeight.w800),
-          ),
-        ),
-      ],
-    ),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: FutureBuilder<Map<String, dynamic>>(
-      future: bankFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Text('Bank soal gagal dimuat: ${snapshot.error}'),
-          );
-        }
-        final questions =
-            (snapshot.data?['questions'] as List<dynamic>? ?? const [])
-                .map((item) => Map<String, dynamic>.from(item as Map))
-                .toList();
-        _loadedQuestions = questions;
-        if (questions.isEmpty)
-          return const Center(child: Text('Belum ada soal.'));
-        final current = questions[index.clamp(0, questions.length - 1)];
-        final options = Map<String, dynamic>.from(current['options'] as Map);
-        final image = current['image'] as String?;
-        final selected = answers[index];
-        return Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 20),
-                children: [
-                  Card(
-                    color: const Color(0xFFEAF1FF),
-                    elevation: 0,
-                    child: ListTile(
-                      leading: const Icon(Icons.quiz_outlined, color: blue),
-                      title: Text(
-                        '${widget.subject} · Soal ${index + 1} dari ${questions.length}',
-                        style: const TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      subtitle: Text(
-                        'Terjawab ${answers.length} soal · Materi latihan mandiri',
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Chip(
-                            label: Text(
-                              current['topic'] as String? ?? widget.subject,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            current['question'] as String,
-                            style: const TextStyle(
-                              color: navy,
-                              fontSize: 17,
-                              height: 1.45,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          if (image != null) ...[
-                            const SizedBox(height: 14),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.asset(
-                                '$assetDirectory/$image',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ],
-                          const SizedBox(height: 14),
-                          ...options.entries.map((option) {
-                            final isSelected = selected == option.key;
-                            return InkWell(
-                              onTap: () =>
-                                  setState(() => answers[index] = option.key),
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                padding: const EdgeInsets.all(11),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? blue.withValues(alpha: .08)
-                                      : Colors.transparent,
-                                  border: Border.all(
-                                    color: isSelected ? blue : Colors.black12,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 15,
-                                      backgroundColor: isSelected
-                                          ? blue
-                                          : Colors.black12,
-                                      child: Text(
-                                        option.key,
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? Colors.white
-                                              : navy,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text(option.value.toString()),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 12),
-                child: Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: index == 0
-                          ? null
-                          : () => setState(() => index--),
-                      child: const Text('Sebelumnya'),
-                    ),
-                    const Spacer(),
-                    FilledButton(
-                      onPressed: index == questions.length - 1
-                          ? _finish
-                          : () => setState(() => index++),
-                      child: Text(
-                        index == questions.length - 1
-                            ? 'Selesai'
-                            : 'Berikutnya',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    ),
-  );
-}
-
-class SmaCbtResultPage extends StatelessWidget {
-  final String subject;
-  final int correct;
-  final int answered;
-  final int total;
-
-  const SmaCbtResultPage({
-    super.key,
-    required this.subject,
-    required this.correct,
-    required this.answered,
-    required this.total,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final percent = total == 0 ? 0 : (correct * 100 / total).round();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hasil CBT SMA TN'),
-        foregroundColor: navy,
-      ),
-      backgroundColor: const Color(0xFFF7F9FC),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          const Icon(Icons.emoji_events_outlined, color: orange, size: 72),
-          const SizedBox(height: 12),
-          const Text(
-            'CBT selesai!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: navy,
-              fontSize: 25,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            subject,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black54),
-          ),
-          const SizedBox(height: 22),
-          Card(
-            color: const Color(0xFFEAF1FF),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const Text(
-                    'Skor kamu',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '$percent',
-                    style: const TextStyle(
-                      color: navy,
-                      fontSize: 52,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const Text('persen', style: TextStyle(color: Colors.black54)),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(child: _stat('$correct', 'Benar')),
-              const SizedBox(width: 10),
-              Expanded(child: _stat('${total - correct}', 'Salah/kosong')),
-              const SizedBox(width: 10),
-              Expanded(child: _stat('$answered/$total', 'Dijawab')),
-            ],
-          ),
-          const SizedBox(height: 22),
-          const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Skor dihitung dari jumlah jawaban yang sesuai dengan kunci pada bank soal. Gunakan hasil ini sebagai bahan evaluasi belajar.',
-                style: TextStyle(color: Colors.black54, height: 1.45),
-              ),
-            ),
-          ),
-          const SizedBox(height: 14),
-          FilledButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Kembali ke menu SMA TN'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _stat(String value, String label) => Card(
-    elevation: 0,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              color: blue,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black54, fontSize: 10),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-class _SmaPracticeDetailPage extends StatelessWidget {
-  final String title;
-  final String description;
-
-  const _SmaPracticeDetailPage({
-    required this.title,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Latihan SMA TN'), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 18),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(18),
-            child: Text(description, style: const TextStyle(height: 1.5)),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class SmaTarunaSelectionInfoPage extends StatelessWidget {
-  const SmaTarunaSelectionInfoPage({super.key});
-
-  static const items = [
-    (
-      'Tahapan seleksi umum',
-      'Seleksi Administrasi → Seleksi Akademik Tahap 1 (Webinar, CBT Try Out, CBT Serentak, CBT Mandiri) → Pemeriksaan Kesehatan → Wawancara → Seleksi Akademik Tahap 2 → Tes Psikologi → Tes Kesegaran Jasmani → Pengumuman.',
-    ),
-    (
-      'Jalur pendaftaran',
-      'Informasi resmi menyebut jalur Iuran Sekolah, Kontribusi Khusus, dan Beasiswa. Perbedaannya pada biaya; materi seleksi, fasilitas, dan perlakuan sekolah dinyatakan sama. Beasiswa Undangan dan Non-Undangan memiliki ketentuan berbeda.',
-    ),
-    (
-      'Pendaftaran dan lokasi',
-      'Pendaftaran dilakukan secara online. Pengumuman TA 2026/2027 mencantumkan kampus Magelang, Cimahi, Malang, IKN, Minahasa, dan Pagar Alam; daftar kampus dan jadwal harus dicek ulang pada pengumuman tahun berjalan.',
-    ),
-    (
-      'Catatan penting',
-      'Syarat, jadwal, kuota, biaya, dan materi dapat berubah. Aplikasi ini bukan kanal pendaftaran dan tidak menggantikan pengumuman panitia.',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => _SmaSectionPage(
-    title: 'Informasi Seleksi SMA TN',
-    intro: 'Ringkasan ini bersumber dari situs resmi kampus SMA TN dan FAQ penerimaan. Verifikasi pengumuman terbaru sebelum mendaftar.',
-    items: items,
-    source: 'Portal resmi: https://pensisru.tarunanusantara.id/\nReferensi: https://magelang.tarunanusantara.sch.id/penerimaan-siswa-baru-tahun-ajaran-2026-2027-sma-taruna-nusantara/',
-  );
-}
-
-class _SmaSectionPage extends StatelessWidget {
-  final String title;
-  final String intro;
-  final List<(String, String)> items;
-  final String source;
-
-  const _SmaSectionPage({
-    required this.title,
-    required this.intro,
-    required this.items,
-    required this.source,
-  });
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(title), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(intro, style: const TextStyle(color: Colors.black54, height: 1.4)),
-        const SizedBox(height: 18),
-        ...items.asMap().entries.map(
-          (entry) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: orange.withValues(alpha: .18),
-                      foregroundColor: navy,
-                      child: Text(
-                        '${entry.key + 1}',
-                        style: const TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            entry.value.$1,
-                            style: const TextStyle(
-                              color: navy,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            entry.value.$2,
-                            style: const TextStyle(height: 1.45),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        Text(
-          source,
-          style: const TextStyle(
-            color: Colors.black54,
-            fontSize: 12,
-            height: 1.4,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _SmaOfficialNote extends StatelessWidget {
-  const _SmaOfficialNote();
-
-  @override
-  Widget build(BuildContext context) => Card(
-    color: const Color(0xFFFFF7E8),
-    child: const Padding(
-      padding: EdgeInsets.all(14),
-      child: Text(
-        'Jadwal dan persyaratan penerimaan bersifat dinamis. Cek selalu portal resmi pensisru.tarunanusantara.id sebelum mengambil keputusan.',
-        style: TextStyle(color: Color(0xFF704214), height: 1.4),
-      ),
-    ),
-  );
-}
-
-class PsychologyMenuPage extends StatelessWidget {
-  const PsychologyMenuPage({super.key});
-
-  static const options = <({String title, String subtitle, IconData icon})>[
-    (
-      title: 'Assesment',
-      subtitle:
-          'Kenali kesiapan diri, gaya belajar, dan area pengembangan pribadi.',
-      icon: Icons.fact_check_outlined,
-    ),
-    (
-      title: 'Psikotest SMA TN',
-      subtitle: 'Persiapan psikotes untuk seleksi SMA Taruna Nusantara.',
-      icon: Icons.school_outlined,
-    ),
-    (
-      title: 'Psikotest Kedinasan',
-      subtitle: 'Persiapan psikotes untuk berbagai sekolah kedinasan.',
-      icon: Icons.account_balance_outlined,
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Psikologi'), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        const Text(
-          'Pilih latihan psikologi',
-          key: Key('psychology-menu-title'),
-          style: TextStyle(
-            color: navy,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Materi dan latihan disusun untuk membantu mengenali potensi diri serta mempersiapkan tahapan psikologi.',
-          style: TextStyle(color: Colors.black54, height: 1.4),
-        ),
-        const SizedBox(height: 20),
-        ...options.map(
-          (option) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Card(
-              child: ListTile(
-                key: Key('psychology-option-${option.title}'),
-                contentPadding: const EdgeInsets.all(16),
-                leading: CircleAvatar(
-                  backgroundColor: blue.withValues(alpha: .12),
-                  child: Icon(option.icon, color: blue),
-                ),
-                title: Text(
-                  option.title,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(option.subtitle),
-                ),
-                trailing: const Icon(Icons.chevron_right, color: navy),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => option.title == 'Assesment'
-                        ? const AssessmentPage()
-                        : option.title == 'Psikotest SMA TN'
-                        ? const SmaTarunaPsychologyPage()
-                        : PsychologyOptionPage(
-                            title: option.title,
-                            description: option.subtitle,
-                          ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class AssessmentPage extends StatefulWidget {
-  const AssessmentPage({super.key});
-
-  @override
-  State<AssessmentPage> createState() => _AssessmentPageState();
-}
-
-class _AssessmentPageState extends State<AssessmentPage> {
-  List<Map<String, dynamic>> _questions = [];
-  final Map<int, int> _answers = {};
-  int _index = 0;
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final root = jsonDecode(
-      await rootBundle.loadString('assets/assessment_bank.json'),
-    ) as Map<String, dynamic>;
-    final loaded = (root['questions'] as List<dynamic>)
-        .map((item) => Map<String, dynamic>.from(item as Map))
-        .toList();
-    final minat = loaded.where((q) => q['section'] == 'minat').toList()
-      ..shuffle(Random());
-    final kemampuan = loaded.where((q) => q['section'] == 'kemampuan').toList()
-      ..shuffle(Random());
-    final mixed = <Map<String, dynamic>>[];
-    while (minat.isNotEmpty || kemampuan.isNotEmpty) {
-      if (minat.isNotEmpty) mixed.add(minat.removeLast());
-      if (kemampuan.isNotEmpty) mixed.add(kemampuan.removeLast());
-    }
-    if (!mounted) return;
-    setState(() {
-      _questions = mixed;
-      _loading = false;
-    });
-  }
-
-  void _finish() {
-    if (_answers.length < _questions.length) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Masih ada ${_questions.length - _answers.length} soal yang belum dijawab.',
-          ),
-        ),
-      );
-      return;
-    }
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            AssessmentResultPage(questions: _questions, answers: _answers),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_loading)
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    final q = _questions[_index];
-    final options = List<String>.from(q['options'] as List<dynamic>);
-    final selected = _answers[_index];
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Assessment Potensi Arah dan Bakat'),
-        foregroundColor: navy,
-      ),
-      backgroundColor: const Color(0xFFF7F9FC),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Card(
-            color: const Color(0xFFEAF1FF),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Temukan arah yang paling sesuai untukmu',
-                    style: TextStyle(
-                      color: navy,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Assessment ini membaca pola minat dan kemampuan untuk memberikan rekomendasi awal sekolah atau jalur belajar.',
-                    style: TextStyle(height: 1.4),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Soal ${_index + 1} dari ${_questions.length}  •  Terjawab ${_answers.length}',
-                    style: const TextStyle(
-                      color: blue,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    q['section'] == 'minat'
-                        ? 'Bagian A — Minat'
-                        : 'Bagian B — Kemampuan Objektif',
-                    style: const TextStyle(
-                      color: blue,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    q['question'] as String,
-                    style: const TextStyle(
-                      color: navy,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      height: 1.35,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  ...List.generate(
-                    options.length,
-                    (i) => RadioListTile<int>(
-                      value: i,
-                      groupValue: selected,
-                      title: Text(options[i]),
-                      contentPadding: EdgeInsets.zero,
-                      onChanged: (v) {
-                        if (v == null) return;
-                        setState(() => _answers[_index] = v);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _index == 0
-                      ? null
-                      : () => setState(() => _index--),
-                  child: const Text('Sebelumnya'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _index == _questions.length - 1
-                      ? _finish
-                      : () => setState(() => _index++),
-                  child: Text(
-                    _index == _questions.length - 1
-                        ? 'Lihat Hasil'
-                        : 'Berikutnya',
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class AssessmentResultPage extends StatelessWidget {
-  final List<Map<String, dynamic>> questions;
-  final Map<int, int> answers;
-
-  const AssessmentResultPage({
-    required this.questions,
-    required this.answers,
-    super.key,
-  });
-
-  List<Map<String, dynamic>> _recommendations() {
-    final interest = <String, double>{
-      for (final d in ['R', 'I', 'A', 'S', 'E', 'C']) d: 0,
-    };
-    var objective = 0;
-    for (var i = 0; i < questions.length; i++) {
-      final q = questions[i];
-      final a = answers[i];
-      if (a == null) continue;
-      if (q['section'] == 'minat')
-        interest[q['dimension'] as String] =
-            interest[q['dimension'] as String]! + a;
-      if (q['section'] == 'kemampuan' &&
-          a == ((q['answer'] as String).codeUnitAt(0) - 65))
-        objective++;
-    }
-    final ability = objective / 20;
-    final raw = <String, double>{
-      'SMA Taruna Nusantara':
-          0.25 + interest['C']! / 60 + interest['E']! / 75 + ability * .25,
-      'Akademi TNI':
-          0.20 +
-          interest['R']! / 60 +
-          interest['E']! / 75 +
-          interest['C']! / 90 +
-          ability * .25,
-      'AKPOL':
-          0.20 +
-          interest['S']! / 75 +
-          interest['E']! / 75 +
-          interest['C']! / 90 +
-          ability * .25,
-      'UNHAN': 0.20 + interest['I']! / 60 + interest['C']! / 75 + ability * .30,
-      'Sekolah Kedinasan':
-          0.20 + interest['C']! / 60 + interest['S']! / 90 + ability * .30,
-      'Kedokteran':
-          0.18 + interest['I']! / 55 + interest['S']! / 75 + ability * .30,
-      'Olimpiade Sains':
-          0.18 + interest['I']! / 45 + interest['R']! / 90 + ability * .35,
-    };
-    final total = raw.values.reduce((a, b) => a + b);
-    final descriptions = <String, String>{
-      'SMA Taruna Nusantara': 'Jalur pendidikan berasrama dengan penguatan akademik, kepemimpinan, dan kedisiplinan.',
-      'Akademi TNI': 'Arah pengembangan untuk kepemimpinan, kedisiplinan, kebugaran, dan pengabdian.',
-      'AKPOL': 'Arah pengembangan untuk penalaran, komunikasi, kepemimpinan, dan pelayanan publik.',
-      'UNHAN': 'Arah akademik yang memadukan sains, analisis, wawasan pertahanan, dan kebangsaan.',
-      'Sekolah Kedinasan': 'Arah belajar untuk penalaran, administrasi publik, analisis, dan wawasan kebangsaan.',
-      'Kedokteran': 'Arah akademik untuk minat sains, analisis, ketelitian, dan kepedulian terhadap sesama.',
-      'Olimpiade Sains': 'Arah pengembangan untuk rasa ingin tahu, penalaran, eksperimen, dan pemecahan masalah.',
-    };
-    return raw.entries
-        .map(
-          (e) => {
-            'name': e.key,
-            'percent': (e.value / total * 100).round(),
-            'description': descriptions[e.key]!,
-          },
-        )
-        .toList()
-      ..sort((a, b) => (b['percent'] as int).compareTo(a['percent'] as int));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final result = _recommendations();
-    final top = result.first;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hasil Assessment'),
-        foregroundColor: navy,
-      ),
-      backgroundColor: const Color(0xFFF7F9FC),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Card(
-            color: const Color(0xFFEAF1FF),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Profil arah potensimu',
-                    style: TextStyle(
-                      color: navy,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Hasil utama menunjukkan arah yang paling selaras dengan pola jawabanmu.',
-                    style: TextStyle(height: 1.4),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    top['name'] as String,
-                    style: const TextStyle(
-                      color: blue,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  Text(
-                    '${top['percent']}% indikasi kecocokan',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    top['description'] as String,
-                    style: const TextStyle(height: 1.4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Rekomendasi arah lainnya',
-            style: TextStyle(
-              color: navy,
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ...result.map(
-            (item) => Card(
-              child: ListTile(
-                title: Text(
-                  item['name'] as String,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-                subtitle: Text(item['description'] as String),
-                trailing: Text(
-                  '${item['percent']}%',
-                  style: const TextStyle(
-                    color: blue,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 14),
-          const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Catatan: persentase ini adalah indikasi kecocokan dari jawaban assessment, bukan peluang diterima dan bukan diagnosis psikologis. Gunakan sebagai bahan eksplorasi bersama orang tua, guru, atau konselor.',
-                style: TextStyle(color: Colors.black54, height: 1.45),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back),
-              label: const Text('Kembali ke Menu Assessment'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PsychologyOptionPage extends StatelessWidget {
-  final String title;
-  final String description;
-
-  const PsychologyOptionPage({
-    required this.title,
-    required this.description,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(title), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        Card(
-          color: const Color(0xFFEAF1FF),
-          elevation: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
+          const SizedBox(width: 12),
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.psychology_outlined, color: blue, size: 40),
-                const SizedBox(height: 14),
                 Text(
-                  title,
-                  style: const TextStyle(
-                    color: navy,
-                    fontSize: 23,
-                    fontWeight: FontWeight.w800,
+                  'Rekomendasi untukmu',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(description, style: const TextStyle(height: 1.45)),
+                SizedBox(height: 4),
+                Text(
+                  'Persiapan UTBK',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'TPS · Literasi · Latihan soal',
+                  style: TextStyle(color: Colors.white70, fontSize: 11),
+                ),
               ],
             ),
           ),
-        ),
-        const SizedBox(height: 14),
-        const Card(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'Modul latihan sedang disiapkan. Gunakan latihan ini sebagai persiapan, bukan sebagai diagnosis psikologis atau jaminan hasil seleksi.',
-              style: TextStyle(color: Colors.black54, height: 1.45),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class PreparationPlaceholderPage extends StatelessWidget {
-  final String title;
-
-  const PreparationPlaceholderPage({required this.title, super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(title), foregroundColor: navy),
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.construction_outlined, color: orange, size: 56),
-            const SizedBox(height: 18),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: navy,
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Materi dan latihan untuk menu ini sedang disiapkan.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54, height: 1.4),
-            ),
-          ],
-        ),
+          const Icon(Icons.chevron_right, color: Colors.white),
+        ],
       ),
     ),
   );
