@@ -21,6 +21,7 @@ import 'mental_ideology_data.dart';
 import 'pages/cbt_test_page.dart';
 import 'pages/skd_test_page.dart';
 import 'pages/analytics_page.dart';
+import 'pages/question_variation_page.dart';
 import 'services/question_rotation_service.dart';
 
 const navy = Color(0xFF152B55);
@@ -1775,6 +1776,14 @@ class _ProfilePageState extends State<ProfilePage> {
               'Pusat bantuan',
               'Kamu dapat menghubungi tim Edukreativ melalui menu bantuan.',
             ),
+          ),
+          const SizedBox(height: 10),
+          _ProfileMenuTile(
+            icon: Icons.auto_awesome,
+            title: 'AI Question Generator',
+            subtitle: 'Buat variasi soal otomatis (dev tool)',
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const QuestionVariationPage())),
           ),
           const SizedBox(height: 10),
           _ProfileMenuTile(
