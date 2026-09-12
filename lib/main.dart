@@ -24,6 +24,7 @@ import 'pages/cbt_test_page.dart';
 import 'pages/skd_test_page.dart';
 import 'pages/analytics_page.dart';
 import 'pages/question_variation_page.dart';
+import 'pages/social_hub_page.dart';
 import 'services/question_rotation_service.dart';
 import 'services/offline_storage_service.dart';
 import 'services/adaptive_difficulty_service.dart';
@@ -158,6 +159,7 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final pages = [
       const HomePage(),
+      const SocialHubPage(),
       OfficialBooksPage(onBack: () => setState(() => index = 0)),
       const StorePage(),
       const ProfilePage(),
@@ -172,6 +174,11 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Beranda',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.group_outlined),
+            selectedIcon: Icon(Icons.group),
+            label: 'Komunitas',
           ),
           NavigationDestination(
             icon: Icon(Icons.menu_book_outlined),
