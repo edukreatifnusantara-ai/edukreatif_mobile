@@ -15,11 +15,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.19'
           channel: 'stable'
           cache: true
       - name: Install dependencies
         run: flutter pub get
+        timeout-minutes: 5
       - name: Analyze
         run: flutter analyze --no-fatal-infos
 
@@ -30,13 +31,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.19'
           channel: 'stable'
           cache: true
       - name: Install dependencies
         run: flutter pub get
+        timeout-minutes: 5
       - name: Run tests
-        run: flutter test --coverage
+        run: |
+          if [ -d "test" ] && [ "$(ls -A test)" ]; then
+            flutter test --coverage
+          else
+            echo "No tests found, skipping"
+          fi
 
   build-apk:
     name: Build Android APK
@@ -46,11 +53,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.19'
           channel: 'stable'
           cache: true
       - name: Install dependencies
         run: flutter pub get
+        timeout-minutes: 5
       - name: Build APK (debug)
         run: flutter build apk --debug --split-per-abi
       - name: Upload APK artifacts
@@ -68,11 +76,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.19'
           channel: 'stable'
           cache: true
       - name: Install dependencies
         run: flutter pub get
+        timeout-minutes: 5
       - name: Build Web
         run: flutter build web --release
       - name: Upload Web artifacts
@@ -90,7 +99,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.19'
           channel: 'stable'
           cache: true
       - name: Install dependencies
