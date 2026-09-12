@@ -33,7 +33,7 @@ jobs:
           cache: gradle
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get --no-offline
 
       - name: Build small arm64 release APK
         run: flutter build apk --release --target-platform android-arm64
