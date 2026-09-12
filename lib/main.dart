@@ -3410,7 +3410,7 @@ class _UtbkMateriMobilePageState extends State<UtbkMateriMobilePage> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: subtests.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
               itemBuilder: (_, index) => ChoiceChip(
                 label: Text(subtests[index]),
                 selected: active == subtests[index],

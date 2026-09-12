@@ -359,7 +359,7 @@ class SocialService {
   // Achievements & badges
   Future<void> awardBadge(String userId, String badgeId) async {
     if (!_initialized) await initialize();
-    final achievements = await _getUserAchievements(userId);
+    final achievements = await getUserAchievements(userId);
     if (!achievements.contains(badgeId)) {
       achievements.add(badgeId);
       await _achievementsBoxInstance!.put(userId, achievements);
@@ -373,9 +373,7 @@ class SocialService {
     return List<String>.from(raw as List);
   }
 
-  Future<void> _getUserAchievements(String userId) async {
-    // This method exists just to satisfy the analyzer - the actual implementation is above
-  }
+  
 
   Future<void> close() async {
     await _profilesBoxInstance?.close();

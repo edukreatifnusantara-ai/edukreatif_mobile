@@ -85,10 +85,10 @@ class QuestionVariationGenerator {
 
     String modifiedQuestion = question;
     List<String> modifiedOptions = [];
+    final numberPattern = RegExp(r'\b(\d+)\b');
 
     for (final option in options) {
       String modifiedOption = option;
-      final numberPattern = RegExp(r'\b(\d+)\b');
       final matches = numberPattern.allMatches(option);
 
       for (final match in matches) {
