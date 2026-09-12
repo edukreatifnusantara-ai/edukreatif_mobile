@@ -19,6 +19,7 @@ import 'kedinasan_tkp_data.dart';
 import 'kedinasan_twk_data.dart';
 import 'mental_ideology_data.dart';
 import 'pages/cbt_test_page.dart';
+import 'pages/skd_test_page.dart';
 import 'services/question_rotation_service.dart';
 
 const navy = Color(0xFF152B55);
@@ -7531,6 +7532,7 @@ class SkdSchoolTryoutPage extends StatelessWidget {
               '${school.twkQuestions.length} soal TWK khusus ${school.name}',
           icon: Icons.flag_outlined,
           questions: _twkQuestions(),
+          category: 'TWK',
         ),
         const SizedBox(height: 12),
         _tryoutTile(
@@ -7541,6 +7543,7 @@ class SkdSchoolTryoutPage extends StatelessWidget {
               '${school.tiuQuestions.length} soal TIU khusus ${school.name}',
           icon: Icons.calculate_outlined,
           questions: _tiuQuestions(),
+          category: 'TIU',
         ),
         const SizedBox(height: 12),
         Card(
@@ -7573,6 +7576,7 @@ class SkdSchoolTryoutPage extends StatelessWidget {
     required String subtitle,
     required IconData icon,
     required List<TniBankQuestion> questions,
+    required String category,
   }) => Card(
     child: ListTile(
       key: Key(key),
@@ -7582,14 +7586,39 @@ class SkdSchoolTryoutPage extends StatelessWidget {
       trailing: const Icon(Icons.chevron_right, color: navy),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => TniBankPracticePage(
+          builder: (_) => SKDTestPage(
+            category: category,
+            questions: _convertToSKDQuestions(questions, category),
             title: 'Try Out $title ${school.name}',
-            questions: questions,
+            durationMinutes: 100,
           ),
         ),
       ),
     ),
   );
+
+  List<Map<String, dynamic>> _convertToSKDQuestions(
+      List<TniBankQuestion> questions, String category) {
+    return questions.map((q) => {
+      'number': q.number,
+      'category': category,
+      'question': q.question,
+      'options': q.options,
+      'answer': q.answer,
+      'explanation': q.explanation,
+    }).toList();
+  }
+}
+
+List<Map<String, dynamic>> _convertTniToSKD(List<TniBankQuestion> questions) {
+  return questions.map((q) => {
+    'number': q.number,
+    'category': q.category,
+    'question': q.question,
+    'options': q.options,
+    'answer': q.answer,
+    'explanation': q.explanation,
+  }).toList();
 }
 
 class SkdPracticePage extends StatefulWidget {
@@ -8481,9 +8510,11 @@ class AkpolTryoutMenuPage extends StatelessWidget {
           subtitle: 'Pengetahuan umum, wawasan, bahasa, matematika, dan logika',
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => TniBankPracticePage(
+              builder: (_) => SKDTestPage(
+                category: 'TIU',
+                questions: _convertTniToSKD(_akpolCatTryoutItems),
                 title: 'Try Out Tes Akademik CAT AKPOL',
-                questions: _akpolCatTryoutItems,
+                durationMinutes: 120,
               ),
             ),
           ),
@@ -8561,9 +8592,11 @@ class TniTryoutMenuPage extends StatelessWidget {
               'Latihan nilai kebangsaan, NKRI, integritas, dan tanggung jawab',
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => TniBankPracticePage(
+              builder: (_) => SKDTestPage(
+                category: 'TWK',
+                questions: _convertTniToSKD(_mentalIdeologyTryoutItems),
                 title: 'Try Out Mental Ideologi',
-                questions: _mentalIdeologyTryoutItems,
+                durationMinutes: 90,
               ),
             ),
           ),
@@ -8575,9 +8608,11 @@ class TniTryoutMenuPage extends StatelessWidget {
           subtitle: 'Latihan akademik dasar dan keamanan siber',
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => TniBankPracticePage(
+              builder: (_) => SKDTestPage(
+                category: 'TIU',
+                questions: _convertTniToSKD(_tniAcademicTryoutItems),
                 title: 'Try Out Akademik dan Siber',
-                questions: _tniAcademicTryoutItems,
+                durationMinutes: 90,
               ),
             ),
           ),
