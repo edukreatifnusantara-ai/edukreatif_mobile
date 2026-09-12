@@ -20,6 +20,7 @@ import 'kedinasan_twk_data.dart';
 import 'mental_ideology_data.dart';
 import 'pages/cbt_test_page.dart';
 import 'pages/skd_test_page.dart';
+import 'pages/analytics_page.dart';
 import 'services/question_rotation_service.dart';
 
 const navy = Color(0xFF152B55);
@@ -1707,6 +1708,14 @@ class _ProfilePageState extends State<ProfilePage> {
             subtitle: 'Lihat perkembangan belajar minggu ini',
             onTap: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (_) => const ProgressPage())),
+          ),
+          const SizedBox(height: 16),
+          _ProfileMenuTile(
+            icon: Icons.analytics_outlined,
+            title: 'Analytics',
+            subtitle: 'Lihat analisis performa & soal sering salah',
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const AnalyticsPage())),
           ),
           const SizedBox(height: 16),
           Row(
