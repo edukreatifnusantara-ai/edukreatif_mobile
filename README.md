@@ -2,6 +2,45 @@
 
 Flutter app edukasi dengan Toko Kreativ untuk katalog materi, seller premium, keranjang, checkout demo, riwayat pesanan, dan perpustakaan e-book.
 
+## Milestone 8: Question Rotation & Adaptive CBT
+
+✅ Implementasi selesai:
+
+- **Question Rotation Service** (`lib/services/question_rotation_service.dart`):
+  - Rotasi soal per mata pelajaran dengan reserve pool
+  - Algoritma difficulty-weighted selection (mudah 40%, sedang 40%, sulit 20%)
+  - Support mixed subject packages (gabung TIU, TWK, TKP)
+  - Reset rotasi otomatis saat reserve habis
+
+- **CBT Session Manager** (`lib/services/cbt_session_manager.dart`):
+  - Timer countdown real-time dengan pause/resume
+  - Tracking jawaban per soal + waktu pengerjaan
+  - Navigasi soal dengan status (dijawab benar, salah, dilewati)
+  - Kalkulasi hasil: per-subject breakdown, score, time analytics
+
+- **CBT Test Page** (`lib/pages/cbt_test_page.dart`):
+  - UI interaktif dengan difficulty badge
+  - Navigasi grid soal per kategori
+  - Result page dengan breakdown per subtes
+  - Integrasi ke Try Out UTBK Lengkap (153 soal, 230 menit)
+
+- **SKD Question Bank** (`lib/services/skd_question_bank.dart`):
+  - Rotasi terpisah untuk SKD (TIU, TWK, TKP)
+  - Siap untuk TNI/Polri/Kedinasan tests
+
+**Fitur utama:**
+- Soal berubah otomatis setiap kali klien selesai
+- Tingkat kesulitan bervariasi sesuai algoritma
+- Tidak ada duplikasi soal hingga reserve habis
+- Progress tracking per session
+- Ukuran app tetap optimal (<50MB)
+
+**Status:**
+- Branch: `feat/backend-foundation` (6 commits baru)
+- Local ready: ✅
+- Network push: ⏳ (menunggu koneksi)
+- Next: Integration testing, AI worker assignment untuk maintenance
+
 ## Status backend
 
 Repository ini memiliki fondasi Supabase, tetapi koneksi online belum aktif secara default:
