@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../services/skd_test_session.dart';
-import '../services/adaptive_difficulty_service.dart';
 import '../main.dart';
 
 class SKDTestPage extends StatefulWidget {
@@ -42,8 +43,7 @@ class _SKDTestPageState extends State<SKDTestPage> {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) {
         setState(() {
-          _session._secondsLeft--;
-          if (_session._secondsLeft <= 0) {
+          if (_session.tick()) {
             _timer.cancel();
             _finishTest();
           }

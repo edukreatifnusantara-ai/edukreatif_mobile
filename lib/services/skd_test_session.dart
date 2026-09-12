@@ -40,6 +40,12 @@ class SKDTestSession {
     return '$minutes:$seconds';
   }
 
+  bool tick() {
+    if (_secondsLeft <= 0) return true;
+    _secondsLeft--;
+    return _secondsLeft <= 0;
+  }
+
   void answerQuestion(String selectedOption) {
     final question = currentQuestion;
     final correctAnswer = question['answer']?.toString() ?? '';

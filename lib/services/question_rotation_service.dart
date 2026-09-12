@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 int _fallbackQuestionId = 0;
 
@@ -74,10 +75,12 @@ class QuestionRotationService {
   factory QuestionRotationService() => _instance;
   QuestionRotationService._internal();
 
+  static const String _prefsKey = 'question_rotation_state';
   final Map<String, List<QuestionItem>> _questionBanks = {};
   final Map<String, Set<String>> _shownQuestions = {};
   final Map<String, List<QuestionItem>> _reservePools = {};
   final Random _random = Random();
+  SharedPreferences? _prefs;
 
   static const Map<String, String> subjectNames = {
     'PU': 'Penalaran Umum',
@@ -100,8 +103,10 @@ class QuestionRotationService {
   };
 
   Future<void> initialize() async {
+    _prefs ??= await SharedPreferences.getInstance();
     await _loadAllBanks();
     _initializeReservePools();
+    _loadRotationState();
   }
 
   Future<void> _loadAllBanks() async {
@@ -168,6 +173,7 @@ class QuestionRotationService {
         shown.add(q.id);
         _reservePools[subjectCode]?.removeWhere((r) => r.id == q.id);
       }
+      _saveRotationState();
     }
 
     return selected;
@@ -250,11 +256,38 @@ class QuestionRotationService {
     _reservePools[subjectCode] = List.from(_questionBanks[subjectCode] ?? []);
   }
 
+  void _loadRotationState() {
+    final raw = _prefs?.getString(_prefsKey);
+    if (raw == null) return;
+    try {
+      final data = jsonDecode(raw) as Map<String, dynamic>;
+      for (final entry in data.entries) {
+        final shown = (entry.value as List<dynamic>).cast<String>().toSet();
+        _shownQuestions[entry.key] = shown;
+        _reservePools[entry.key] = (_questionBanks[entry.key] ?? [])
+            .where((q) => !shown.contains(q.id))
+            .toList();
+      }
+    } catch (_) {}
+  }
+
+  void _saveRotationState() {
+    final data = _shownQuestions.map((key, value) => MapEntry(key, value.toList()));
+    _prefs?.setString(_prefsKey, jsonEncode(data));
+  }
+
   void resetAllRotations() {
     for (final code in subjectNames.keys) {
       _resetSubjectRotation(code);
     }
     _resetSubjectRotation('SEMUA');
+    _clearRotationState();
+  }
+
+  void _clearRotationState() {
+    _shownQuestions.clear();
+    _reservePools.clear();
+    _prefs?.remove(_prefsKey);
   }
 
   int getRemainingCount(String subjectCode) {
