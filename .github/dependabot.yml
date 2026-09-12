@@ -1,0 +1,48 @@
+version: 2
+updates:
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "pub"
+    commit-message:
+      prefix: "chore(deps): "
+    groups:
+      flutter-sdk:
+        patterns:
+          - "flutter*"
+      dev-dependencies:
+        patterns:
+          - "flutter_test"
+          - "flutter_lints"
+      dev-tools:
+        patterns:
+          - "build_runner"
+          - "json_serializable"
+      network:
+        patterns:
+          - "http"
+          - "supabase_flutter"
+          - "url_launcher"
+      ui:
+        patterns:
+          - "pdfrx"
+          - "cupertino_icons"
+      utils:
+        patterns:
+          - "path_provider"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    labels:
+      - "dependencies"
+      - "github-actions"
