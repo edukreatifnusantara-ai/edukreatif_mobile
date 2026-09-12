@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/question_rotation_service.dart';
 import '../services/cbt_session_manager.dart';
 import '../services/adaptive_difficulty_service.dart';
+import '../services/offline_storage_service.dart';
 import '../main.dart';
 
 class CBTTestPage extends StatefulWidget {
@@ -116,6 +117,10 @@ class _CBTTestPageState extends State<CBTTestPage> {
     if (_session == null) return;
     final result = _session!.finish();
     _session!.dispose();
+
+    // Save to offline storage
+    OfflineStorageService().saveSession(result, category: widget.packageName);
+
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (_) => CBTResultPage(result: result),

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../services/skd_test_session.dart';
+import '../services/offline_storage_service.dart';
+import '../services/cbt_session_manager.dart';
 import '../main.dart';
 
 class SKDTestPage extends StatefulWidget {
@@ -70,6 +72,34 @@ class _SKDTestPageState extends State<SKDTestPage> {
   void _finishTest() {
     final result = _session.finish();
     _timer.cancel();
+
+    // Convert SKD result to CBT result format for offline storage
+    final cbtAnswers = result.categoryCorrect.entries.expand((e) => 
+      List.generate(e.value, (i) => CBTAnswer(
+        questionId: '${result.category}_q$i',
+        selectedOption: 'A',
+        isCorrect: true,
+        timeSpentSeconds: 60,
+      ))
+    ).toList();
+
+    final cbtResult = CBTResult(
+      packageName: widget.title,
+      startTime: result.startTime,
+      endTime: result.endTime,
+      answers: cbtAnswers,
+      totalQuestions: result.totalQuestions,
+      correctAnswers: result.correctAnswers,
+      wrongAnswers: result.wrongAnswers,
+      unanswered: result.unansweredCount,
+      score: result.score,
+      subjectBreakdown: result.categoryBreakdown,
+      subjectScores: result.categoryBreakdown.map((k, v) => 
+        MapEntry(k, (result.categoryCorrect[k] ?? 0) / (v > 0 ? v : 1) * 100)),
+    );
+
+    OfflineStorageService().saveSession(cbtResult, category: result.category);
+
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (_) => SKDResultPage(result: result),
