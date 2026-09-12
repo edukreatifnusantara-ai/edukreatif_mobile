@@ -1,0 +1,21 @@
+{
+  "version": "2024.1",
+  "utbk": "assets/questions/utbk/index.json",
+  "tni": {
+    "tryout": "lib/tni_tryout_data.dart",
+    "academic": "lib/tni_academic_data.dart",
+    "mental_ideologi": "lib/mental_ideology_data.dart"
+  },
+  "akpol": {
+    "cat": "lib/akpol_cat_data.dart",
+    "interview": "lib/akpol_interview_data.dart",
+    "pmk": "lib/akpol_pmk_data.dart"
+  },
+  "kedinasan": {
+    "twk": "lib/kedinasan_twk_data.dart",
+    "tiu": "lib/kedinasan_tiu_data.dart",
+    "tkp": "lib/kedinasan_tkp_data.dart"
+  },
+  "materials": "assets/materials/index.json",
+  "assessment": "assets/assessment_bank.json"
+}

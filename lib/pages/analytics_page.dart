@@ -28,7 +28,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   @override
   Widget build(BuildContext context) {
     final overallStats = _analytics.getOverallStats();
-    final avgAccuracy = (overallStats['avg_accuracy'] as double * 100).toStringAsFixed(1);
+    final avgAccuracy = ((overallStats['avg_accuracy'] as double) * 100).toStringAsFixed(1);
     final totalSessions = overallStats['total_sessions'] as int;
     final totalMinutes = overallStats['total_time_minutes'] as int;
 

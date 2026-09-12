@@ -1,0 +1,44 @@
+{
+  "utbk": {
+    "version": "2024.1",
+    "source": "Soal_UTBK_671_Lengkap_dikelompokkan_Mata_Pelajaran.docx",
+    "subjects": {
+      "PU": {
+        "code": "PU",
+        "title": "Penalaran Umum",
+        "count": 83,
+        "file": "utbk/pu.json"
+      },
+      "PPU": {
+        "code": "PPU",
+        "title": "Pengetahuan dan Pemahaman Umum",
+        "count": 32,
+        "file": "utbk/ppu.json"
+      },
+      "PBM": {
+        "code": "PBM",
+        "title": "Pemahaman Bacaan dan Menulis",
+        "count": 15,
+        "file": "utbk/pbm.json"
+      },
+      "PK": {
+        "code": "PK",
+        "title": "Pengetahuan Kuantitatif",
+        "count": 251,
+        "file": "utbk/pk.json"
+      },
+      "LBE": {
+        "code": "LBE",
+        "title": "Literasi Bahasa Inggris",
+        "count": 274,
+        "file": "utbk/lbe.json"
+      },
+      "PM": {
+        "code": "PM",
+        "title": "Penalaran Matematika",
+        "count": 16,
+        "file": "utbk/pm.json"
+      }
+    }
+  }
+}

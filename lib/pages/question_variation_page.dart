@@ -122,7 +122,7 @@ class _QuestionVariationPageState extends State<QuestionVariationPage> {
                         'PU', 'PPU', 'PBM', 'PK', 'LBI', 'LBE', 'PM'
                       ].map((code) => DropdownMenuItem(
                         value: code,
-                        child: Text('$code - ${_rotationService.subjectNames[code] ?? code}'),
+                        child: Text('$code - ${QuestionRotationService.subjectNames[code] ?? code}'),
                       )).toList(),
                       onChanged: (value) {
                         setState(() {

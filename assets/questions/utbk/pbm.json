@@ -1,0 +1,247 @@
+{
+  "subject_code": "PBM",
+  "subject": "Pemahaman Bacaan dan Menulis",
+  "total": 15,
+  "questions": [
+    {
+      "id": 116,
+      "source_number": 147,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Apa judul yang paling tepat untuk teks tersebut?",
+      "options": {
+        "A": "Peran dan Kapasitas Mangrove di Lingkungan",
+        "B": "Pertumbuhan Mangrove di Tengah Perubahan Iklim",
+        "C": "Adaptasi Mangrove terhadap Perubahan Iklim",
+        "D": "Kondisi Lingkungan Ekosistem Mangrove",
+        "E": "Ancaman terhadap Resiliensi Mangrove"
+      },
+      "answer": "C",
+      "explanation": "Judul paling mencakup adaptasi mangrove."
+    },
+    {
+      "id": 117,
+      "source_number": 148,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Apa informasi utama kalimat (5)?",
+      "options": {
+        "A": "Kematian mangrove disebabkan oleh terbatasnya ruang gerak mangrove akibat alih lahan hutan menjadi hunian manusia.",
+        "B": "Kematian mangrove disebabkan karena terbatasnya ruang gerak mangrove akibat alih lahan hutan menjadi hunian manusia.",
+        "C": "Kematian mangrove disebabkan oleh terbatasnya ruang gerak mangrove akibat alih lahan hutan menjadi hunian.",
+        "D": "Kematian mangrove disebabkan oleh terbatasnya ruang gerak mangrove akibat alih lahan hutan.",
+        "E": "Kematian mangrove disebabkan oleh terbatasnya ruang gerak mangrove."
+      },
+      "answer": "E",
+      "explanation": "Inti kalimat: kematian mangrove disebabkan ruang gerak terbatas."
+    },
+    {
+      "id": 118,
+      "source_number": 151,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Manakah yang merupakan kalimat efektif dari kalimat (2)? Tryout Prosus INTEN Halaman 16 dari 46 halaman EVERY DAY IS MY HAPPY DAY Pemahaman Bacaan dan Menulis Jumlah soal Waktu : 20 : 25 menit PROSUS INTEN PENGENALAN SOAL UTBK Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "Penerimaan dan kehangatan ayah tidak berpengaruh pada penyesuaian diri remaja, tetapi kematangan sosial juga berpengaruh.",
+        "B": "Penerimaan dan kehangatan ayah tidak hanya berpengaruh pada penyesuaian diri remaja, tetapi juga kematangan sosial.",
+        "C": "Penerimaan dan kehangatan ayah bukan hanya berpengaruh pada penyesuaian diri remaja, tetapi juga kematangan sosial.",
+        "D": "Penerimaan dan kehangatan ayah bukan hanya berpengaruh pada penyesuaian diri remaja, melainkan juga kematangan sosial.",
+        "E": "Penerimaan dan kehangatan ayah hanya berpengaruh pada penyesuaian diri remaja, dan juga kematangan sosial."
+      },
+      "answer": "B",
+      "explanation": "Pasangan bukan hanya..., tetapi juga... paling efektif."
+    },
+    {
+      "id": 119,
+      "source_number": 152,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Manakah yang paling tepat sebagai kalimat inti dari kalimat (2)? Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "Pola pembicaraan ayah dengan anak mengakibatkan kalimat yang lebih bervariasi.",
+        "B": "Pembicaraan ayah dengan anak yang bersifat pertanyaan.",
+        "C": "Pola pembicaraan ayah dengan anak mengakibatkan anak lebih komunikatif.",
+        "D": "Pembicaraan ayah dengan anak bersifat pertanyaan mengakibatkan komunikasi lebih bervariasi.",
+        "E": "Pola pembicaraan bersifat pertanyaan akan lebih komunikatif dengan kosakata lebih bervariasi."
+      },
+      "answer": "C",
+      "explanation": "Inti: pola pembicaraan ayah membuat anak lebih komunikatif."
+    },
+    {
+      "id": 120,
+      "source_number": 153,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kata yang paling tepat untuk melengkapi kalimat (12) adalah …. Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "dirasa; jauh",
+        "B": "merasa; terdorong",
+        "C": "seakan; penting",
+        "D": "lebih; bangga",
+        "E": "dilihat; berbahagia Bacalah tulisan di atas untuk menjawab soal 06 s.d. 10! Teks 2 1 Bose-Einstein Kondensasi, BEC, merupakan salah satu fenomena paling menakjubkan dalam fisika kuantum. 2 BEC terjadi di mana sekelompok partikel identik didinginkan hingga suhu yang sangat rendah. 3 Partikel terse"
+      },
+      "answer": "B",
+      "explanation": "Konstruksi tepat: merasa terdorong."
+    },
+    {
+      "id": 121,
+      "source_number": 155,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kata di mana dalam kalimat (2) seharusnya … Tryout Prosus INTEN Halaman 17 dari 46 halaman EVERY DAY IS MY HAPPY DAY Pemahaman Bacaan dan Menulis Jumlah soal Waktu : 20 : 25 menit PROSUS INTEN PENGENALAN SOAL UTBK Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "dibiarkan saja (sudah benar).",
+        "B": "dihilangkan.",
+        "C": "didahului kata yang.",
+        "D": "diganti dengan kata saat.",
+        "E": "diikuti kata ada."
+      },
+      "answer": "D",
+      "explanation": "Di mana harus diganti saat/ketika untuk menyatakan waktu."
+    },
+    {
+      "id": 122,
+      "source_number": 156,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kalimat manakah yang paling efektif sebagai hasil penggabungan kalimat (12) dan (13)? Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "BEC dapat digunakan untuk menyimulasikan sistem kuantum kompleks yang sulit dipelajari dengan cara lain.",
+        "B": "BEC dapat digunakan untuk menyimulasikan sistem kuantum kompleks sehingga sulit dipelajari dengan cara lain.",
+        "C": "BEC dapat digunakan untuk menyimulasikan sistem kuantum kompleks dan sulit dipelajari dengan cara lain.",
+        "D": "BEC dapat digunakan untuk menyimulasikan sistem kuantum kompleks karena sulit dipelajari dengan cara lain.",
+        "E": "BEC dapat digunakan untuk menyimulasikan sistem kuantum kompleks akibatnya sulit dipelajari dengan cara lain."
+      },
+      "answer": "A",
+      "explanation": "Klausa kedua menjelaskan penggunaan BEC secara efektif."
+    },
+    {
+      "id": 123,
+      "source_number": 157,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kalimat manakah yang merupakan perbaikan kalimat (4)? Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "Fenomena tersebut pertama kali diprediksi Albert Einstein berdasarkan penelitian Satyendra Nath Bose pada tahun 1924--1925.",
+        "B": "Fenomena yang pertama kali diprediksi Albert Einstein mendasarkan dari penelitian Satyendra Nath Bose pada tahun 1924-1925.",
+        "C": "Fenomena yang pertama kali diprediksi oleh Albert Einstein mendasar dari penelitian Satyendra Nath Bose pada tahun 1924--1925.",
+        "D": "Fenomena tersebut pertama kali diprediksi oleh Albert Einstein mendasarkan penelitian Satyendra Nath Bose pada tahun 1924--1925.",
+        "E": "Fenomena tersebut pertama kali terprediksi oleh Albert Einstein berdasar pada penelitian Satyendra Nath Bose pada tahun 1924-1925."
+      },
+      "answer": "A",
+      "explanation": "Struktur aktif-pasif dan preposisi pada A paling baku."
+    },
+    {
+      "id": 124,
+      "source_number": 158,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kata yang paling tepat menggantikan kata persisi dalam kalimat (15) adalah …. Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "akurasi",
+        "B": "asimilasi",
+        "C": "posisi",
+        "D": "cara",
+        "E": "hasil"
+      },
+      "answer": "A",
+      "explanation": "Persisi seharusnya akurasi."
+    },
+    {
+      "id": 125,
+      "source_number": 161,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kalimat manakah yang isinya sama dengan paragraf 1? Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "TikTok di kalangan gen Z dan anak -anak akhir-akhir ini berdampak negatif, yaitu rendahnya minat literasi pada anak.",
+        "B": "Sebagai aplikasi yang sedang populer, TikTok semakin berdampak negatif bagi anak-anak, yaitu rendahnya minat baca pada anak.",
+        "C": "Akhir-akhir ini, TikTok populer dan mempunyai dampak negatif, seperti rendahnya minat literasi pada anak.",
+        "D": "TikTok yang mempunyai penggemar terbesar dari kalangan anak -anak mempunyai pengaruh negatif, salah satunya adalah rendahnya minat baca pada anak.",
+        "E": "Karena semakin populer, TikTok mempunyai dampak negatif pada anak -anak, salah satunya rendahnya minat literasi anak."
+      },
+      "answer": "C",
+      "explanation": "Merangkum TikTok populer dengan dampak negatif minat literasi."
+    },
+    {
+      "id": 126,
+      "source_number": 162,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kata penghubung yang paling tepat untuk melengkapi kalimat (10) adalah …. Teks bacaan — lihat teks asli di PDF halaman terkait.",
+      "options": {
+        "A": "Sebab",
+        "B": "Dengan demikian",
+        "C": "Oleh karena itu",
+        "D": "Selain itu",
+        "E": "Jadi"
+      },
+      "answer": "B",
+      "explanation": "Dengan demikian menandai simpulan."
+    },
+    {
+      "id": 127,
+      "source_number": 164,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kalimat berikut perlu dimasukkan dalam bacaan tersebut. “Lebih dari itu, tingginya kepedulian generasi muda terhadap isu lingkungan menunjukkan bahwa isu lingkungan dan keadilan ekologis harus diprioritaskan.” Kalimat tersebut paling tepat ditempatkan setelah kalimat nomor ....",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7",
+        "E": "8"
+      },
+      "answer": "E",
+      "explanation": "Kalimat tambahan paling tepat setelah uraian pendukung terakhir."
+    },
+    {
+      "id": 128,
+      "source_number": 165,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Agar sesuai dengan konteks bacaan, pernyataan paling tepat untuk melengkapi kalimat (6) adalah ....",
+      "options": {
+        "A": "membaca dan menulis dalam bahasa ibu mereka",
+        "B": "belajar semua materi yang diberikan oleh guru",
+        "C": "memperoleh keterampilan berpikir yang lebih baik",
+        "D": "memperhatikan pelajaran dengan sangat antusias",
+        "E": "tetap mengikuti pelajaran dengan rajin"
+      },
+      "answer": "C",
+      "explanation": "Konteks manfaat membaca: memperoleh keterampilan berpikir."
+    },
+    {
+      "id": 129,
+      "source_number": 166,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Pernyataan yang paling tepat untuk melengkapi kalimat (6) adalah ....",
+      "options": {
+        "A": "dekat wilayah perairan",
+        "B": "wilayah permukaan laut",
+        "C": "kawasan tidak berpenghuni",
+        "D": "area peralihan lahan",
+        "E": "kawasan pesisir"
+      },
+      "answer": "E",
+      "explanation": "Mangrove berada di kawasan pesisir."
+    },
+    {
+      "id": 130,
+      "source_number": 167,
+      "subject_code": "PBM",
+      "subject": "Pemahaman Bacaan dan Menulis",
+      "question": "Kata penghubung yang paling tepat untuk melengkapi kalimat (5) adalah ....",
+      "options": {
+        "A": "bahkan",
+        "B": "oleh karena itu",
+        "C": "selain itu",
+        "D": "namun",
+        "E": "selanjutnya"
+      },
+      "answer": "D",
+      "explanation": "Namun menandai hubungan pertentangan. Pengetahuan Kuantitatif (251 soal)"
+    }
+  ]
+}

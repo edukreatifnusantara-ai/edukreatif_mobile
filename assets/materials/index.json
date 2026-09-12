@@ -1,0 +1,41 @@
+{
+  "version": "2024.1",
+  "source": "Kurikulum Merdeka Kemdikbud",
+  "levels": {
+    "sd": [
+      "matematika",
+      "bahasa_indonesia",
+      "ipas",
+      "pkn",
+      "bahasa_inggris",
+      "seni_budaya",
+      "pjok",
+      "pendidikan_agama"
+    ],
+    "smp": [
+      "matematika",
+      "ipa",
+      "bahasa_indonesia",
+      "bahasa_inggris",
+      "ips",
+      "pkn",
+      "informatika",
+      "seni_budaya",
+      "pjok"
+    ],
+    "sma": [
+      "matematika",
+      "fisika",
+      "kimia",
+      "biologi",
+      "bahasa_indonesia",
+      "bahasa_inggris",
+      "ekonomi",
+      "sosiologi",
+      "geografi",
+      "informatika",
+      "seni_budaya",
+      "pjok"
+    ]
+  }
+}

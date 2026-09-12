@@ -136,7 +136,7 @@ class AnalyticsService {
 
     final frequentMisses = _getFrequentMisses(subjectCode, 5);
 
-    final subjectName = QuestionRotationService().subjectNames[subjectCode] ?? subjectCode;
+    final subjectName = QuestionRotationService.subjectNames[subjectCode] ?? subjectCode;
 
     return QuestionAnalytics(
       subjectCode: subjectCode,

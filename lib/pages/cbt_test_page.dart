@@ -43,7 +43,7 @@ class _CBTTestPageState extends State<CBTTestPage> {
       return QuestionRotationService().generateCBTPackage(
         packageName: widget.packageName,
         customSubjectCounts: widget.customSubjectCounts,
-        difficultyWeights: widget.difficultyWeights,
+        difficultyWeights: widget.difficultyWeights!,
       );
     }
 
@@ -535,7 +535,9 @@ class CBTResultPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Hasil Try Out'), foregroundColor: navy),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -580,7 +582,7 @@ class CBTResultPage extends StatelessWidget {
                 .where((a) => result.subjectBreakdown.containsKey(subject))
                 .length;
             final score = result.subjectScores[subject] ?? 0.0;
-            final subjectName = QuestionRotationService().subjectNames[subject] ?? subject;
+            final subjectName = QuestionRotationService.subjectNames[subject] ?? subject;
             return Card(
               margin: const EdgeInsets.only(bottom: 10),
               child: Padding(
@@ -613,10 +615,11 @@ class CBTResultPage extends StatelessWidget {
             onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
             icon: const Icon(Icons.home),
             label: const Text('Kembali ke Beranda'),
-            style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-          ),
-        ],
-      ),
-    );
-  }
-}
+             style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+           ),
+         ],
+       ),
+     ),
+     );
+   }
+ }

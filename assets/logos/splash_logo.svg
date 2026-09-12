@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <rect x="0" y="0" width="1080" height="1080" fill="#F7F9FC"/>
+  <g transform="translate(340, 240) scale(2)">
+    <rect x="156" y="136" width="200" height="240" rx="10" ry="10" fill="#152B55"/>
+    <line x1="176" y1="156" x2="336" y2="156" stroke="#FF9B42" stroke-width="3"/>
+    <line x1="176" y1="186" x2="336" y2="186" stroke="#FF9B42" stroke-width="3"/>
+    <line x1="176" y1="216" x2="336" y2="216" stroke="#FF9B42" stroke-width="3"/>
+    <path d="M256 136 L256 86 L306 136 Z" fill="#FF9B42"/>
+  </g>
+  <text x="540" y="680" font-size="64" font-weight="bold" fill="#152B55" text-anchor="middle" font-family="Arial">Edukreativ Nusantara</text>
+  <text x="540" y="760" font-size="36" fill="#2E6FE8" text-anchor="middle" font-family="Arial">Belajar dengan Cara Kreatif</text>
+</svg>

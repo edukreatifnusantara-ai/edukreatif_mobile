@@ -378,7 +378,9 @@ class SKDResultPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Hasil Test'), foregroundColor: navy),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(color: navy, borderRadius: BorderRadius.circular(22)),

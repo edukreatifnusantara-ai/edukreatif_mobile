@@ -1,0 +1,263 @@
+{
+  "subject_code": "PM",
+  "subject": "Penalaran Matematika",
+  "total": 16,
+  "questions": [
+    {
+      "id": 656,
+      "source_number": 815,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Misalkan x, y, dan z memenuhi sistem persamaan: (-x − 2y − z)(x − y + z) + 2xz = −5 2x² − z² = 4 Jika x, y, z adalah suku-suku berurutan pada suatu deret aritmatika, maka nilai y = ... 1) (√12 + √8)/4 2) (√12 + √6)/4 3) (−√12 − √8)/4 4) (√3 − √6)/2",
+      "options": {
+        "A": "1) dan 2) benar",
+        "B": "1) dan 3) benar",
+        "C": "2) dan 3) benar",
+        "D": "3) dan 4) benar",
+        "E": "Semua benar"
+      },
+      "answer": "B",
+      "explanation": "solving the system gives the listed positive/negative y values 1 and 3"
+    },
+    {
+      "id": 657,
+      "source_number": 816,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Jumlah semua absis yang memenuhi sistem persamaan: x² + y² − 6y = 0 x²/4 − y²/16 = 1 adalah ...",
+      "options": {
+        "A": "4",
+        "B": "3",
+        "C": "2",
+        "D": "1",
+        "E": "0"
+      },
+      "answer": "E",
+      "explanation": "solutions occur in ± pairs, so abscissas sum to zero"
+    },
+    {
+      "id": 658,
+      "source_number": 817,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Jika penyelesaian |2x + 1| < 1/x + |1 − x| adalah (a, b), maka nilai 3a² + 3b² − 1 = ...",
+      "options": {
+        "A": "0",
+        "B": "1",
+        "C": "2",
+        "D": "3",
+        "E": "4"
+      },
+      "answer": "A",
+      "explanation": "solution interval is (0,1/√3)"
+    },
+    {
+      "id": 659,
+      "source_number": 818,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Persamaan x² + (2p − 1)x + p² − 3p − 4 = 0 mempunyai akar real. Nilai p yang memenuhi adalah ...",
+      "options": {
+        "A": "p ≤ −17/8",
+        "B": "p ≤ −21/8",
+        "C": "p ≥ −17/8",
+        "D": "p ≥ 21/8",
+        "E": "p ≥ 13/8"
+      },
+      "answer": "A",
+      "explanation": "discriminant 8p+17 must be nonnegative"
+    },
+    {
+      "id": 660,
+      "source_number": 819,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Akar-akar persamaan kuadrat 3x² − x + 1 = 0 adalah x₁ dan x₂. Persamaan kuadrat baru yang akar-akarnya x₁ + x₂ dan x₁x₂ adalah ...",
+      "options": {
+        "A": "9x² − 6x + 1 = 0",
+        "B": "9x² − 2x + 1 = 0",
+        "C": "9x² − 1 = 0",
+        "D": "x² − 2x + 1 = 0",
+        "E": "x² − 6x + 1 = 0"
+      },
+      "answer": "A",
+      "explanation": "new roots are both 1/3"
+    },
+    {
+      "id": 661,
+      "source_number": 820,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Jika aˣ = bʸ = cᶻ dan b⁴ = ac/b², maka nilai x = ...",
+      "options": {
+        "A": "4yz/(y + z)",
+        "B": "2yz/(y + z)",
+        "C": "yz/(2z − y)",
+        "D": "yz/(6z − y)",
+        "E": "4yz/(2z − y)"
+      },
+      "answer": "D",
+      "explanation": "take logs of b⁶=ac"
+    },
+    {
+      "id": 662,
+      "source_number": 821,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Hasil dari ∫ (3x − 1)/(3x² − 2x + 7)⁷ dx = ...",
+      "options": {
+        "A": "1/[3(3x² − 2x + 7)⁶] + C",
+        "B": "1/[4(3x² − 2x + 7)⁶] + C",
+        "C": "1/[6(3x² − 2x + 7)⁶] + C",
+        "D": "−1/[12(3x² − 2x + 7)⁶] + C",
+        "E": "−1/[12(3x² − 2x + 7)⁷] + C"
+      },
+      "answer": "D",
+      "explanation": "u-substitution"
+    },
+    {
+      "id": 663,
+      "source_number": 822,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Jika ∫₀⁴ f(x) dx = √2, maka nilai 4∫₀² [x f(x²)/√2] dx adalah ...",
+      "options": {
+        "A": "−4",
+        "B": "−2",
+        "C": "0",
+        "D": "2",
+        "E": "4"
+      },
+      "answer": "B",
+      "explanation": "u=x² reduces integral to given integral"
+    },
+    {
+      "id": 664,
+      "source_number": 823,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Turunan pertama dari f(x) = (3x² + 4)⁵(2x − 1)⁴ adalah ...",
+      "options": {
+        "A": "(3x² + 4)⁴(2x − 1)³(64x² − 20x + 42)",
+        "B": "(3x² + 4)⁴(2x − 1)³(84x² − 30x + 32)",
+        "C": "(3x² + 4)⁴(2x − 1)³(84x² − 20x + 22)",
+        "D": "(3x² + 4)⁴(2x + 1)³(84x² − 30x + 42)",
+        "E": "(3x² + 4)⁴(2x + 1)³(64x² − 20x + 32)"
+      },
+      "answer": "B",
+      "explanation": "product rule"
+    },
+    {
+      "id": 665,
+      "source_number": 824,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Himpunan penyelesaian pertidaksamaan ²log(x − 2√2) + ²log(x + 2√2) < 0 adalah ...",
+      "options": {
+        "A": "{x | −3 < x < 3}",
+        "B": "{x | 2√2 < x < 3}",
+        "C": "{x | x < −3 atau x < 3}",
+        "D": "{x | x < −2√2 atau x < 2√2}",
+        "E": "{x | −3 < x < −2√2 atau 2√2 < x < 3}"
+      },
+      "answer": "B",
+      "explanation": "domain and product inequality"
+    },
+    {
+      "id": 666,
+      "source_number": 825,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Jika m dan n memenuhi 1/x − 5/√x + 6 = 0, maka nilai 108mn adalah ...",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "answer": "C",
+      "explanation": "roots in 1/√x are 2 and 3, so 108mn=3"
+    },
+    {
+      "id": 667,
+      "source_number": 912,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Diketahui x, y, z membentuk barisan geometri dengan x, y, z > 0. Jika suku kedua ditambah 1 akan terbentuk barisan aritmetika. Jika x, y, z memenuhi sistem persamaan (x + z)² − y² − x² − xz + y − 2xy = 52 y² + z² − 2xy = 64 maka nilai x² + z² − 3xz = ...",
+      "options": {
+        "A": "10",
+        "B": "20",
+        "C": "30",
+        "D": "40",
+        "E": "50"
+      },
+      "answer": "B",
+      "explanation": "geometric and arithmetic conditions yield x=2,y=4,z=8"
+    },
+    {
+      "id": 668,
+      "source_number": 913,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Diberikan deret geometri U₁ + U₂ + U₃ + .... Jika U₅ = 48, rasio deret −2 dan log U₁ + log U₂ + log U₃ + log U₄ = 6 log 2 + 4 log 3 maka nilai 2U₃ + 3U₂ adalah ....",
+      "options": {
+        "A": "4",
+        "B": "6",
+        "C": "8",
+        "D": "12",
+        "E": "16"
+      },
+      "answer": "B",
+      "explanation": "U2=-6,U3=12"
+    },
+    {
+      "id": 669,
+      "source_number": 915,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Misalkan (aₙ) adalah barisan geometri yang memenuhi sistem a₂ + a₅ − a₄ = 10, a₃ + a₆ − a₅ = 20. Nilai dari a₂ adalah ....",
+      "options": {
+        "A": "−2",
+        "B": "−1",
+        "C": "0",
+        "D": "1",
+        "E": "2"
+      },
+      "answer": "A",
+      "explanation": "substitution gives ratio 2 and a2=2"
+    },
+    {
+      "id": 670,
+      "source_number": 916,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Jika U₁, U₂, U₃, ... adalah barisan geometri memenuhi U₃ − U₆ = x dan U₂ − U₄ = y, maka x/y = ....",
+      "options": {
+        "A": "(r³ − r² − r)/(r − 1)",
+        "B": "(r³ − r² + r)/(r − 1)",
+        "C": "(r³ + r² + r)/(r + 1)",
+        "D": "(r³ + r² − r)/(r − 1)",
+        "E": "(r³ − r² + r)/(r + 1)"
+      },
+      "answer": "A",
+      "explanation": "simplify x/y"
+    },
+    {
+      "id": 671,
+      "source_number": 917,
+      "subject_code": "PM",
+      "subject": "Penalaran Matematika",
+      "question": "Barisan geometri dengan suku ke-5 adalah 1/3 dan rasio 1/3, maka suku ke-9 barisan geometri tersebut adalah ....",
+      "options": {
+        "A": "27",
+        "B": "9",
+        "C": "1/27",
+        "D": "1/81",
+        "E": "1/243"
+      },
+      "answer": "E",
+      "explanation": "U9=U5(1/3)^4"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../services/offline_storage_service.dart';
 import '../services/adaptive_difficulty_service.dart';
 import '../main.dart';

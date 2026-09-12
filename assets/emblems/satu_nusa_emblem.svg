@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <circle cx="256" cy="256" r="250" fill="#152B55"/>
+  <circle cx="256" cy="256" r="230" fill="none" stroke="#FF9B42" stroke-width="6"/>
+  <g transform="translate(256, 256) scale(0.8)">
+    <path d="M0,-120 L-40,-40 L-80,-40 L-20,20 L-40,100 L0,60 L40,100 L20,20 L80,-40 L40,-40 Z" fill="#FF9B42"/>
+  </g>
+  <text x="256" y="450" font-size="32" font-weight="bold" fill="#FF9B42" text-anchor="middle" font-family="Arial">SATU NUSA</text>
+</svg>

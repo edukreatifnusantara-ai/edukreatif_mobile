@@ -67,10 +67,10 @@ class SKDQuestionBank {
     required int count,
     bool allowRepeats = false,
   }) {
-    if (_questions.isEmpty) return [];
+    if (_questions.isEmpty) return <Map<String, dynamic>>[];
 
-    final bank = _groupedByCategory[category] ?? [];
-    if (bank.isEmpty) return [];
+    final bank = _groupedByCategory[category] ?? <Map<String, dynamic>>[];
+    if (bank.isEmpty) return <Map<String, dynamic>>[];
 
     final available = allowRepeats
         ? List.from(bank)
@@ -83,7 +83,7 @@ class SKDQuestionBank {
 
     available.shuffle();
 
-    final selected = available.take(count).toList();
+    final selected = available.take(count).cast<Map<String, dynamic>>().toList();
 
     if (!allowRepeats) {
       for (final q in selected) {

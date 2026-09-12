@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect x="156" y="136" width="200" height="240" rx="10" ry="10" fill="#152B55"/>
+  <line x1="176" y1="156" x2="336" y2="156" stroke="#FF9B42" stroke-width="3"/>
+  <line x1="176" y1="186" x2="336" y2="186" stroke="#FF9B42" stroke-width="3"/>
+  <line x1="176" y1="216" x2="336" y2="216" stroke="#FF9B42" stroke-width="3"/>
+  <path d="M256 136 L256 86 L306 136 Z" fill="#FF9B42"/>
+  <text x="256" y="420" font-size="48" font-weight="bold" fill="#FF9B42" text-anchor="middle" font-family="Arial">EKR</text>
+</svg>
