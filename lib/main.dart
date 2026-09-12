@@ -26,6 +26,7 @@ import 'pages/social_hub_page.dart';
 import 'services/question_rotation_service.dart';
 import 'services/offline_storage_service.dart';
 import 'services/adaptive_difficulty_service.dart';
+import 'config/backend_config.dart';
 
 const navy = Color(0xFF152B55);
 const blue = Color(0xFF2E6FE8);
@@ -81,6 +82,7 @@ class LearningActivityStore extends ChangeNotifier {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await BackendConfig.initialize();
   await OfflineStorageService().initialize();
   await AdaptiveDifficultyService().initialize();
   runApp(const EduKreativApp());
