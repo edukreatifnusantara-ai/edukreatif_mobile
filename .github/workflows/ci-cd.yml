@@ -124,13 +124,19 @@ jobs:
           path: artifacts/apk
       - name: Check APK size
         run: |
-          APK_SIZE=$(du -sb artifacts/apk | cut -f1)
-          echo "Total APK Size: $APK_SIZE bytes ($((APK_SIZE / 1024 / 1024)) MB)"
-          if [ $APK_SIZE -gt 104857600 ]; then
-            echo "⚠️ Total APK exceeds 100MB limit!"
+          APK_COUNT=$(find artifacts/apk -type f -name '*.apk' | wc -l)
+          if [ "$APK_COUNT" -eq 0 ]; then
+            echo "No APK files found"
             exit 1
           fi
-          echo "✅ APK size within 100MB limit"
+          MAX_APK_SIZE=$(find artifacts/apk -type f -name '*.apk' -printf '%s\n' | sort -nr | head -n 1)
+          MAX_APK_FILE=$(find artifacts/apk -type f -name '*.apk' -printf '%s %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)
+          echo "Largest APK: $MAX_APK_FILE ($MAX_APK_SIZE bytes, $((MAX_APK_SIZE / 1024 / 1024)) MB)"
+          if [ "$MAX_APK_SIZE" -gt 104857600 ]; then
+            echo "Largest split APK exceeds 100MB limit"
+            exit 1
+          fi
+          echo "All $APK_COUNT split APK files are within the 100MB per-APK limit"
 
   auto-merge:
     name: Auto Merge to Main
