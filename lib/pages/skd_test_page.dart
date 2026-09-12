@@ -372,7 +372,7 @@ class SKDResultPage extends StatelessWidget {
 
   const SKDResultPage({super.key, required this.result});
 
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Hasil Test'), foregroundColor: navy),
@@ -381,45 +381,49 @@ class SKDResultPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(color: navy, borderRadius: BorderRadius.circular(22)),
-            child: Column(
-              children: [
-                const Text('Skor', style: TextStyle(color: Colors.white70, fontSize: 14)),
-                const SizedBox(height: 8),
-                Text(
-                  '${result.score.toStringAsFixed(1)}%',
-                  style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '${result.correctAnswers} benar · ${result.wrongAnswers} salah · ${result.unansweredCount} tidak dijawab',
-                  style: const TextStyle(color: Colors.white70),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.timer, color: orange, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${result.duration.inMinutes}m ${result.duration.inSeconds.remainder(60)}s',
-                      style: const TextStyle(color: orange, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: navy,
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Column(
+                children: [
+                  const Text('Skor', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${result.score.toStringAsFixed(1)}%',
+                    style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${result.correctAnswers} benar · ${result.wrongAnswers} salah · ${result.unansweredCount} tidak dijawab',
+                    style: const TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.timer, color: orange, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${result.duration.inMinutes}m ${result.duration.inSeconds.remainder(60)}s',
+                        style: const TextStyle(color: orange, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
-            onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            icon: const Icon(Icons.home),
-            label: const Text('Kembali ke Beranda'),
-            style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-          ),
-        ],
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+              icon: const Icon(Icons.home),
+              label: const Text('Kembali ke Beranda'),
+              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+            ),
+          ],
+        ),
       ),
     );
   }
