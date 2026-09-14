@@ -1,8 +1,11 @@
 # Edukreativ Mobile
 
-Flutter app edukasi dengan Toko Kreativ untuk katalog materi, seller premium, keranjang, checkout demo, riwayat pesanan, dan perpustakaan e-book.
+Flutter app edukasi dengan katalog materi dan Toko Kreativ gratis untuk seluruh member.
 
-## Milestone 8: Question Rotation & Adaptive CBT
+## Akses konten
+
+Seluruh materi, fitur belajar, katalog, dan pengajuan materi tersedia gratis untuk semua member. Tidak ada paket premium, langganan, atau pembayaran di aplikasi.
+
 
 ✅ Implementasi selesai:
 
@@ -76,6 +79,6 @@ flutter test
 flutter build linux --debug
 ```
 
-## Catatan keamanan
+## Catatan operasional
 
-Pembayaran, webhook, moderasi admin, komisi, dan akses file e-book belum menjadi sistem produksi. Jangan menaruh kredensial atau secret di source code.
+Moderasi materi dan akses file tetap memerlukan backend produksi. Jangan menaruh kredensial atau secret di source code.
