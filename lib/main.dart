@@ -36,7 +36,6 @@ class LocalAccount {
   static String? name;
   static String? email;
   static String? password;
-  static bool isPremium = false;
 
   static bool get isRegistered => email != null && password != null;
 }
@@ -227,7 +226,7 @@ class StoreOrder {
     required this.products,
     required this.total,
     required this.hasPhysicalItem,
-    this.status = 'Menunggu pembayaran',
+    this.status = 'Akses gratis',
   });
 }
 
@@ -238,7 +237,7 @@ class StoreOrderStore {
 
 int storePriceValue(String price) {
   final digits = price.replaceAll(RegExp(r'[^0-9]'), '');
-  return int.tryParse(digits) ?? 0;
+  return 0;
 }
 
 typedef StoreProduct = ({
@@ -264,12 +263,12 @@ class _StorePageState extends State<StorePage> {
     StoreSellerProduct(
       title: 'Panduan Belajar Efektif',
       category: 'E-book',
-      price: 'Rp25.000',
+      price: 'Gratis',
     ),
     StoreSellerProduct(
       title: 'Kumpulan Soal Kreativ',
       category: 'E-book',
-      price: 'Rp30.000',
+      price: 'Gratis',
       status: 'Aktif',
     ),
   ];
@@ -278,7 +277,7 @@ class _StorePageState extends State<StorePage> {
     (
       title: 'E-book Strategi Belajar Efektif',
       subtitle: 'E-book · Panduan belajar mandiri',
-      price: 'Rp25.000',
+      price: 'Gratis',
       seller: 'Kreativ Official',
       icon: Icons.menu_book,
       type: 'E-book',
@@ -286,7 +285,7 @@ class _StorePageState extends State<StorePage> {
     (
       title: 'Buku Saku Matematika Dasar',
       subtitle: 'Buku fisik · Ringkasan konsep dan latihan',
-      price: 'Rp45.000',
+      price: 'Gratis',
       seller: 'Kreativ Press',
       icon: Icons.auto_stories,
       type: 'Buku',
@@ -294,7 +293,7 @@ class _StorePageState extends State<StorePage> {
     (
       title: 'Tumbler Edukreativ',
       subtitle: 'Souvenir · Tumbler edisi pelajar',
-      price: 'Rp65.000',
+      price: 'Gratis',
       seller: 'Kreativ Official',
       icon: Icons.local_drink,
       type: 'Souvenir',
@@ -302,7 +301,7 @@ class _StorePageState extends State<StorePage> {
     (
       title: 'Paket Persiapan Ujian',
       subtitle: 'Paket belajar · Buku dan akses e-book',
-      price: 'Rp85.000',
+      price: 'Gratis',
       seller: 'Kreativ Press',
       icon: Icons.inventory_2,
       type: 'Paket belajar',
@@ -327,7 +326,6 @@ class _StorePageState extends State<StorePage> {
 
   void showAddProductForm() {
     final titleController = TextEditingController();
-    final priceController = TextEditingController();
     String category = 'E-book';
     showDialog<void>(
       context: context,
@@ -356,14 +354,6 @@ class _StorePageState extends State<StorePage> {
                       setDialogState(() => category = value ?? category),
                 ),
                 const SizedBox(height: 10),
-                TextField(
-                  controller: priceController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Harga',
-                    prefixText: 'Rp ',
-                  ),
-                ),
               ],
             ),
           ),
@@ -375,8 +365,7 @@ class _StorePageState extends State<StorePage> {
             FilledButton(
               key: const Key('simpan-pengajuan-produk'),
               onPressed: () {
-                if (titleController.text.trim().isEmpty ||
-                    priceController.text.trim().isEmpty) {
+                if (titleController.text.trim().isEmpty) {
                   return;
                 }
                 setState(() {
@@ -384,7 +373,7 @@ class _StorePageState extends State<StorePage> {
                     StoreSellerProduct(
                       title: titleController.text.trim(),
                       category: category,
-                      price: 'Rp${priceController.text.trim()}',
+                      price: 'Gratis',
                     ),
                   );
                 });
@@ -394,32 +383,6 @@ class _StorePageState extends State<StorePage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void showSellerGate() {
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Jualan di Toko Kreativ'),
-        content: const Text(
-          'Status premium diperlukan untuk membuka lapak dan mengajukan e-book. Aktivasi berikut hanya simulasi lokal untuk milestone ini.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Nanti'),
-          ),
-          FilledButton(
-            onPressed: () {
-              LocalAccount.isPremium = true;
-              Navigator.pop(dialogContext);
-              setState(() {});
-            },
-            child: const Text('Aktifkan demo premium'),
-          ),
-        ],
       ),
     );
   }
@@ -560,7 +523,7 @@ class _StorePageState extends State<StorePage> {
                   ),
                 ),
               ),
-            ] else if (LocalAccount.isPremium) ...[
+            ] else ...[
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
@@ -569,14 +532,14 @@ class _StorePageState extends State<StorePage> {
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.workspace_premium, color: orange, size: 32),
+                    Icon(Icons.storefront, color: orange, size: 32),
                     SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Lapak Premium Kreativ',
+                            'Lapak Kreativ Gratis',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -585,7 +548,7 @@ class _StorePageState extends State<StorePage> {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            'Status premium aktif · siap mengajukan produk.',
+                            'Semua member dapat mengajukan materi gratis.',
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -623,64 +586,6 @@ class _StorePageState extends State<StorePage> {
                     color: product.status == 'Aktif' ? Colors.green : orange,
                   ),
                 ),
-              ),
-            ] else ...[
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: navy,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.lock_outline, color: orange, size: 32),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Lapak Premium Kreativ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Aktifkan premium untuk mulai menjual e-book dan produk Kreativ.',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 14),
-              OutlinedButton.icon(
-                key: const Key('ajukan-produk-toko'),
-                onPressed: showSellerGate,
-                icon: const Icon(Icons.workspace_premium_outlined),
-                label: const Text('Buka akses jualan'),
-              ),
-              const SizedBox(height: 18),
-              const Text(
-                'Ketentuan awal',
-                style: TextStyle(
-                  color: navy,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Produk akan ditinjau sebelum tampil. Pastikan e-book adalah karya sendiri atau memiliki izin distribusi.',
-                style: TextStyle(color: Colors.black54, height: 1.4),
               ),
             ],
           ],
@@ -1018,7 +923,7 @@ class StoreCheckoutPage extends StatefulWidget {
 class _StoreCheckoutPageState extends State<StoreCheckoutPage> {
   final addressController = TextEditingController();
   final phoneController = TextEditingController();
-  String shipping = 'Reguler · Rp10.000';
+  String shipping = 'Gratis';
 
   @override
   void dispose() {
@@ -1036,7 +941,7 @@ class _StoreCheckoutPageState extends State<StoreCheckoutPage> {
       0,
       (sum, item) => sum + storePriceValue(item.price),
     );
-    final shippingCost = shipping.startsWith('Ekspres') ? 25000 : 10000;
+    final shippingCost = 0;
     StoreOrderStore.orders.add(
       StoreOrder(
         id: 'ORD-${StoreOrderStore.orders.length + 1}',
@@ -1055,7 +960,7 @@ class _StoreCheckoutPageState extends State<StoreCheckoutPage> {
       builder: (dialogContext) => AlertDialog(
         title: const Text('Pesanan dibuat'),
         content: const Text(
-          'Status pesanan: Menunggu pembayaran. Ini masih checkout demo dan belum memproses pembayaran nyata.',
+          'Akses gratis diberikan untuk semua member. Tidak ada pembayaran yang diproses.',
         ),
         actions: [
           FilledButton(
@@ -1077,7 +982,7 @@ class _StoreCheckoutPageState extends State<StoreCheckoutPage> {
       0,
       (sum, item) => sum + storePriceValue(item.price),
     );
-    final shippingCost = shipping.startsWith('Ekspres') ? 25000 : 10000;
+    final shippingCost = 0;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9FC),
       appBar: AppBar(
@@ -1131,12 +1036,8 @@ class _StoreCheckoutPageState extends State<StoreCheckoutPage> {
             decoration: const InputDecoration(border: OutlineInputBorder()),
             items: const [
               DropdownMenuItem(
-                value: 'Reguler · Rp10.000',
-                child: Text('Reguler · Rp10.000'),
-              ),
-              DropdownMenuItem(
-                value: 'Ekspres · Rp25.000',
-                child: Text('Ekspres · Rp25.000'),
+                value: 'Gratis',
+                child: Text('Gratis'),
               ),
             ],
             onChanged: (value) => setState(() => shipping = value ?? shipping),
@@ -1775,12 +1676,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 10),
           _ProfileMenuTile(
-            icon: Icons.workspace_premium_outlined,
-            title: 'Langganan Kreativ',
-            subtitle: 'Lihat pilihan akses premium',
+            icon: Icons.menu_book_outlined,
+            title: 'Akses belajar gratis',
+            subtitle: 'Semua materi dan fitur terbuka untuk member',
             onTap: () => showInfo(
-              'Langganan Kreativ',
-              'Pilih akses premium untuk membuka materi dan fitur belajar lebih lengkap.',
+              'Akses belajar gratis',
+              'Semua materi dan fitur belajar tersedia gratis untuk seluruh member.',
             ),
           ),
           const SizedBox(height: 10),
@@ -2856,7 +2757,7 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 14),
           _UtbkFeatureCard(
             category: 'SMART PLAYBOOK',
-            title: 'Strategi UTBK Terarah (PREMIUM MEMBER)',
+            title: 'Strategi UTBK Terarah',
             description:
                 'Taktik sesuai masalah belajar, target skor, dan subtes prioritas.',
             tags: 'Taktik · Roadmap · Target',
@@ -2898,7 +2799,7 @@ class HomePage extends StatelessWidget {
           const _CourseCard(
             title: 'Sains di Sekitar Kita',
             subtitle: 'SMP · Makhluk Hidup',
-            free: false,
+            free: true,
             icon: Icons.science,
           ),
         ],
@@ -6006,7 +5907,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'IPAS',
       subtitle: 'SD · Makhluk Hidup dan Lingkungan',
       level: 'SD',
-      free: false,
+      free: true,
       icon: Icons.nature_people_outlined,
     ),
     (
@@ -6027,7 +5928,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Seni Budaya SD',
       subtitle: 'SD · Ekspresi Seni dan Kreativitas',
       level: 'SD',
-      free: false,
+      free: true,
       icon: Icons.palette_outlined,
     ),
     (
@@ -6041,14 +5942,14 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Pendidikan Agama dan Budi Pekerti',
       subtitle: 'SD · Akhlak dan Karakter',
       level: 'SD',
-      free: false,
+      free: true,
       icon: Icons.volunteer_activism_outlined,
     ),
     (
       title: 'Sains di Sekitar Kita',
       subtitle: 'SMP · Makhluk Hidup',
       level: 'SMP',
-      free: false,
+      free: true,
       icon: Icons.science,
     ),
     (
@@ -6069,7 +5970,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'IPS Terpadu',
       subtitle: 'SMP · Geografi, Sejarah, dan Ekonomi',
       level: 'SMP',
-      free: false,
+      free: true,
       icon: Icons.public,
     ),
     (
@@ -6083,7 +5984,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Informatika SMP',
       subtitle: 'SMP · Berpikir Komputasional',
       level: 'SMP',
-      free: false,
+      free: true,
       icon: Icons.computer,
     ),
     (
@@ -6118,7 +6019,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Matematika Tingkat Lanjut',
       subtitle: 'SMA · Fungsi dan Persamaan',
       level: 'SMA',
-      free: false,
+      free: true,
       icon: Icons.show_chart,
     ),
     (
@@ -6132,7 +6033,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Kimia',
       subtitle: 'SMA · Atom dan Sistem Periodik',
       level: 'SMA',
-      free: false,
+      free: true,
       icon: Icons.science_outlined,
     ),
     (
@@ -6153,7 +6054,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Sosiologi',
       subtitle: 'SMA · Interaksi Sosial',
       level: 'SMA',
-      free: false,
+      free: true,
       icon: Icons.groups_outlined,
     ),
     (
@@ -6167,7 +6068,7 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Bahasa Inggris Tingkat Lanjut',
       subtitle: 'SMA · Teks dan Komunikasi Akademik',
       level: 'SMA',
-      free: false,
+      free: true,
       icon: Icons.translate,
     ),
     (
@@ -6181,14 +6082,14 @@ class _CatalogPageState extends State<CatalogPage> {
       title: 'Koding dan Kecerdasan Artifisial',
       subtitle: 'SMA · Logika, Data, dan AI',
       level: 'SMA',
-      free: false,
+      free: true,
       icon: Icons.smart_toy_outlined,
     ),
     (
       title: 'Eksperimen Energi',
       subtitle: 'SMP · Energi dan Perubahannya',
       level: 'SMP',
-      free: false,
+      free: true,
       icon: Icons.bolt,
     ),
   ];
@@ -6371,13 +6272,6 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   int get completedCount => completed.where((item) => item).length;
 
   void openMaterial() {
-    if (!widget.free) {
-      showModalBottomSheet(
-        context: context,
-        builder: (_) => const _PremiumSheet(),
-      );
-      return;
-    }
     setState(() => completed[0] = true);
     LearningActivityStore.instance.recordLesson(
       course: widget.title,
@@ -6419,13 +6313,11 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             children: [
               Chip(
                 avatar: Icon(
-                  widget.free ? Icons.lock_open : Icons.workspace_premium,
+                  Icons.lock_open,
                   size: 16,
                 ),
-                label: Text(widget.free ? 'Materi gratis' : 'Materi premium'),
-                backgroundColor: widget.free
-                    ? const Color(0xFFE5F6EA)
-                    : const Color(0xFFFFF0E4),
+                label: const Text('Materi gratis'),
+                backgroundColor: const Color(0xFFE5F6EA),
               ),
               const SizedBox(width: 8),
               const Text('15 menit', style: TextStyle(color: Colors.black54)),
@@ -6441,9 +6333,9 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             height: 52,
             child: FilledButton.icon(
               onPressed: openMaterial,
-              icon: Icon(widget.free ? Icons.play_arrow : Icons.lock_outline),
+              icon: Icon(Icons.play_arrow),
               label: Text(
-                widget.free ? 'Mulai belajar' : 'Lihat pilihan akses',
+                'Mulai belajar',
               ),
             ),
           ),
@@ -6501,8 +6393,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             lessons.length,
             (index) => CheckboxListTile(
               value: completed[index],
-              onChanged: widget.free
-                  ? (value) {
+              onChanged: (value) {
                       setState(() => completed[index] = value ?? false);
                       if (value == true) {
                         LearningActivityStore.instance.recordLesson(
@@ -6511,8 +6402,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                           minutes: index == 0 ? 3 : 4,
                         );
                       }
-                    }
-                  : null,
+                      },
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading,
               title: Text(lessons[index]),
@@ -6527,57 +6417,6 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       ),
     );
   }
-}
-
-class _PremiumSheet extends StatelessWidget {
-  const _PremiumSheet();
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.all(24),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Materi premium',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: navy,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Login atau daftar hanya diperlukan saat kamu ingin melanjutkan ke paket berbayar.',
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: () {
-              Navigator.pop(context);
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text('Login / Daftar'),
-                  content: const Text(
-                    'Layar autentikasi akan dihubungkan ke sistem akun pada milestone berikutnya.',
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Tutup'),
-                    ),
-                  ],
-                ),
-              );
-            },
-            child: const Text('Lanjut ke login / daftar'),
-          ),
-        ),
-      ],
-    ),
-  );
 }
 
 class _Logo extends StatelessWidget {
@@ -10095,7 +9934,7 @@ class _CourseCard extends StatelessWidget {
           ),
           Chip(
             label: Text(
-              free ? 'GRATIS' : 'PREMIUM',
+              'GRATIS',
               style: TextStyle(
                 fontSize: 10,
                 color: free
@@ -10809,7 +10648,7 @@ class _MissionSeriesPageState extends State<MissionSeriesPage> {
   Widget _result() => Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      const Icon(Icons.workspace_premium_outlined, color: orange, size: 90),
+      const Icon(Icons.check_circle_outline, color: orange, size: 90),
       const SizedBox(height: 18),
       const Text(
         'Misi 4–12 selesai!',

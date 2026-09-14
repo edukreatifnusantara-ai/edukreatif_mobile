@@ -2,15 +2,14 @@
 -- Run only in the intended Supabase project after review.
 -- No credentials are stored in this file.
 
-create type public.user_role as enum ('buyer', 'premium_seller', 'admin');
+create type public.user_role as enum ('member', 'admin');
 create type public.product_status as enum ('draft', 'pending_review', 'active', 'rejected', 'inactive');
-create type public.order_status as enum ('pending_payment', 'paid', 'processing', 'shipped', 'delivered', 'cancelled');
+create type public.order_status as enum ('granted', 'processing', 'shipped', 'delivered', 'cancelled');
 
 create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null default '',
-  role public.user_role not null default 'buyer',
-  is_premium boolean not null default false,
+  role public.user_role not null default 'member',
   created_at timestamptz not null default now()
 );
 
@@ -29,7 +28,7 @@ create table public.products (
   title text not null,
   category text not null,
   description text not null default '',
-  price integer not null check (price >= 0),
+  price integer not null default 0 check (price = 0),
   status public.product_status not null default 'draft',
   cover_path text,
   ebook_path text,
@@ -54,7 +53,7 @@ create table public.orders (
   subtotal integer not null check (subtotal >= 0),
   shipping_cost integer not null default 0 check (shipping_cost >= 0),
   total integer not null check (total >= 0),
-  status public.order_status not null default 'pending_payment',
+  status public.order_status not null default 'granted',
   tracking_number text,
   created_at timestamptz not null default now()
 );
@@ -91,5 +90,5 @@ create policy "buyers read own orders" on public.orders
 create policy "buyers read own ebook library" on public.ebook_library
   for select using (auth.uid() = buyer_id);
 
--- Seller insert/update and admin moderation policies should be added only
--- after the auth role strategy and server-side payment flow are finalized.
+-- All approved learning materials are free. Seller submissions remain subject
+-- to moderation for quality and rights, not to a paid membership requirement.

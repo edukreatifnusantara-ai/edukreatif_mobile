@@ -4,9 +4,9 @@
 
 ### ✅ Fitur Sudah Berfungsi
 - **Home**: 3 jalur persiapan (Psikotest, SMA TN, Unhan), SIAP UTBK countdown, Game/Cerita/LiveClass/Camp Kreativ
-- **Academy Kreativ**: Katalog SD/SMP/SMA, materi gratis/premium, bookmark, progress tracking
-- **Toko Kreativ**: Katalog produk, keranjang, checkout demo, riwayat pesanan, perpustakaan e-book, seller premium
-- **Profil**: Login/register, edit nama, notifikasi, langganan, progres mingguan, target UTBK harian
+- **Academy Kreativ**: Katalog SD/SMP/SMA, seluruh materi gratis, bookmark, progress tracking
+- **Toko Kreativ**: Katalog materi gratis, akses perpustakaan, pengajuan materi member, dan moderasi
+- **Profil**: Login/register, edit nama, notifikasi, akses gratis, progres mingguan, target UTBK harian
 - **Kedinasan**: Akademi TNI, AKPOL, Sekolah Kedinasan (STIN, PKN STAN, Poltek SSN, dll)
 - **UTBK**: CBT real, bank soal per paket (PU, PPU, PK, LBE, PM), tryout, hasil skor
 - **Psychology Menu**: TPA, TKP, Psikotest SMA TN, Mental Ideologi
@@ -18,7 +18,7 @@
 | Data persistensi | Demo only | Ganti LocalStoreBackendRepository → SupabaseStoreBackendRepository |
 | Assets (logo, emblem, media) | 1B placeholder | Download/gen real assets |
 | Soal UTBK lengkap | Paket 57 only | Fetch global bank soal resmi |
-| Pembayaran | Demo | Integrasi Midtrans/Xendit |
+| Pembayaran | Tidak digunakan | Seluruh akses member gratis |
 | Moderasi seller | Belum | Admin panel + review flow |
 | E-book file serving | Belum | Supabase Storage + signed URLs |
 | Push notification | Belum | Firebase Cloud Messaging |
@@ -95,24 +95,11 @@ assets/
 
 | Tier | Harga | Akses | Target |
 |------|-------|-------|--------|
-| **Gratis (Launch)** | Rp 0 | Seluruh konten soal UTBK/TNI/AKPOL/Kedinasan, Academy SD-SMA, Progress tracking, Basic store (beli e-book per item) | Early adopters, brand awareness |
-| **Premium Bulanan** | Rp 49.000/bln | Semua Gratis + Materi premium Academy, E-book unlimited library, No ads, Priority support, Offline download, LiveClass access | Siswa serious prep |
-| **Premium Tahunan** | Rp 399.000/thn (33% off) | Semua Bulanan + Certificate completion, Mentor chat 1x/bln, Exclusive tryout | Power users, orang tua |
-| **Seller Premium** | Rp 199.000/thn | Buka lapak, commission 15% (vs 25% gratis), Analytics dashboard, Featured placement | Kreator konten, guru |
+| **Gratis untuk semua member** | Rp 0 | Seluruh konten belajar, Academy SD-SMA, bank soal, progress tracking, katalog materi, perpustakaan, dan pengajuan materi | Semua pelajar dan member |
 
-### Launch Promo (First 90 Days)
-- **Day 1-30**: 100% Gratis semua fitur Premium (no credit card)
-- **Day 31-60**: 50% off Premium Tahunan (Rp 199.500)
-- **Day 61-90**: 25% off Premium Tahunan (Rp 299.250)
-- **Referral**: User invite → +7 hari gratis Premium each
-
-### Revenue Projection (Year 1)
-| Metric | Conservative | Realistic | Optimistic |
-|--------|-------------|-----------|------------|
-| MAU Month 12 | 50.000 | 150.000 | 400.000 |
-| Premium Conversion | 3% | 5% | 8% |
-| ARPU | Rp 15.000 | Rp 25.000 | Rp 40.000 |
-| Monthly Revenue | Rp 22.5M | Rp 187.5M | Rp 1.28B |
+### Model akses
+Seluruh member memperoleh akses yang sama secara gratis. Tidak ada paket berbayar,
+langganan, paywall, atau alur checkout.
 
 ---
 
@@ -141,14 +128,14 @@ assets/
 |----------|--------|
 | **Content Marketing** | Weekly blog: tips belajar, analisis soal, alumni story |
 | **SEO Programmatic** | 500+ halaman: "Soal UTBK [Mapel] [Tahun] + Pembahasan" |
-| **Referral Loop** | In-app share → deep link → reward coins → unlock premium |
-| **School Partnership** | MOU 50 SMA/SMP: gratis Premium untuk siswa kelas 12/9 |
+| **Referral Loop** | In-app share → deep link → ajak member baru |
+| **School Partnership** | MOU 50 SMA/SMP untuk memperluas akses belajar gratis |
 | **Paid Ads** | Meta/Google UAC target: orang tua SMA, calon TNI/AKPOL |
-| **Email Drip** | Onboarding 7 hari → value → upsell Premium |
+| **Email Drip** | Onboarding 7 hari → panduan belajar dan materi gratis |
 
 ### Phase 4: Retention (Bulan 6+)
 - Gamification: streak, badge, leaderboard mingguan
-- LiveClass berkala (gratis untuk Premium)
+- LiveClass berkala untuk semua member
 - Alumni mentor program
 - Offline event: "Camp Kreativ" di 5 kota besar
 
@@ -240,7 +227,7 @@ android {
 | Frontend | Flutter 3.24+, Dart 3.5+, Material 3 |
 | Backend | Supabase (PostgreSQL + Auth + Storage + Realtime) |
 | Auth | Supabase Auth (Email + Google + Apple) |
-| Payments | Midtrans (ID) / Stripe (Global) |
+| Payments | Tidak digunakan; seluruh akses member gratis |
 | Push | Firebase Cloud Messaging |
 | Analytics | Firebase Analytics + Mixpanel |
 | Crash | Firebase Crashlytics |
@@ -268,7 +255,7 @@ android {
 ### Business
 - [ ] Privacy Policy & ToS published
 - [ ] Play Store listing approved
-- [ ] Payment sandbox tested end-to-end
+
 - [ ] Support email + FAQ live
 - [ ] Launch promo calendar locked
 

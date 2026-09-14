@@ -5,13 +5,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// This file intentionally contains no credentials and no network calls yet.
 /// The current app can keep using its local demo store while a Supabase
 /// implementation is wired behind these contracts.
-enum StoreUserRole { buyer, premiumSeller, admin }
+enum StoreUserRole { member, admin }
 
 enum StoreProductStatus { draft, pendingReview, active, rejected, inactive }
 
 enum StoreOrderStatus {
-  pendingPayment,
-  paid,
+  granted,
   processing,
   shipped,
   delivered,
@@ -125,7 +124,7 @@ class SupabaseStoreBackendRepository implements StoreBackendRepository {
   StoreOrderStatus _orderStatus(String value) =>
       StoreOrderStatus.values.firstWhere(
         (status) => status.name == value,
-        orElse: () => StoreOrderStatus.pendingPayment,
+        orElse: () => StoreOrderStatus.granted,
       );
 
   BackendStoreProduct _productFromMap(Map<String, dynamic> row) =>
