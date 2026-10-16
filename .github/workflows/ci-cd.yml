@@ -59,7 +59,7 @@ jobs:
       - name: Build APK (release split per ABI)
         run: flutter build apk --release --split-per-abi
       - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: debug-apk
           path: build/app/outputs/flutter-apk/*.apk
@@ -81,7 +81,7 @@ jobs:
       - name: Build Web
         run: flutter build web --release
       - name: Upload Web artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: web-build
           path: build/web
@@ -105,7 +105,7 @@ jobs:
       - name: Build Linux
         run: flutter build linux --debug
       - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-build
           path: build/linux/x64/debug/bundle
